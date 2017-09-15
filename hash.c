@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "hash.h"
 
+HASH_NODE Table[HASH_SIZE];
+
 void hashInit(void)
 {
   int i;
@@ -29,7 +31,7 @@ HASH_NODE *hashInsert(int type, char *text)
   newnode->type = type;
   newnode->text = calloc(strlen(text)+1, sizeof(char));
   strcpy(newnode->text, text);
-  newnode->next = Table(address);
+  newnode->next = Table[address];
   Table[address] = newnode;
   return newnode;
 }
