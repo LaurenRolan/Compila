@@ -42,3 +42,16 @@ void hashPrint(void)
     for(node=Table[i]; node; node = node->next)
       printf("Table[%d] has %s\n", i, node->text);
 }
+
+HASH_NODE * hashFind(char *text)
+{
+  HASH_NODE *node;
+  int address;
+  address = hashAddress(text);
+  for(node=Table[address]; node; node->next)
+  {
+    if(!(strcmp(text, node->text))
+       return node;
+  }
+  return null;
+}
