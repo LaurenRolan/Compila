@@ -1,5 +1,8 @@
+%{
+
 #include "hash.h"
 
+%}
 %%
 
 
