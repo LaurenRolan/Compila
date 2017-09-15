@@ -1,6 +1,4 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
 #include "hash.h"
 
 %}
@@ -11,6 +9,6 @@
 
 #include "main.c"
 
-yywrap(){
+int yywrap(){
   return 1;
 }
