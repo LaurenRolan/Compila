@@ -6,5 +6,6 @@ int main(int argc, char **argv){
     fprintf(stderr, "Missing file name.\n Call ./a.out file_name.\n");
     exit(1);
   }
+  yylex();
   return 0;
 }
