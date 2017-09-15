@@ -52,7 +52,7 @@ HASH_NODE * hashFind(char *text)
   address = hashAddress(text);
   for(node=Table[address]; node; node->next)
   {
-    if(!(strcmp(text, node->text))
+    if(!(strcmp(text, node->text)))
        return node;
   }
   return NULL;
