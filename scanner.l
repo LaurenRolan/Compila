@@ -32,10 +32,10 @@
 
 <<EOF>>		return 0;
 
-[a-zA-Z_][a-zA-Z_0-9]*		{	
-								hashInsert(TK_IDENTIFIER, yytext);
-								return TK_IDENTIFIER;
-							}
+[a-zA-Z_][a-zA-Z_ 0-9]*[^ \n\t]		{	
+									hashInsert(TK_IDENTIFIER, yytext);
+									return TK_IDENTIFIER;
+									}
 [0-9]+						return 700;
 ([0-9]*\.[0-9]+)			return 900;
 

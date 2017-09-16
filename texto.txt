@@ -1,4 +1,1 @@
-byte x;
-float a = 12;
-[a++];
-x = a;
+byte noventa;
