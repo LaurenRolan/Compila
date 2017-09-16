@@ -2,7 +2,18 @@
 	#include "hash.h"
 	#include "tokens.h"
 	#include <stdio.h>
+	
+	int lineNumber = 1;
+	int running = 1;
+	
+	void initMe(void);
+	int isRunning(void);
+	int getLineNumber(void);
 %}
+
+	
+
+%x COMMENT
 
 %%
 
@@ -22,6 +33,8 @@
 
 [-+*;()=,:{}/<>!&$#\[\]]		return yytext[0];
 
+[ \t]		{}
+"\n"		lineNumber++;
 
 "<="		return OPERATOR_LE;
 ">="		return OPERATOR_GE;
@@ -30,18 +43,62 @@
 "&&"		return OPERATOR_AND;
 "||"		return OPERATOR_OR;
 
-<<EOF>>		return 0;
+"//".*		{}
 
-[a-zA-Z_][a-zA-Z_ 0-9]*[^ \n\t]		{	
+"/*" 		BEGIN(COMMENT);
+
+<COMMENT>.			{}
+<COMMENT>\n			{lineNumber = lineNumber+1;}
+<COMMENT>"*/"		{BEGIN(INITIAL);}
+
+
+
+[a-zA-Z_][a-zA-Z_ 0-9]*[a-zA-Z0-9_]	{	
 									hashInsert(TK_IDENTIFIER, yytext);
 									return TK_IDENTIFIER;
 									}
-[0-9]+						return 700;
-([0-9]*\.[0-9]+)			return 900;
+[0-9]+								{
+									hashInsert(LIT_INTEGER, yytext);
+									return LIT_INTEGER;
+									}
+([0-9]*\.[0-9]+)					{
+									hashInsert(LIT_REAL, yytext);
+									return LIT_REAL;
+									}
+(')(.)(')							{
+									hashInsert(LIT_CHAR, yytext);
+									return LIT_CHAR;
+									}
+(\")[^\"]*(\")						{
+									hashInsert(LIT_STRING, yytext);
+									return LIT_STRING;
+									}
+
+
+.		return TOKEN_ERROR;
 
 %%
 
 	#include "main.c"
-int yywrap(){
+	
+int yywrap()
+{
+	running = 0;
 	return 1;
+}
+
+int getLineNumber()
+{
+	return lineNumber;
+}
+
+void initMe()
+{
+	hashInit();
+	running = 1;
+}
+
+int isRunning()
+{
+	return running;
 }

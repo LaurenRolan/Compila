@@ -1,1 +1,24 @@
-byte noventa;
+byte lauren;
+
+// ela é legal
+
+lauren = 10
+
+/*
+
+era mentira
+
+*/
+
+if(mentira == verdade)
+	paradoxo();
+	
+89
+
+65.9
+
+id com espaco no meio
+
+"isso e" "uma string"
+
+'c'
