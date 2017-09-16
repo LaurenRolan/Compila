@@ -31,6 +31,7 @@ int main(int argc, char **argv){
   
   printf("\n");
   hashPrint();
+  fclose(fh);
 	
   return 0;
 }

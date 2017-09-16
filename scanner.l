@@ -65,11 +65,11 @@
 									hashInsert(LIT_REAL, yytext);
 									return LIT_REAL;
 									}
-(')(.)(')							{
+(')[^']?(')							{
 									hashInsert(LIT_CHAR, yytext);
 									return LIT_CHAR;
 									}
-(\")[^\"]*(\")						{
+(\")([^\"]*|[.(\\\")]*)(\")			{
 									hashInsert(LIT_STRING, yytext);
 									return LIT_STRING;
 									}

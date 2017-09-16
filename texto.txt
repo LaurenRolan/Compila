@@ -21,4 +21,14 @@ id com espaco no meio
 
 "isso e" "uma string"
 
+"eh uma string"
+
 'c'
+
+''
+
+'''
+
+"\""
+
+"\n"
