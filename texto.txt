@@ -1,5 +1,11 @@
+//Feito por Lauren Silva Rolan Sampaio
+// e Nicolas Eymael da Silva
 byte lauren;
-
+byte
+lauren
+float something
+float, something
+float	algo;
 // ela é legal
 
 lauren = 10

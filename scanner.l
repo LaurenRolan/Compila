@@ -1,4 +1,6 @@
 %{
+	//Feito por Lauren Silva Rolan Sampaio
+	// e Nicolas Eymael da Silva
 	#include "hash.h"
 	#include "tokens.h"
 	#include <stdio.h>

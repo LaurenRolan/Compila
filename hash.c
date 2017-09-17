@@ -1,3 +1,5 @@
+//Feito por Lauren Silva Rolan Sampaio
+// e Nicolas Eymael da Silva
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
