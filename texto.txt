@@ -1,0 +1,42 @@
+//Feito por Lauren Silva Rolan Sampaio
+// e Nicolas Eymael da Silva
+byte lauren;
+byte
+lauren
+float something
+float, something
+float	algo;
+// ela é legal
+
+lauren = 10
+a
+	B
+a
+/*
+
+era mentira
+
+*/
+
+if(mentira == verdade)
+	paradoxo();
+	
+89
+
+65.9
+
+id com espaco no meio
+
+"isso e" "uma string"
+
+"eh uma string"
+
+'c'
+
+''
+
+'''
+
+"\""
+
+"\n"
