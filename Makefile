@@ -1,4 +1,4 @@
-etapa1: y.tab.o lex.yy.o hash.o
+etapa2: y.tab.o lex.yy.o hash.o
 	gcc -Wall -o etapa1 lex.yy.o hash.o
 y.tab.o: y.tab.c
 	gcc -c y.tab.c
@@ -11,4 +11,4 @@ lex.yy.c: scanner.l
 y.tab.c: parser.y
 	yacc -d parser.y
 clean:
-	rm *.o lex.yy.c etapa1
+	rm *.o lex.yy.c etapa2
