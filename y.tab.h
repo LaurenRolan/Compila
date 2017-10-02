@@ -23,3 +23,4 @@
 #define LIT_CHAR 279
 #define LIT_STRING 280
 #define TOKEN_ERROR 281
+#define LIT_DOUBLE 282
