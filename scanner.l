@@ -7,7 +7,8 @@
 	
 	int lineNumber = 1;
 	int running = 1;
-	
+
+	extern int yyparser();	
 	void initMe(void);
 	int isRunning(void);
 	int getLineNumber(void);

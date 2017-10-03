@@ -1,6 +1,7 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
+	int yyparse();
 	int yylex();
 	int yyerror(char *msg);
 %}
@@ -96,5 +97,6 @@ optelse	: KW_ELSE stmts
 %%
 int yyerror(char *msg)
 {
+	printf("%s\n", msg);
 	exit(3);
 }
