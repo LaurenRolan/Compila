@@ -30,6 +30,7 @@
 %token LIT_CHAR
 %token LIT_STRING
 %token TOKEN_ERROR
+%locations
 
 %%
 program : stmts
@@ -95,8 +96,3 @@ optelse	: KW_ELSE stmts
 	| 
 	;
 %%
-int yyerror(char *msg)
-{
-	printf("%s\n", msg);
-	exit(3);
-}
