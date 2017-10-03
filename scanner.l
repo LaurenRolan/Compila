@@ -14,8 +14,6 @@
 	int getLineNumber(void);
 %}
 
-%option yylineno
-
 %x COMMENT
 
 %%
@@ -108,6 +106,6 @@ int isRunning()
 
 int yyerror(char *msg)
 {
-	printf("%s at line %d\n", msg, yylineno);
+	printf("%s at line %d\n", msg, getLineNumber());
 	exit(3);
 }

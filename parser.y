@@ -30,11 +30,10 @@
 %token LIT_CHAR
 %token LIT_STRING
 %token TOKEN_ERROR
-%locations
 
 %%
 program : stmts
-
+	;
 stmts	: stmt ';' stmts
 	|
 	;
@@ -60,7 +59,6 @@ type	: KW_BYTE
 	;
 
 literal : LIT_INTEGER
-	| LIT_DOUBLE
 	| LIT_REAL
 	| LIT_CHAR
 	| 
@@ -74,7 +72,6 @@ expr	: expr '+' term
 	| expr OPERATOR_LE term
 	| expr OPERATOR_GE term
 	| term
-	| 
 	;
 
 term	: term '*' factor
