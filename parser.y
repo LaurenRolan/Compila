@@ -44,16 +44,17 @@ stmts	: stmt ';' stmts
 	|
 	;
 
-stmt	: TK_IDENTIFIER ':' type '=' factor
+stmt	: TK_IDENTIFIER ':' type '=' expr
 	| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit
 	| TK_IDENTIFIER '=' expr
 	| TK_IDENTIFIER '[' expr ']' '=' expr
+	| '(' type ')' TK_IDENTIFIER '(' ')'
 	| KW_IF '('expr')'KW_THEN stmts optelse
 	| KW_WHILE '(' expr ')' stmt
 	| KW_FOR '(' expr ';' expr ';' expr ')'
-	| KW_READ factor
-	| KW_RETURN factor
-	| KW_PRINT factor
+	| KW_READ expr
+	| KW_RETURN expr
+	| KW_PRINT expr
 	| '{'stmts'}'
 	;
 
