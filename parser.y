@@ -34,6 +34,7 @@
 %%
 program : stmts
 	;
+
 stmts	: stmt ';' stmts
 	|
 	;
@@ -61,7 +62,6 @@ type	: KW_BYTE
 literal : LIT_INTEGER
 	| LIT_REAL
 	| LIT_CHAR
-	| 
 	;
 
 expr	: expr '+' term
@@ -72,6 +72,7 @@ expr	: expr '+' term
 	| expr OPERATOR_LE term
 	| expr OPERATOR_GE term
 	| term
+	| 
 	;
 
 term	: term '*' factor
@@ -85,7 +86,7 @@ factor	: literal
 	| '(' expr ')'
 	;
 
-optinit	: literal ' ' optinit
+optinit	: literal optinit
 	|
 	;
 
