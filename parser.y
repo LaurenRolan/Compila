@@ -31,6 +31,11 @@
 %token LIT_STRING
 %token TOKEN_ERROR
 
+%left '!' OPERATOR_AND OPERATOR_OR
+%left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
+%left '+' '-'
+%left '*' '/'
+
 %%
 program : stmts
 	;
@@ -64,26 +69,20 @@ literal : LIT_INTEGER
 	| LIT_CHAR
 	;
 
-expr	: expr '+' term
-	| expr '-' term
-	| expr OPERATOR_NE term
-	| expr OPERATOR_OR term
-	| expr OPERATOR_EQ term
-	| expr OPERATOR_LE term
-	| expr OPERATOR_GE term
-	| term
-	| 
-	;
-
-term	: term '*' factor
-	| term '/' factor
-	| term OPERATOR_AND factor
-	| factor
-	;
-
-factor	: literal
+expr	: expr '+' expr
+	| expr '-' expr
+	| expr '*' expr
+	| expr '/' expr
+	| expr OPERATOR_AND expr
+	| expr OPERATOR_OR expr
+	| expr OPERATOR_NE expr
+	| expr OPERATOR_EQ expr
+	| expr OPERATOR_LE expr
+	| expr OPERATOR_GE expr
+	| literal
 	| LIT_STRING
 	| '(' expr ')'
+	|
 	;
 
 optinit	: literal optinit
