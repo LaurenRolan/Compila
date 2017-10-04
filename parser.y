@@ -93,7 +93,7 @@ expr	: expr '+' expr
 		| TK_IDENTIFIER '[' expr ']'
 		| '(' expr ')'
 		| TK_IDENTIFIER '(' arglist ')'
-		|
+		| '!' expr
 		;
 
 optinit	: literal optinit
