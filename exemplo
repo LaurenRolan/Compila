@@ -28,13 +28,13 @@ d: byte=65;
     ;
   if (a==11) then {} else
     ;
-  ;;;
-  {;};
+	;;;
+	{;};
   {};
   }
 
 (long) incn (x: long, n: long)
-  {return x+n}
+  {return (x+n)}
 
 (short) voidfunc() {}
   
