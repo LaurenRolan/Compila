@@ -32,7 +32,7 @@
 %token TOKEN_ERROR
 
 %left '!' OPERATOR_AND OPERATOR_OR
-%left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
+%left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE '>' '<'
 %left '+' '-'
 %left '*' '/'
 
@@ -52,7 +52,7 @@ stmt	: TK_IDENTIFIER ':' type '=' expr
 	| KW_IF '('expr')'KW_THEN stmts optelse
 	| KW_WHILE '(' expr ')' stmt
 	| KW_FOR '(' expr ';' expr ';' expr ')'
-	| KW_READ expr
+	| KW_READ '>' expr
 	| KW_RETURN expr
 	| KW_PRINT expr
 	| '{'stmts'}'
@@ -74,6 +74,8 @@ expr	: expr '+' expr
 	| expr '-' expr
 	| expr '*' expr
 	| expr '/' expr
+	| expr '<' expr
+	| expr '>' expr
 	| expr OPERATOR_AND expr
 	| expr OPERATOR_OR expr
 	| expr OPERATOR_NE expr
