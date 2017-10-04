@@ -107,5 +107,8 @@ int isRunning()
 int yyerror(char *msg)
 {
 	printf("%s at line %d\n", msg, getLineNumber());
+	//Tirar depois
+	printf("Printing hash table:");
+	hashPrint();
 	exit(3);
 }

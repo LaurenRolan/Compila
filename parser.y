@@ -48,7 +48,7 @@ stmt	: TK_IDENTIFIER ':' type '=' expr
 	| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit
 	| TK_IDENTIFIER '=' expr
 	| TK_IDENTIFIER '[' expr ']' '=' expr
-	| '(' type ')' TK_IDENTIFIER '(' ')'
+	| '(' type ')' TK_IDENTIFIER '(' ')' stmt
 	| KW_IF '('expr')'KW_THEN stmts optelse
 	| KW_WHILE '(' expr ')' stmt
 	| KW_FOR '(' expr ';' expr ';' expr ')'
@@ -82,6 +82,8 @@ expr	: expr '+' expr
 	| expr OPERATOR_GE expr
 	| literal
 	| LIT_STRING
+	| TK_IDENTIFIER
+	| TK_IDENTIFIER '[' expr ']'
 	| '(' expr ')'
 	|
 	;
