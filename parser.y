@@ -37,7 +37,6 @@
 %left '*' '/'
 
 %%
-
 program : stmtlist
 		;
 	
@@ -47,9 +46,12 @@ stmtlist	: TK_IDENTIFIER ':' type '=' literal ';' stmtlist
 			|
 			;
 
-cmdlist	: cmd ';' cmdlist
-		| cmd
-		;
+cmdlist	: cmd optcmd
+	;
+
+optcmd 	: ';' cmd optcmd
+	| 
+	;
 
 cmd	: TK_IDENTIFIER '=' expr
 	| TK_IDENTIFIER '[' expr ']' '=' expr
@@ -60,7 +62,7 @@ cmd	: TK_IDENTIFIER '=' expr
 	| KW_RETURN expr
 	| KW_PRINT arglist
 	| TK_IDENTIFIER '(' arglist ')'
-	| '{'cmdlist'}'
+	| block
 	|
 	;
 
@@ -124,3 +126,5 @@ arglist	: expr optarglist
  		| 
 		;
 %%
+
+
