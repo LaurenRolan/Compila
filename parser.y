@@ -108,16 +108,19 @@ optelse	: KW_ELSE cmdlist
 		| 
 		;
 	
-paramlist	: param ',' paramlist
-			| param
-			|
-			;
-
+paramlist: 	param optparam
+		|
+		;
+optparam: ',' param optparam
+	| 
+	;
 param	: TK_IDENTIFIER ':' type
 		;
 
-arglist	: expr ',' arglist
-		| expr
+arglist	: expr optarglist
+		| 
 		;
-
+ optarglist:	',' expr optarglist
+ 		| 
+		;
 %%
