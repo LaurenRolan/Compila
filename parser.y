@@ -37,21 +37,25 @@
 %left '*' '/'
 
 %%
+
 program : stmtlist
 		;
 	
-stmtlist	: TK_IDENTIFIER ':' type '=' literal ';' stmtlist
-			| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit ';' stmtlist
-			| '(' type ')' TK_IDENTIFIER '(' paramlist ')' block stmtlist
+stmtlist	: stmt stmtlist
 			|
 			;
 
+stmt	: TK_IDENTIFIER ':' type '=' literal ';'
+		| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit ';'
+		| '(' type ')' TK_IDENTIFIER '(' paramlist ')' block
+		;
+
 cmdlist	: cmd optcmd
-	;
+		;
 
 optcmd 	: ';' cmd optcmd
-	| 
-	;
+		| 
+		;
 
 cmd	: TK_IDENTIFIER '=' expr
 	| TK_IDENTIFIER '[' expr ']' '=' expr
@@ -61,7 +65,6 @@ cmd	: TK_IDENTIFIER '=' expr
 	| KW_READ '>' TK_IDENTIFIER
 	| KW_RETURN expr
 	| KW_PRINT arglist
-	| TK_IDENTIFIER '(' arglist ')'
 	| block
 	|
 	;
@@ -111,20 +114,23 @@ optelse	: KW_ELSE cmdlist
 		;
 	
 paramlist: 	param optparam
-		|
-		;
-optparam: ',' param optparam
-	| 
-	;
+			|
+			;
+		
+optparam	: ',' param optparam
+			| 
+			;
+			
 param	: TK_IDENTIFIER ':' type
 		;
 
 arglist	: expr optarglist
 		| 
 		;
- optarglist:	',' expr optarglist
- 		| 
-		;
+		
+optarglist	:	',' expr optarglist
+ 			| 
+			;
 %%
 
 
