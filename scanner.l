@@ -55,7 +55,7 @@
 
 
 [a-zA-Z_]([a-zA-Z_ 0-9]*[a-zA-Z0-9_])?	{	
-									yylval.symbol = hashInsert(TK_IDENTIFIER, yytext); printf("%s\n", yylval.symbol->text);
+									yylval.symbol = hashInsert(TK_IDENTIFIER, yytext);
 									return TK_IDENTIFIER;
 									}
 [0-9]+								{

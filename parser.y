@@ -29,19 +29,17 @@
 %token OPERATOR_NE
 %token OPERATOR_AND
 %token OPERATOR_OR
-%token TK_IDENTIFIER
-%token LIT_INTEGER
-%token LIT_REAL
-%token LIT_CHAR
-%token LIT_STRING
+%token <symbol> TK_IDENTIFIER
+%token <symbol> LIT_INTEGER
+%token <symbol> LIT_REAL
+%token <symbol> LIT_CHAR
+%token <symbol> LIT_STRING
 %token TOKEN_ERROR
 
 %left '!' OPERATOR_AND OPERATOR_OR
 %left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE '>' '<'
 %left '+' '-'
 %left '*' '/'
-
-%token <symbol> TK_IDENTIFIER
 
 %%
 
@@ -85,12 +83,12 @@ type	: KW_BYTE
 		| KW_DOUBLE
 		;
 
-literal : LIT_INTEGER
-		| LIT_REAL
-		| LIT_CHAR
+literal : LIT_INTEGER			{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
+		| LIT_REAL		{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
+		| LIT_CHAR		{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
 		;
 
-expr	: TK_IDENTIFIER			{fprintf(stderr, "Imprimindo: %s\n"); $1->text;}
+expr	: TK_IDENTIFIER			{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
 		| expr '+' expr
 		| expr '-' expr
 		| expr '*' expr
