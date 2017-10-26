@@ -55,23 +55,23 @@
 
 
 [a-zA-Z_]([a-zA-Z_ 0-9]*[a-zA-Z0-9_])?	{	
-									hashInsert(TK_IDENTIFIER, yytext);
+									yylval.symbol = hashInsert(TK_IDENTIFIER, yytext); printf("%s\n", yylval.symbol->text);
 									return TK_IDENTIFIER;
 									}
 [0-9]+								{
-									hashInsert(LIT_INTEGER, yytext);
+									yylval.symbol = hashInsert(LIT_INTEGER, yytext);
 									return LIT_INTEGER;
 									}
 ([0-9]*\.[0-9]+)					{
-									hashInsert(LIT_REAL, yytext);
+									yylval.symbol = hashInsert(LIT_REAL, yytext);
 									return LIT_REAL;
 									}
 (')[^']?(')							{
-									hashInsert(LIT_CHAR, yytext);
+									yylval.symbol = hashInsert(LIT_CHAR, yytext);
 									return LIT_CHAR;
 									}
 (\")([^\"]*|[.(\\\")]*)(\")			{
-									hashInsert(LIT_STRING, yytext);
+									yylval.symbol = hashInsert(LIT_STRING, yytext);
 									return LIT_STRING;
 									}
 
@@ -107,8 +107,9 @@ int isRunning()
 int yyerror(char *msg)
 {
 	printf("%s at line %d\n", msg, getLineNumber());
-	//Tirar depois
+	/* //Para fins de debug, descomentar esta linha.
 	printf("Printing hash table:");
 	hashPrint();
+	*/ 
 	exit(3);
 }

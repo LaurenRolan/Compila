@@ -1,10 +1,15 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
+	#include "hash.h"
 	int yyparse();
 	int yylex();
 	int yyerror(char *msg);
 %}
+%union {
+	HASH_NODE *symbol;
+}
+
 %token KW_BYTE
 %token KW_SHORT
 %token KW_LONG
@@ -36,6 +41,8 @@
 %left '+' '-'
 %left '*' '/'
 
+%token <symbol> TK_IDENTIFIER
+
 %%
 
 program : stmtlist
@@ -44,8 +51,7 @@ program : stmtlist
 stmtlist	: stmt stmtlist
 			|
 			;
-
-stmt	: TK_IDENTIFIER ':' type '=' literal ';'
+stmt	: TK_IDENTIFIER ':' type '=' literal ';'			
 		| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit ';'
 		| '(' type ')' TK_IDENTIFIER '(' paramlist ')' block
 		;
@@ -84,7 +90,8 @@ literal : LIT_INTEGER
 		| LIT_CHAR
 		;
 
-expr	: expr '+' expr
+expr	: TK_IDENTIFIER			{fprintf(stderr, "Imprimindo: %s\n"); $1->text;}
+		| expr '+' expr
 		| expr '-' expr
 		| expr '*' expr
 		| expr '/' expr
@@ -97,8 +104,6 @@ expr	: expr '+' expr
 		| expr OPERATOR_LE expr
 		| expr OPERATOR_GE expr
 		| literal
-		| LIT_STRING
-		| TK_IDENTIFIER
 		| TK_IDENTIFIER '[' expr ']'
 		| '(' expr ')'
 		| TK_IDENTIFIER '(' arglist ')'

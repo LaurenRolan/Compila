@@ -12,12 +12,26 @@ AST *astCreate(int type, HASH_NODE symbol, AST* son0, AST* son1, AST* son2, AST*
   retun newnode;
 }
 
-void astPrint(AST *node){
+void nodePrint(AST *node){
   if(node){
     fprintf(stderr, "AST( ");
     switch(node->type){
+      1: fprintf(stderr, "INT = %s\n", node->symbol->text);
+	break;
       default: fprintf(stderr, "NOPE");
         break;
+    }
+    fprintf(stderr, ")\n");
+  }
+}
+
+void treePrint(AST *root, int *i){
+  int j;
+  if(root){
+    fprintf(stderr, "Node %d : ", *i);
+    fprintf(stderr, "Type: %d\tSymbol: %s\n", root->type, root->symbol->text);
+    for(j = 0; root->son[j] && j < 4; j++){
+      treePrint(son[j], *i++);
     }
   }
 }
