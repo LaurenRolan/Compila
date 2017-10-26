@@ -3,6 +3,7 @@
 	// e Nicolas Eymael da Silva
 	#include "hash.h"
 	#include "y.tab.h"
+	#include "astree.h"
 	#include <stdio.h>
 	
 	int lineNumber = 1;

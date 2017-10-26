@@ -2,11 +2,14 @@
 	#include <stdlib.h>
 	#include <stdio.h>
 	#include "hash.h"
+	#include "astree.h"
+
 	int yyparse();
 	int yylex();
 	int yyerror(char *msg);
 %}
 %union {
+	AST *ast;
 	HASH_NODE *symbol;
 }
 
@@ -40,6 +43,8 @@
 %left OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE '>' '<'
 %left '+' '-'
 %left '*' '/'
+
+%type <ast> expr
 
 %%
 
@@ -83,29 +88,29 @@ type	: KW_BYTE
 		| KW_DOUBLE
 		;
 
-literal : LIT_INTEGER			{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
-		| LIT_REAL		{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
-		| LIT_CHAR		{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
+literal : LIT_INTEGER			{astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
+		| LIT_REAL		{astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
+		| LIT_CHAR		{astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
 		;
 
-expr	: TK_IDENTIFIER			{fprintf(stderr, "Imprimindo: %s\n", $1->text);}
-		| expr '+' expr
-		| expr '-' expr
-		| expr '*' expr
-		| expr '/' expr
-		| expr '<' expr
-		| expr '>' expr
-		| expr OPERATOR_AND expr
-		| expr OPERATOR_OR expr
-		| expr OPERATOR_NE expr
-		| expr OPERATOR_EQ expr
-		| expr OPERATOR_LE expr
-		| expr OPERATOR_GE expr
-		| literal
-		| TK_IDENTIFIER '[' expr ']'
-		| '(' expr ')'
-		| TK_IDENTIFIER '(' arglist ')'
-		| '!' expr
+expr	: TK_IDENTIFIER				{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
+		| expr '+' expr			{$$ = astCreate(AST_ADD, 0, $1, $3, 0, 0);}
+		| expr '-' expr			{$$ = astCreate(AST_SUB, 0, $1, $3, 0, 0);}
+		| expr '*' expr			{$$ = astCreate(AST_MUL, 0, $1, $3, 0, 0);}
+		| expr '/' expr			{$$ = astCreate(AST_DIV, 0, $1, $3, 0, 0);}
+		| expr '<' expr			{$$ = astCreate(AST_LES, 0, $1, $3, 0, 0);}
+		| expr '>' expr			{$$ = astCreate(AST_GRE, 0, $1, $3, 0, 0);}
+		| expr OPERATOR_AND expr	{$$ = astCreate(AST_AND, 0, $1, $3, 0, 0);}
+		| expr OPERATOR_OR expr		{$$ = astCreate(AST_OR, 0, $1, $3, 0, 0);}
+		| expr OPERATOR_NE expr		{$$ = astCreate(AST_NE, 0, $1, $3, 0, 0);}
+		| expr OPERATOR_EQ expr 	{$$ = astCreate(AST_EQ, 0, $1, $3, 0, 0);}
+		| expr OPERATOR_LE expr 	{$$ = astCreate(AST_LE, 0, $1, $3, 0, 0);}
+		| expr OPERATOR_GE expr 	{$$ = astCreate(AST_GE, 0, $1, $3, 0, 0);}
+		| literal			{$$ = 0;}
+		| TK_IDENTIFIER '[' expr ']'	{$$ = astCreate(AST_VEC, $1, $3, 0, 0, 0);}
+		| '(' expr ')'			{$$ = astCreate(AST_PAR, 0, $2, 0, 0, 0);}
+		| TK_IDENTIFIER '(' arglist ')'	{$$ = astCreate(AST_FUN, $1, 0, 0, 0, 0);/*mudar para arglist*/}
+		| '!' expr			{$$ = astCreate(AST_NOT, 0, $2, 0, 0, 0);}
 		;
 
 optinit	: literal optinit

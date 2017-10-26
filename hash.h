@@ -1,5 +1,8 @@
 //Feito por Lauren Silva Rolan Sampaio
 // e Nicolas Eymael da Silva
+#ifndef HASH_HEADER
+#define HASH_HEADER
+
 #define HASH_SIZE 256
 
 typedef struct node {
@@ -13,3 +16,5 @@ int hashAddress(char *text);
 HASH_NODE *hashInsert(int type, char *text);
 void hashPrint(void);
 HASH_NODE * hashFind(char *text);
+
+#endif

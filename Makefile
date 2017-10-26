@@ -1,9 +1,11 @@
-etapa2: y.tab.o lex.yy.o hash.o
-	gcc -Wall -o etapa2 y.tab.o lex.yy.o hash.o
+etapa2: y.tab.o lex.yy.o hash.o astree.o
+	gcc -Wall -o etapa2 y.tab.o lex.yy.o hash.o astree.o
 y.tab.o: y.tab.c
 	gcc -c y.tab.c
 hash.o: hash.c
 	gcc -Wall -c hash.c
+astree.o: astree.c
+	gcc -Wall -c astree.c
 lex.yy.o: lex.yy.c
 	gcc -Wall -c lex.yy.c
 lex.yy.c: scanner.l

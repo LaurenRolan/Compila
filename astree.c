@@ -1,6 +1,6 @@
 #include "astree.h"
 
-AST *astCreate(int type, HASH_NODE symbol, AST* son0, AST* son1, AST* son2, AST* son3){
+AST *astCreate(int type, HASH_NODE * symbol, AST* son0, AST* son1, AST* son2, AST* son3){
   AST *newnode;
   newnode = (AST*) calloc(1, sizeof(AST));
   newnode->type = type;
@@ -36,6 +36,9 @@ void nodePrint(AST *node){
 	AST_ASS: fprintf(stderr, "ASS"); break;
 	AST_CMDL: fprintf(stderr, "CMDL"); break;
 	AST_BCK: fprintf(stderr, "BLOCK"); break;
+	AST_VEC: fprintf(stderr, "VECTOR"); break;
+	AST_FUN: fprintf(stderr, "FUNCTION"); break;
+	AST_PAR: fprintf(stderr, "PARENTESIS"); break;
       default: fprintf(stderr, "NOPE");
         break;
     }
@@ -68,6 +71,9 @@ void treePrint(AST *root, int level){
 	AST_ASS: fprintf(stderr, "ASS\n"); break;
 	AST_CMDL: fprintf(stderr, "CMDL\n"); break;
 	AST_BCK: fprintf(stderr, "BLOCK\n"); break;
+	AST_VEC: fprintf(stderr, "VECTOR"); break;
+	AST_FUN: fprintf(stderr, "FUNCTION"); break;
+	AST_PAR: fprintf(stderr, "PARENTESIS"); break;
       default: fprintf(stderr, "NOPE\n");
         break;
     for(i = 0; root->son[i] && i < 4; i++){
