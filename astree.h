@@ -31,6 +31,13 @@
 #define AST_FUN 25
 #define AST_PAR 26
 #define AST_DEC 27
+#define AST_LIST 28
+#define AST_PARAM 29
+#define AST_BYTE 30
+#define AST_SHORT 31
+#define AST_LONG 32
+#define AST_FLOAT 33
+#define AST_DOUBLE 34
 
 typedef struct ast_node {
   int type;

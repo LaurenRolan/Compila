@@ -43,6 +43,14 @@ void nodePrint(AST *node){
 	case AST_FUN: fprintf(stderr, "FUNCTION"); break;
 	case AST_PAR: fprintf(stderr, "PARENTESIS"); break;
 	case AST_DEC: fprintf(stderr, "DECLARATION"); break;
+	case AST_LIST: fprintf(stderr, "LIST"); break;
+	case AST_PARAM: fprintf(stderr, "PARAMETER"); break;
+	case AST_BYTE: fprintf(stderr, "BYTE"); break;
+	case AST_SHORT: fprintf(stderr, "SHORT"); break;
+	case AST_LONG: fprintf(stderr, "LONG"); break;
+	case AST_FLOAT: fprintf(stderr, "FLOAT"); break;
+	case AST_DOUBLE: fprintf(stderr, "DOUBLE"); break;
+
       default: fprintf(stderr, "NOPE");
         break;
     }
@@ -56,7 +64,7 @@ void treePrint(AST *root, int level){
     for(j = 0; j < level; j++) fprintf(stderr, "|");
     nodePrint(root);
     for(i = 0; root->son[i] && i < 4; i++){
-      treePrint(root->son[i], level++);
+      treePrint(root->son[i], level+1);
     }
   }
 }

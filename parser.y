@@ -48,47 +48,62 @@
 %type <ast> cmdlist
 %type <ast> literal
 %type <ast> cmd
+%type <ast> type
+%type <ast> optinit
+%type <ast> optelse
+%type <ast> printlist
+%type <ast> printparam
+%type <ast> optprint
+%type <ast> paramlist
+%type <ast> optparam
+%type <ast> param
+%type <ast> arglist
+%type <ast> optarglist
+%type <ast> block
+%type <ast> stmtlist
+%type <ast> stmt
+%type <ast> optcmd
 
 %%
 
-program : stmtlist
+program : stmtlist				{treePrint($1, 0);}
 	;
 	
-stmtlist: stmt stmtlist
-	|
+stmtlist: stmt stmtlist				{$$ = astCreate(AST_CMDL, 0, $1, $2, 0, 0); /*Alterar para stmt list*/}
+	|					{$$ = 0;}		
 	;
-stmt	: TK_IDENTIFIER ':' type '=' literal ';'
-	| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit ';'
-	| '(' type ')' TK_IDENTIFIER '(' paramlist ')' block
-	;
-
-cmdlist	: cmd optcmd				{$$ = astCreate(AST_CMDL, 0, $1, 0, 0, 0);}
+stmt	: TK_IDENTIFIER ':' type '=' literal ';'			{$$ = astCreate(AST_DEC, $1, $3, $5, 0, 0);}
+	| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit ';'	{$$ = astCreate(AST_DEC, $1, $3, astCreate(AST_SYMBOL, $5, 0, 0, 0, 0), $7, 0);}
+	| '(' type ')' TK_IDENTIFIER '(' paramlist ')' block		{$$ = astCreate(AST_DEC, $4, $2, $6, $8, 0);}
 	;
 
-optcmd 	: ';' cmd optcmd
-	| 
+cmdlist	: cmd optcmd				{$$ = astCreate(AST_CMDL, 0, $1, $2, 0, 0);}
 	;
 
-cmd	: TK_IDENTIFIER '=' expr		{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0); nodePrint($$);}
+optcmd 	: ';' cmd optcmd			{$$ = astCreate(AST_CMDL, 0, $2, $3, 0, 0);}
+	| 					{$$ = 0;}
+	;
+
+cmd	: TK_IDENTIFIER '=' expr		{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0);}
 	| TK_IDENTIFIER '[' expr ']' '=' expr	{$$ = astCreate(AST_ASS, $1, $3, $6, 0, 0);}
-	| KW_IF '('expr')' KW_THEN cmd optelse  {$$ = astCreate(AST_IF, 0, $3, $6, 0, 0);/*Alterar para optelse*/}
+	| KW_IF '('expr')' KW_THEN cmd optelse  {$$ = astCreate(AST_IF, 0, $3, $6, $7, 0);}
 	| KW_WHILE '(' expr ')' cmd		{$$ = astCreate(AST_ASS, 0, $3, $5, 0, 0);}
 	| KW_FOR '(' expr ';' expr ';' expr ')' cmd {$$ = astCreate(AST_ASS, 0, $3, $5, $7, $9);}
-	| KW_READ '>' TK_IDENTIFIER		{$$ = astCreate(AST_READ, $3, 0, 0, 0, 0); nodePrint($$);}
+	| KW_READ '>' TK_IDENTIFIER		{$$ = astCreate(AST_READ, $3, 0, 0, 0, 0);}
 	| KW_RETURN expr			{$$ = astCreate(AST_RETURN, 0, $2, 0, 0, 0);}
-	| KW_PRINT printlist			{$$=0;}
-	| block					{$$=0;}
-	|					{$$=0;}
+	| KW_PRINT printlist			{$$ = 0;}
+	| block					{$$ = $1;}
+	|					{$$ = 0;}
 	;
 
-block	: '{'cmdlist'}'				{treePrint($2, 0);}
+block	: '{'cmdlist'}'				{$$ = $2; treePrint($2, 0);}
 	;
 
-type	: KW_BYTE
-	| KW_SHORT
-	| KW_LONG
-	| KW_FLOAT
-	| KW_DOUBLE
+type	: KW_BYTE		{$$ = astCreate(AST_BYTE, $1, 0, 0, 0, 0);}
+	| KW_SHORT		{$$ = astCreate(AST_SHORT, $1, 0, 0, 0, 0);}
+	| KW_LONG		{$$ = astCreate(AST_LONG, $1, 0, 0, 0, 0);}
+	| KW_FLOAT		{$$ = astCreate(AST_FLOAT, $1, 0, 0, 0, 0);}
+	| KW_DOUBLE		{$$ = astCreate(AST_DOUBLE, $1, 0, 0, 0, 0);}
 	;
 
 literal : LIT_INTEGER		{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
@@ -112,45 +127,45 @@ expr	: TK_IDENTIFIER			{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
 	| literal			{$$ = $1;}
 	| TK_IDENTIFIER '[' expr ']'	{$$ = astCreate(AST_VEC, $1, $3, 0, 0, 0);}
 	| '(' expr ')'			{$$ = astCreate(AST_PAR, 0, $2, 0, 0, 0);}
-	| TK_IDENTIFIER '(' arglist ')'	{$$ = astCreate(AST_FUN, $1, 0, 0, 0, 0);/*mudar para arglist*/}
+	| TK_IDENTIFIER '(' arglist ')'	{$$ = astCreate(AST_FUN, $1, $3, 0, 0, 0);}
 	| '!' expr			{$$ = astCreate(AST_NOT, 0, $2, 0, 0, 0);}
 	;
 
-optinit	: literal optinit
-	|
+optinit	: literal optinit		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
+	|				{$$ = 0;}
 	;
 
-optelse	: KW_ELSE cmd
-	| 
+optelse	: KW_ELSE cmd			{$$ = $2;}
+	| 				{$$ = 0;}
 	;
-printlist:	printparam optprint
+printlist:	printparam optprint	{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
 		;
 
-printparam	: LIT_STRING
-		| expr
+printparam	: LIT_STRING		{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
+		| expr			{$$ = $1;}
 		; 
 
-optprint	: ',' printparam optprint
-		|
+optprint	: ',' printparam optprint	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}
+		|				{$$ = 0;}
 		;
 	
-paramlist: 	param optparam
-		|
+paramlist: 	param optparam		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
+		|			{$$ = 0;}
 		;
 		
-optparam	: ',' param optparam
-		| 
+optparam	: ',' param optparam 	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}
+		| 			{$$ = 0;}
 		;
 			
-param	: TK_IDENTIFIER ':' type
+param	: TK_IDENTIFIER ':' type	{$$ = astCreate(AST_PARAM, $1, $3, 0, 0, 0);}
 	;
 
-arglist	: expr optarglist
-	| 
+arglist	: expr optarglist		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
+	| 				{$$ = 0;}
 	;
 		
-optarglist	:	',' expr optarglist
- 		| 
+optarglist	:	',' expr optarglist 	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}
+ 		| 				{$$ = 0;}
 		;
 %%
 
