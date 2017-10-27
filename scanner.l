@@ -2,8 +2,8 @@
 	//Feito por Lauren Silva Rolan Sampaio
 	// e Nicolas Eymael da Silva
 	#include "hash.h"
-	#include "y.tab.h"
 	#include "astree.h"
+	#include "y.tab.h"
 	#include <stdio.h>
 	
 	int lineNumber = 1;

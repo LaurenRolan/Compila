@@ -12,8 +12,8 @@ d: byte=65;
 (long) main()
   {
   a = 10;
-  v[2] = v[10-1];
-
+  v[2] = v[10-1]; //não funciona
+  V[2] = 10; //Funciona
   print " Digite um numero: \n";
   read > i;
   while (i<10)

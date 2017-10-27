@@ -30,6 +30,7 @@
 #define AST_VEC 24
 #define AST_FUN 25
 #define AST_PAR 26
+#define AST_DEC 27
 
 typedef struct ast_node {
   int type;
