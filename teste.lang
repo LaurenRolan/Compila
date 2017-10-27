@@ -1,6 +1,6 @@
 
 
-(byte) main (parametro : long)
+(byte) main (parametroX : long)
 {
 	a = 6;
 	{
@@ -12,4 +12,12 @@
 		d = 3 * 12;
 	};
 	e = 1 / 90;
+}
+
+
+(long) funcao (paramY : short)
+{
+
+nicolas = lauren;
+
 }

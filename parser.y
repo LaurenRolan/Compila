@@ -68,7 +68,7 @@
 
 %%
 
-program : stmtlist					{treePrint($1, 0);}
+program : stmtlist					{treePrint($1,0);}
 	;
 	
 stmtlist: stmt stmtlist				{$$ = astCreate(AST_STMTL, 0, $1, $2, 0, 0);}
@@ -164,7 +164,7 @@ param	: TK_IDENTIFIER ':' type	{$$ = astCreate(AST_PARAM, $1, $3, 0, 0, 0);}
 	;
 
 arglist	: expr optarglist		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
-	| 				{$$ = 0;}
+	| 							{$$ = 0;}
 	;
 		
 optarglist	:	',' expr optarglist 	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}

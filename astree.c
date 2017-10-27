@@ -52,6 +52,7 @@ void nodePrint(AST *node){
 		case AST_LONG: fprintf(stderr, "LONG"); break;
 		case AST_FLOAT: fprintf(stderr, "FLOAT"); break;
 		case AST_DOUBLE: fprintf(stderr, "DOUBLE"); break;
+		case AST_STMTL: fprintf(stderr, "STATEMENT LIST"); break;
 
       default: fprintf(stderr, "NOPE");
         break;
@@ -64,10 +65,10 @@ void treePrint(AST *root, int level){
   int j, i;
   if(root){
     for(j = 0; j < level; j++) 
-	  fprintf(stderr, " - ");
+	  fprintf(stderr, " | ");
     nodePrint(root);
     for(i = 0; root->son[i] && i < 4; i++){
-	  if(root->type == AST_LIST || root->type == AST_CMDL)
+	  if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
       	 treePrint(root->son[i], level);
 	  else
 		 treePrint(root->son[i], level+1);
