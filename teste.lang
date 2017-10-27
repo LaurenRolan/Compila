@@ -1,6 +1,8 @@
-(byte) main ()
+
+
+(byte) main (parametro : long)
 {
-	a = 5;
+	a = 6;
 	{
 		b = 2;
 		{
