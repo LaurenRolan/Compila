@@ -26,5 +26,8 @@ int main(int argc, char **argv){
   printf("\n");
   //hashPrint();
 	
+  fclose(yyin);
+  fclose(fileout);
+	
   return 0;
 }

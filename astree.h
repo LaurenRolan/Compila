@@ -42,6 +42,10 @@
 #define AST_STMTL 35
 #define AST_DECV 36
 #define AST_DECF 37
+#define AST_VECTLIST 38
+#define AST_OPTLIST 39
+#define AST_OPTCMDL 40
+#define AST_ELSE 41
 
 typedef struct ast_node {
   int type;
@@ -55,5 +59,6 @@ void treePrint(AST *root, int level);
 
 void nodeWrite(AST *node, FILE *fileout);
 void treeWrite(AST *root, int level, FILE *fileout);
+void treeToCode(AST *node, FILE *fileout);
 
 #endif

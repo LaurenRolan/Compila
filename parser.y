@@ -70,33 +70,35 @@
 
 %%
 
-program : stmtlist					{treePrint($1,0);
-									    //FILE *fileout;
-										//fileout = fopen("treeOut.txt","w");
-										//fwrite("to testando", 15, 1, fileout);
-										treeWrite($1,0, fileout);
-										fclose(fileout);
-										//fprintf(stderr, "o parametro é: %d\n", *parametro);
+program : stmtlist					{
+										//treePrint($1,0);
+									    //treeWrite($1,0, fileout);
+										treeToCode($1, fileout);
 									}
 	;
 	
 stmtlist: stmt stmtlist				{$$ = astCreate(AST_STMTL, 0, $1, $2, 0, 0);}
 	|								{$$ = 0;}		
 	;
+	
 stmt	: TK_IDENTIFIER ':' type '=' literal ';'				{$$ = astCreate(AST_DEC, $1, $3, $5, 0, 0);}
 	| TK_IDENTIFIER ':' type '[' LIT_INTEGER ']' optinit ';'	{$$ = astCreate(AST_DECV, $1, $3, astCreate(AST_SYMBOL, $5, 0, 0, 0, 0), $7, 0);}
 	| '(' type ')' TK_IDENTIFIER '(' paramlist ')' block		{$$ = astCreate(AST_DECF, $4, $2, $6, $8, 0);}
 	;
 
+optinit	: literal optinit		{$$ = astCreate(AST_VECTLIST, 0, $1, $2, 0, 0);}
+	|							{$$ = 0;}
+	;
+	
 cmdlist	: cmd optcmd				{$$ = astCreate(AST_CMDL, 0, $1, $2, 0, 0);}
 	;
 
-optcmd 	: ';' cmd optcmd			{$$ = astCreate(AST_CMDL, 0, $2, $3, 0, 0);}
+optcmd 	: ';' cmd optcmd			{$$ = astCreate(AST_OPTCMDL, 0, $2, $3, 0, 0);}
 	| 								{$$ = 0;}
 	;
 
 cmd	: TK_IDENTIFIER '=' expr					{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0);}
-	| TK_IDENTIFIER '[' expr ']' '=' expr		{$$ = astCreate(AST_ASS, $1, $3, $6, 0, 0);}
+	| TK_IDENTIFIER '[' expr ']' '=' expr		{$$ = astCreate(AST_ASS, $1, $6, $3, 0, 0);}
 	| KW_IF '('expr')' KW_THEN cmd optelse  	{$$ = astCreate(AST_IF, 0, $3, $6, $7, 0);}
 	| KW_WHILE '(' expr ')' cmd					{$$ = astCreate(AST_WHILE, 0, $3, $5, 0, 0);}
 	| KW_FOR '(' expr ';' expr ';' expr ')' cmd {$$ = astCreate(AST_FOR, 0, $3, $5, $7, $9);}
@@ -142,11 +144,7 @@ expr	: TK_IDENTIFIER				{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
 	| '!' expr						{$$ = astCreate(AST_NOT, 0, $2, 0, 0, 0);}
 	;
 
-optinit	: literal optinit		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
-	|							{$$ = 0;}
-	;
-
-optelse	: KW_ELSE cmd			{$$ = $2;}
+optelse	: KW_ELSE cmd			{$$ = astCreate(AST_ELSE, 0, $2, 0, 0, 0);}
 	| 							{$$ = 0;}
 	;
 	
@@ -157,7 +155,7 @@ printparam	: LIT_STRING		{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
 		| expr					{$$ = $1;}
 		; 
 
-optprint	: ',' printparam optprint	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}
+optprint	: ',' printparam optprint	{$$ = astCreate(AST_OPTLIST, 0, $2, $3, 0, 0);}
 		|								{$$ = 0;}
 		;
 	
@@ -165,7 +163,7 @@ paramlist: 	param optparam		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
 		|						{$$ = 0;}
 		;
 		
-optparam	: ',' param optparam 	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}
+optparam	: ',' param optparam 	{$$ = astCreate(AST_OPTLIST, 0, $2, $3, 0, 0);}
 		| 							{$$ = 0;}
 		;
 			
@@ -176,7 +174,7 @@ arglist	: expr optarglist		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
 	| 							{$$ = 0;}
 	;
 		
-optarglist	:	',' expr optarglist 	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}
+optarglist	:	',' expr optarglist 	{$$ = astCreate(AST_OPTLIST, 0, $2, $3, 0, 0);}
  		| 								{$$ = 0;}
 		;
 %%

@@ -28,7 +28,9 @@ void nodePrint(AST *node){
 		case AST_RETURN: fprintf(stderr, "RETURN"); break;
 		case AST_PRINT: fprintf(stderr, "PRINT"); break;
 		case AST_LE: fprintf(stderr, "LESS-EQUAL"); break;
+		case AST_LES: fprintf(stderr, "LESS"); break;
 		case AST_GE: fprintf(stderr, "GREATER-EQUAL"); break; 
+		case AST_GRE: fprintf(stderr, "GREATER"); break;
 		case AST_EQ: fprintf(stderr, "EQUAL"); break;
 		case AST_NE: fprintf(stderr, "NOT EQUAL"); break;
 		case AST_AND: fprintf(stderr, "AND"); break;
@@ -47,6 +49,7 @@ void nodePrint(AST *node){
 		case AST_DECV: fprintf(stderr, "VECTOR DECLARATION, %s", node->symbol.text); break;
 		case AST_DECF: fprintf(stderr, "FUNCTION DECLARATION, %s", node->symbol.text); break;
 		case AST_LIST: fprintf(stderr, "LIST"); break;
+		case AST_VECTLIST: fprintf(stderr, "VECTOR LIST"); break;
 		case AST_PARAM: fprintf(stderr, "PARAMETER, %s", node->symbol.text); break;
 		case AST_BYTE: fprintf(stderr, "BYTE"); break;
 		case AST_SHORT: fprintf(stderr, "SHORT"); break;
@@ -54,6 +57,10 @@ void nodePrint(AST *node){
 		case AST_FLOAT: fprintf(stderr, "FLOAT"); break;
 		case AST_DOUBLE: fprintf(stderr, "DOUBLE"); break;
 		case AST_STMTL: fprintf(stderr, "STATEMENT LIST"); break;
+		case AST_NOT: fprintf(stderr, "NOT"); break;
+		case AST_OPTCMDL: fprintf(stderr, "OPTCMDL"); break;
+		case AST_OPTLIST: fprintf(stderr, "OPTLIST"); break;
+		case AST_ELSE: fprintf(stderr, "ELSE"); break;
 
       default: fprintf(stderr, "NOPE");
         break;
@@ -85,7 +92,6 @@ void treePrint(AST *root, int level){
 void nodeWrite(AST *node, FILE *fileout){
   if(node){
 	fwrite("Node(", 5, 1, fileout);
-    //fprintf(stderr, "Node(");
     switch(node->type){
 		case AST_SYMBOL: fwrite("SYMBOL, ", 8, 1, fileout); fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout); break;
 		case AST_IF: fwrite("IF THEN ELSE", 12, 1, fileout); break;
@@ -95,6 +101,8 @@ void nodeWrite(AST *node, FILE *fileout){
 		case AST_RETURN: fwrite("RETURN", 6, 1, fileout); break;
 		case AST_PRINT: fwrite("PRINT", 5, 1, fileout); break;
 		case AST_LE: fwrite("LESS-EQUAL", 10, 1, fileout); break;
+		case AST_LES: fwrite("LESS", 4, 1, fileout); break;
+		case AST_GRE: fwrite("GREATER", 7, 1, fileout); break; 
 		case AST_GE: fwrite("GREATER-EQUAL", 13, 1, fileout); break; 
 		case AST_EQ: fwrite("EQUAL", 5, 1, fileout); break;
 		case AST_NE: fwrite("NOT EQUAL", 9, 1, fileout); break;
@@ -114,6 +122,7 @@ void nodeWrite(AST *node, FILE *fileout){
 		case AST_DECV: fwrite("VECTOR DECLARATION, ", 20, 1, fileout); fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout); break;										
 		case AST_DECF: fwrite("FUNCTION DECLARATION, ", 22, 1, fileout); fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout); break;																
 		case AST_LIST: fwrite("LIST", 4, 1, fileout); break;
+		case AST_VECTLIST: fwrite("VECTOR LIST", 11, 1, fileout); break;
 		case AST_PARAM: fwrite("PARAMETER, ", 11, 1, fileout); fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout); break;
 		case AST_BYTE: fwrite("BYTE", 4, 1, fileout); break;
 		case AST_SHORT: fwrite("SHORT", 5, 1, fileout); break;
@@ -121,14 +130,15 @@ void nodeWrite(AST *node, FILE *fileout){
 		case AST_FLOAT: fwrite("FLOAT", 5, 1, fileout); break;
 		case AST_DOUBLE: fwrite("DOUBLE", 6, 1, fileout); break;
 		case AST_STMTL: fwrite("STATEMENT LIST", 14, 1, fileout); break;
+		case AST_NOT: fwrite("NOT", 3, 1, fileout); break;
+		case AST_OPTCMDL: fwrite("OPTCMDL", 7, 1, fileout); break;
+		case AST_OPTLIST: fwrite("OPTLIST", 7, 1, fileout); break;
+		case AST_ELSE: fwrite("ELSE", 4, 1, fileout); break;
 
       default: fwrite("NOPE", 4, 1, fileout);
         break;
     }
-	//fwrite(stringao, sizeof(stringao), 1, fileout);
-	fwrite(")\n", 2, 1, fileout);
-   // fprintf(stderr, ")\n");
-																   
+	fwrite(")\n", 2, 1, fileout);																   
 																   
   }
 }
@@ -141,12 +151,211 @@ void treeWrite(AST *root, int level, FILE *fileout){
     nodeWrite(root, fileout);
     while(i < 4){
 	 if(root->son[i]) {
-		 if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
-      			treeWrite(root->son[i], level, fileout);
-	 	else
+		// if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
+      	//		treeWrite(root->son[i], level, fileout);
+	 	//else
 			treeWrite(root->son[i], level+1, fileout);
 	}
 	i++;
     }
   }
 }
+
+//---------------------------------------------------------------------------------------
+
+void treeToCode(AST *node, FILE *fileout){
+	switch(node->type){
+		case AST_STMTL: treeToCode(node->son[0], fileout);
+						if(node->son[1] !=NULL)
+							treeToCode(node->son[1], fileout);
+						break;
+		case AST_DEC: 	fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+					 	fwrite(" : ", 3, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite(" = ", 3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						fwrite(";\n", 2, 1, fileout);
+						break;
+		case AST_DECV: 	fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						fwrite(" : ", 3, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite(" [", 2, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						fwrite("] ", 2, 1, fileout);
+						if(node->son[2] != NULL)
+							treeToCode(node->son[2], fileout);
+						fwrite(";\n", 2, 1, fileout);
+						break;
+		case AST_VECTLIST:	treeToCode(node->son[0], fileout);
+							if(node->son[1] !=NULL){
+								fwrite(" ", 1, 1, fileout);
+								treeToCode(node->son[1], fileout);
+							}	
+							break;
+		case AST_DECF:	fwrite("(", 1, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite(") ", 2, 1, fileout);
+						fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						fwrite(" (", 2, 1, fileout);
+						if(node->son[1] != NULL)
+							treeToCode(node->son[1], fileout);
+						fwrite(") {\n", 4, 1, fileout);
+						treeToCode(node->son[2], fileout);
+						fwrite("\n}\n\n", 4, 1, fileout);
+						break;
+		case AST_SYMBOL:fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						break;
+		case AST_BYTE: 	fwrite("byte", 4, 1, fileout);
+						break;
+		case AST_SHORT: fwrite("short", 5, 1, fileout);
+						break;
+		case AST_LONG: 	fwrite("long", 4, 1, fileout);
+						break;
+		case AST_FLOAT: fwrite("float", 5, 1, fileout);
+						break;
+		case AST_DOUBLE:	fwrite("double", 6, 1, fileout);
+							break;
+		case AST_LIST:	treeToCode(node->son[0], fileout);
+						if(node->son[1] !=NULL)
+							treeToCode(node->son[1], fileout);
+						break;
+		case AST_OPTLIST:	fwrite(", ", 2, 1, fileout);
+							treeToCode(node->son[0], fileout);
+							if(node->son[1] !=NULL)
+								treeToCode(node->son[1], fileout);
+							break;
+		case AST_CMDL:	if(node->son[0] !=NULL)
+							treeToCode(node->son[0], fileout);
+						if(node->son[1] !=NULL)
+							treeToCode(node->son[1], fileout);
+						break;
+		case AST_OPTCMDL:	fwrite(";\n", 2, 1, fileout);
+							if(node->son[0] !=NULL)
+								treeToCode(node->son[0], fileout);
+							if(node->son[1] != NULL)
+								treeToCode(node->son[1], fileout);
+							break;
+		case AST_BLOCK: fwrite("{\n", 2, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite("\n}", 2, 1, fileout);
+						break;
+		case AST_ASS:	fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						if(node->son[1] != NULL){
+							fwrite("[", 1, 1, fileout);
+							treeToCode(node->son[1], fileout);
+							fwrite("]", 1, 1, fileout);
+						}
+						fwrite(" = ", 3, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						break;			
+		case AST_IF:	fwrite("if (", 4, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite(") then\n", 7, 1, fileout);
+						if(node->son[1] != NULL)
+							treeToCode(node->son[1], fileout);
+						if(node->son[2] != NULL)
+							treeToCode(node->son[2], fileout);
+						break;
+		case AST_ELSE:	 	fwrite("else ", 5, 1, fileout);
+							if(node->son[0] != NULL)
+								treeToCode(node->son[0], fileout);
+							break;
+		case AST_FOR:	fwrite("for(", 4, 1, fileout); 
+						treeToCode(node->son[0], fileout);
+						fwrite(" ; ", 3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						fwrite(" ; ", 3, 1, fileout);
+						treeToCode(node->son[2], fileout);
+						fwrite(") ", 2, 1, fileout);
+						treeToCode(node->son[3], fileout);
+						break;	
+		case AST_WHILE: fwrite("while(", 6, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite(") ", 2, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_READ: 	fwrite("read > ", 7, 1, fileout);
+						fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						break;
+		case AST_RETURN:	fwrite("return ", 7, 1, fileout);
+							treeToCode(node->son[0], fileout);
+							break;
+		case AST_PRINT: 	fwrite("print ", 6, 1, fileout);
+							treeToCode(node->son[0], fileout);
+							break;
+		case AST_ADD:	treeToCode(node->son[0], fileout);
+						fwrite(" + ",3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_SUB:	treeToCode(node->son[0], fileout);
+						fwrite(" - ",3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_MUL:	treeToCode(node->son[0], fileout);
+						fwrite(" * ",3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_DIV: 	treeToCode(node->son[0], fileout);
+						fwrite(" / ",3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_LES:	treeToCode(node->son[0], fileout);
+						fwrite(" < ",3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_GRE: 	treeToCode(node->son[0], fileout);
+						fwrite(" > ",3, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_AND:	treeToCode(node->son[0], fileout);
+						fwrite(" && ",4, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_OR: 	treeToCode(node->son[0], fileout);
+						fwrite(" || ",4, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_NE: 	treeToCode(node->son[0], fileout);
+						fwrite(" != ",4, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_EQ:	treeToCode(node->son[0], fileout);
+						fwrite(" == ",4, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_LE:	treeToCode(node->son[0], fileout);
+						fwrite(" <= ",4, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_GE:	treeToCode(node->son[0], fileout);
+						fwrite(" >= ",4, 1, fileout);
+						treeToCode(node->son[1], fileout);
+						break;
+		case AST_VECT:	fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						fwrite("[", 1, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite("]",1,1,fileout);
+						break;
+		case AST_PAR: 	fwrite("(", 1, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite(")",1,1,fileout);
+						break;	
+		case AST_FUNC:	fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						fwrite("(", 1, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						fwrite(")",1,1,fileout);
+						break;
+		case AST_NOT:	fwrite("!", 1, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						break;									
+		case AST_PARAM: fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
+						fwrite(" : ", 3, 1, fileout);
+						treeToCode(node->son[0], fileout);
+						break;
+							   
+      	default: fwrite("NOPE", 4, 1, fileout);
+        break;
+    }
+	
+}
+	

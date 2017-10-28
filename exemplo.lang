@@ -24,7 +24,7 @@ d: byte=65;
   print "Incrementado algumas vezes fica ",a,"\n";
   if (a==5) then 
     print "Parou no meio\n";
-  if (a==11) then
+  if (a==11) then   //  <<<<<<<< AQUI
     ;
   if (a==11) then {} else
     ;
