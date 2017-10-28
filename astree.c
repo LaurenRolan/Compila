@@ -134,16 +134,19 @@ void nodeWrite(AST *node, FILE *fileout){
 }
 
 void treeWrite(AST *root, int level, FILE *fileout){
-  int j, i;
+  int j, i = 0;
   if(root){
     for(j = 0; j < level; j++) 
-	  fwrite(" | ", 3, 1, fileout);
+	   fwrite(" | ", 3, 1, fileout);
     nodeWrite(root, fileout);
-    for(i = 0; root->son[i] && i < 4; i++){
-	  if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
-      	 treeWrite(root->son[i], level, fileout);
-	  else
-		 treeWrite(root->son[i], level+1, fileout);
+    while(i < 4){
+	 if(root->son[i]) {
+		 if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
+      			treeWrite(root->son[i], level, fileout);
+	 	else
+			treeWrite(root->son[i], level+1, fileout);
+	}
+	i++;
     }
   }
 }

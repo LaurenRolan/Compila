@@ -4,15 +4,17 @@
 	#include "hash.h"
 	#include "astree.h"
 
-	int yyparse();
+	int yyparse(FILE *fileout);
 	int yylex();
-	int yyerror(char *msg);
+	int yyerror(FILE *fileout, char *msg);
 %}
 
 %union {
 	AST *ast;
 	HASH_NODE *symbol;
 }
+
+%parse-param {FILE *fileout}
 
 %token <symbol> KW_BYTE
 %token <symbol> KW_SHORT
@@ -69,11 +71,12 @@
 %%
 
 program : stmtlist					{treePrint($1,0);
-									    FILE *fileout;
-										fileout = fopen("treeOut.txt","w");
+									    //FILE *fileout;
+										//fileout = fopen("treeOut.txt","w");
 										//fwrite("to testando", 15, 1, fileout);
 										treeWrite($1,0, fileout);
 										fclose(fileout);
+										//fprintf(stderr, "o parametro é: %d\n", *parametro);
 									}
 	;
 	

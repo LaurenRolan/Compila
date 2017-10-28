@@ -9,7 +9,7 @@
 	int lineNumber = 1;
 	int running = 1;
 
-	extern int yyparser();	
+	//extern int yyparser();	
 	void initMe(void);
 	int isRunning(void);
 	int getLineNumber(void);
@@ -105,7 +105,7 @@ int isRunning()
 	return running;
 }
 
-int yyerror(char *msg)
+int yyerror(FILE *fileout, char *msg)
 {
 	printf("%s at line %d\n", msg, getLineNumber());
 	/* //Para fins de debug, descomentar esta linha.

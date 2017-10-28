@@ -4,18 +4,21 @@
 #include <stdlib.h>
 #include "astree.h"
 
-extern int yyparse(void);
+extern int yyparse(FILE *fileout);
 
 int main(int argc, char **argv){
-  if(argc < 2) {
-    fprintf(stderr, "Missing file name.\n Call ./a.out file_name.\n");
+	
+  FILE *fileout;
+	
+  if(argc < 3) {
+    fprintf(stderr, "Missing file name.\n Call ./a.out file_INPUT file_OUTPUT.\n");
     exit(1);
   }
   
 
-  if ((yyin = fopen(argv[1], "r")))
+  if ((yyin = fopen(argv[1], "r")) && (fileout = fopen(argv[2], "w")))
   {
-	yyparse();
+	yyparse(fileout);
   }
   
   else fprintf(stderr,"nao deu");
