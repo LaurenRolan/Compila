@@ -2,6 +2,7 @@
 # define ASTREE_HEADER
 
 #include "hash.h"
+#include <stdio.h>
 
 #define MAX_SONS 4
 #define AST_SYMBOL 1
@@ -51,5 +52,8 @@ typedef struct ast_node {
 AST *astCreate(int type, HASH_NODE * symbol, AST* son0, AST* son1, AST* son2, AST* son3);
 void nodePrint(AST *node);
 void treePrint(AST *root, int level);
+
+void nodeWrite(AST *node, FILE *fileout);
+void treeWrite(AST *root, int level, FILE *fileout);
 
 #endif

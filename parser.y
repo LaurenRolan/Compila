@@ -68,7 +68,13 @@
 
 %%
 
-program : stmtlist					{treePrint($1,0);}
+program : stmtlist					{treePrint($1,0);
+									    FILE *fileout;
+										fileout = fopen("treeOut.txt","w");
+										//fwrite("to testando", 15, 1, fileout);
+										treeWrite($1,0, fileout);
+										fclose(fileout);
+									}
 	;
 	
 stmtlist: stmt stmtlist				{$$ = astCreate(AST_STMTL, 0, $1, $2, 0, 0);}
@@ -98,7 +104,7 @@ cmd	: TK_IDENTIFIER '=' expr					{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0);}
 	|											{$$ = 0;}
 	;
 
-block	: '{'cmdlist'}'				{$$ = $2; treePrint($2, 0);fprintf(stderr, "\n\n");}
+block	: '{'cmdlist'}'				{$$ = $2;}
 	;
 
 type	: KW_BYTE		{$$ = astCreate(AST_BYTE, 0, 0, 0, 0, 0);}
@@ -168,7 +174,7 @@ arglist	: expr optarglist		{$$ = astCreate(AST_LIST, 0, $1, $2, 0, 0);}
 	;
 		
 optarglist	:	',' expr optarglist 	{$$ = astCreate(AST_LIST, 0, $2, $3, 0, 0);}
- 		| 				{$$ = 0;}
+ 		| 								{$$ = 0;}
 		;
 %%
 

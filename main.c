@@ -21,7 +21,7 @@ int main(int argc, char **argv){
   else fprintf(stderr,"nao deu");
   
   printf("\n");
-  hashPrint();
+  //hashPrint();
 	
   return 0;
 }
