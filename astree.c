@@ -22,7 +22,6 @@ void nodePrint(AST *node){
     switch(node->type){
 		case AST_SYMBOL: fprintf(stderr, "SYMBOL, %s", node->symbol.text); break;
 		case AST_IF: fprintf(stderr, "IF THEN ELSE"); break;
-		case AST_FOR: fprintf(stderr, "FOR"); break;
 		case AST_WHILE: fprintf(stderr, "WHILE"); break;
 		case AST_READ: fprintf(stderr, "READ"); break;
 		case AST_RETURN: fprintf(stderr, "RETURN"); break;
@@ -95,7 +94,6 @@ void nodeWrite(AST *node, FILE *fileout){
     switch(node->type){
 		case AST_SYMBOL: fwrite("SYMBOL, ", 8, 1, fileout); fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout); break;
 		case AST_IF: fwrite("IF THEN ELSE", 12, 1, fileout); break;
-		case AST_FOR: fwrite("FOR", 3, 1, fileout); break;
 		case AST_WHILE: fwrite("WHILE", 5, 1, fileout); break;
 		case AST_READ: fwrite("READ", 4, 1, fileout); break;
 		case AST_RETURN: fwrite("RETURN", 6, 1, fileout); break;
@@ -260,19 +258,10 @@ void treeToCode(AST *node, FILE *fileout){
 							if(node->son[0] != NULL)
 								treeToCode(node->son[0], fileout);
 							break;
-		case AST_FOR:	fwrite("for(", 4, 1, fileout); 
-						treeToCode(node->son[0], fileout);
-						fwrite(" ; ", 3, 1, fileout);
-						treeToCode(node->son[1], fileout);
-						fwrite(" ; ", 3, 1, fileout);
-						treeToCode(node->son[2], fileout);
-						fwrite(") ", 2, 1, fileout);
-						treeToCode(node->son[3], fileout);
-						break;	
 		case AST_WHILE: fwrite("while(", 6, 1, fileout);
 						treeToCode(node->son[0], fileout);
 						fwrite(") ", 2, 1, fileout);
-						treeToCode(node->son[1], fileout);
+						if(node->son[1] != NULL) treeToCode(node->son[1], fileout);
 						break;
 		case AST_READ: 	fwrite("read > ", 7, 1, fileout);
 						fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);

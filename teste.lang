@@ -7,7 +7,17 @@
 		b = 2;
 		d = 3 * 12
 	};
-	e = 1 / 90
+	e = 1 / 90;
+	{;;;;{{;}};{{{}}}};
+	print (bundinhas);
+	read > a;
+	a = (b+((c)));
+	while(a==0) ola = 1;	//deve funfar
+	while(a <= 0){
+		a = a+1;
+		b = 0;
+	};			//deve funfar
+	while(a==0)	//acho que não funfa
 }
 
 
@@ -18,7 +28,6 @@
 nicolas = lauren
 
 }
-
 
 (long) marreco (paramY : short)
 {;}

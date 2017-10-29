@@ -101,7 +101,6 @@ cmd	: TK_IDENTIFIER '=' expr					{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0);}
 	| TK_IDENTIFIER '[' expr ']' '=' expr		{$$ = astCreate(AST_ASS, $1, $6, $3, 0, 0);}
 	| KW_IF '('expr')' KW_THEN cmd optelse  	{$$ = astCreate(AST_IF, 0, $3, $6, $7, 0);}
 	| KW_WHILE '(' expr ')' cmd					{$$ = astCreate(AST_WHILE, 0, $3, $5, 0, 0);}
-	| KW_FOR '(' expr ';' expr ';' expr ')' cmd {$$ = astCreate(AST_FOR, 0, $3, $5, $7, $9);}
 	| KW_READ '>' TK_IDENTIFIER					{$$ = astCreate(AST_READ, $3, 0, 0, 0, 0);}
 	| KW_RETURN expr							{$$ = astCreate(AST_RETURN, 0, $2, 0, 0, 0);}
 	| KW_PRINT printlist						{$$ = astCreate(AST_PRINT, 0, $2, 0, 0, 0);}
