@@ -162,8 +162,9 @@ void treeWrite(AST *root, int level, FILE *fileout){
 //---------------------------------------------------------------------------------------
 
 void treeToCode(AST *node, FILE *fileout){
+	if(node == NULL) return;
 	switch(node->type){
-		case AST_STMTL: treeToCode(node->son[0], fileout);
+		case AST_STMTL: if(node->son[0] != NULL) treeToCode(node->son[0], fileout);
 						if(node->son[1] !=NULL)
 							treeToCode(node->son[1], fileout);
 						break;
@@ -195,10 +196,9 @@ void treeToCode(AST *node, FILE *fileout){
 						fwrite(") ", 2, 1, fileout);
 						fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
 						fwrite(" (", 2, 1, fileout);
-						if(node->son[1] != NULL)
-							treeToCode(node->son[1], fileout);
+						if(node->son[1] != NULL) treeToCode(node->son[1], fileout);
 						fwrite(") {\n", 4, 1, fileout);
-						treeToCode(node->son[2], fileout);
+						if(node->son[2] != NULL) treeToCode(node->son[2], fileout);
 						fwrite("\n}\n\n", 4, 1, fileout);
 						break;
 		case AST_SYMBOL:fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
@@ -331,7 +331,7 @@ void treeToCode(AST *node, FILE *fileout){
 						break;	
 		case AST_FUNC:	fwrite(node->symbol.text, strlen(node->symbol.text), 1, fileout);
 						fwrite("(", 1, 1, fileout);
-						treeToCode(node->son[0], fileout);
+						if(node->son[0] != NULL) treeToCode(node->son[0], fileout);
 						fwrite(")",1,1,fileout);
 						break;
 		case AST_NOT:	fwrite("!", 1, 1, fileout);

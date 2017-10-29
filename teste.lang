@@ -1,25 +1,15 @@
 
+vetor : byte [10] ;  //deve funcionar
 
-(byte) main (parametroX : long)
+(byte) main ()
 {
-	a = 6;
-	{
-		b = 2;
-		d = 3 * 12
-	};
-	e = 1 / 90;
-	{;;;;{{;}};{{{}}}};
-	print (bundinhas);
-	read > a;
-	a = (b+((c)));
-	while(a==0) ola = 1;	//deve funfar
-	while(a <= 0){
-		a = a+1;
-		b = 0;
-	};			//deve funfar
-	while(a==0)	//acho que não funfa
-}
+	if(a > 0) then {print (ola)};	//deve funcionar
+	if (a <0) then { print (adeus);}
+	else {print (what)};
 
+	a = funcao();	//deve funcionar
+	a = funcao(a);  //deve funcionar
+}
 
 
 (long) funcao (paramZ : short)
