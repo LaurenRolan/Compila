@@ -269,7 +269,7 @@ void treeToCode(AST *node, FILE *fileout){
 		case AST_RETURN:	fwrite("return ", 7, 1, fileout);
 							treeToCode(node->son[0], fileout);
 							break;
-		case AST_PRINT: 	fwrite("print ", 6, 1, fileout);
+		case AST_PRINT: 	fwrite("print\t", 6, 1, fileout);
 							treeToCode(node->son[0], fileout);
 							break;
 		case AST_ADD:	treeToCode(node->son[0], fileout);
