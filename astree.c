@@ -254,7 +254,7 @@ void treeToCode(AST *node, FILE *fileout){
 						if(node->son[2] != NULL)
 							treeToCode(node->son[2], fileout);
 						break;
-		case AST_ELSE:	 	fwrite("else ", 5, 1, fileout);
+		case AST_ELSE:	 	fwrite("else\n", 5, 1, fileout);
 							if(node->son[0] != NULL)
 								treeToCode(node->son[0], fileout);
 							break;
