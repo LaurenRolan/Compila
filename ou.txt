@@ -1,0 +1,29 @@
+vetor : byte [10] ;
+(byte) main () {
+if (a > 0) then
+{
+print	(ola)
+};
+if (a < 0) then
+{
+print	(adeus);
+
+}
+else
+{
+print	(what)
+};
+a = funcao();
+a = funcao(a);
+
+}
+
+(long) funcao (paramZ : short) {
+nicolas = lauren
+}
+
+(long) marreco (paramY : short) {
+;
+
+}
+

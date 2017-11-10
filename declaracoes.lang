@@ -1,0 +1,4 @@
+a: byte = 6;
+f: double = 9;
+
+f: byte = 8;

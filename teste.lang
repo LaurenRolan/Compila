@@ -1,5 +1,6 @@
 
 vetor : byte [10] ;  //deve funcionar
+a: byte = 7;
 
 (byte) main ()
 {

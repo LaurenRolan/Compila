@@ -56,23 +56,23 @@
 
 
 [a-zA-Z_]([a-zA-Z_ 0-9]*[a-zA-Z0-9_])?	{	
-									yylval.symbol = hashInsert(TK_IDENTIFIER, yytext);
+									yylval.symbol = hashInsert(SYMBOL_ID, yytext);
 									return TK_IDENTIFIER;
 									}
 [0-9]+								{
-									yylval.symbol = hashInsert(LIT_INTEGER, yytext);
+									yylval.symbol = hashInsert(SYMBOL_LIT_INT, yytext);
 									return LIT_INTEGER;
 									}
 ([0-9]*\.[0-9]+)					{
-									yylval.symbol = hashInsert(LIT_REAL, yytext);
+									yylval.symbol = hashInsert(SYMBOL_LIT_REAL, yytext);
 									return LIT_REAL;
 									}
 (')[^']?(')							{
-									yylval.symbol = hashInsert(LIT_CHAR, yytext);
+									yylval.symbol = hashInsert(SYMBOL_LIT_CHAR, yytext);
 									return LIT_CHAR;
 									}
 (\")([^\"]*|[.(\\\")]*)(\")			{
-									yylval.symbol = hashInsert(LIT_STRING, yytext);
+									yylval.symbol = hashInsert(SYMBOL_LIT_STRING, yytext);
 									return LIT_STRING;
 									}
 

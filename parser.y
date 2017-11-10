@@ -71,10 +71,9 @@
 %%
 
 program : stmtlist					{
-										//treePrint($1,0);
-									    //treeWrite($1,0, fileout);
-										treeToCode($1, fileout);
-									}
+									treeToCode($1, fileout);
+									semanticSetType($1);
+							}
 	;
 	
 stmtlist: stmt stmtlist				{$$ = astCreate(AST_STMTL, 0, $1, $2, 0, 0);}
@@ -98,7 +97,7 @@ optcmd 	: ';' cmd optcmd			{$$ = astCreate(AST_OPTCMDL, 0, $2, $3, 0, 0);}
 	;
 
 cmd	: TK_IDENTIFIER '=' expr					{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0);}
-	| TK_IDENTIFIER '[' expr ']' '=' expr		{$$ = astCreate(AST_ASS, $1, $6, $3, 0, 0);}
+	| TK_IDENTIFIER '[' expr ']' '=' expr		{$$ = astCreate(AST_ASSV, $1, $6, $3, 0, 0);}
 	| KW_IF '('expr')' KW_THEN cmd optelse  	{$$ = astCreate(AST_IF, 0, $3, $6, $7, 0);}
 	| KW_WHILE '(' expr ')' cmd					{$$ = astCreate(AST_WHILE, 0, $3, $5, 0, 0);}
 	| KW_READ '>' TK_IDENTIFIER					{$$ = astCreate(AST_READ, $3, 0, 0, 0, 0);}
