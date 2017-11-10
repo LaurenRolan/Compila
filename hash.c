@@ -7,6 +7,16 @@
 
 HASH_NODE *Table[HASH_SIZE];
 
+void hashCheckUndeclared(void)
+{
+  int i;
+  HASH_NODE *node;
+  for(i=0; i<HASH_SIZE; ++i)
+    for(node = Table[i]; node; node = node->next)
+      if(node->type == SYMBOL_ID)
+	fprintf(stderr, "Identifier %s is not declared.\n", node->text); //Adicionar linha  
+}
+
 void hashInit(void)
 {
   int i;

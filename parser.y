@@ -73,6 +73,8 @@
 program : stmtlist					{
 									treeToCode($1, fileout);
 									semanticSetType($1);
+									semanticCheckUndeclared();
+									semanticCheckUsage($1);
 							}
 	;
 	

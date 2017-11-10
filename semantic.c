@@ -54,18 +54,46 @@ void semanticSetType(AST *node)
 						node->symbol->datatype = DATATYPE_REAL;
 				}
 			break;
-		default: fprintf(stderr, "ERRO em semanticSetType.\n");
+		default: break;
 	}
 }
 
 void semanticCheckUndeclared(void)
 {
-	return;
+	hashCheckUndeclared();
 }
 
 void semanticCheckUsage(AST *node)
 {
-	return;
+	int i;
+	if(!node) return;
+	
+	//Processa a partir das folhas
+	for(i=0; i <MAX_SONS; ++i)
+		semanticCheckUsage(node->son[i]);
+
+	//Verifica o lado esquerdo (assign)
+	switch(node->type)
+	{
+		case AST_ASS: if(node->symbol->type != SYMBOL_VAR)
+			{
+				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", node->symbol->text);
+				exit(4);
+			}
+			break;
+		case AST_ASSV: if(node->symbol->type != SYMBOL_VEC)
+			{
+				fprintf(stderr, "Semantic ERROR: identifier %s must be vector.\n", node->symbol->text);
+				exit(4);
+			}
+		/*case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR) //Corrigir
+			{
+				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", );
+			}
+			break;
+		*/
+		default: break;
+	}
 }
 
 void semanticCheckOperands(AST *node)

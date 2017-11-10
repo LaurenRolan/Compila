@@ -1,5 +1,6 @@
-//Feito por Lauren Silva Rolan Sampaio
-// e Nicolas Eymael da Silva
+//Feito por 
+//Lauren Silva Rolan Sampaio
+//Nicolas Eymael da Silva
 #include <stdio.h>
 #include <stdlib.h>
 #include "astree.h"
@@ -11,7 +12,7 @@ int main(int argc, char **argv){
   FILE *fileout;
 	
   if(argc < 3) {
-    fprintf(stderr, "Missing file name.\n Call ./a.out file_INPUT file_OUTPUT.\n");
+    fprintf(stderr, "Missing file name.\n Call ./etapa4 <FileInput> <FileOutput>.\n");
     exit(1);
   }
   
@@ -21,10 +22,13 @@ int main(int argc, char **argv){
 	yyparse(fileout);
   }
   
-  else fprintf(stderr,"nao deu");
-  
+  else
+  {
+     fprintf(stderr,"nao deu");
+     exit(2);
+  }
+
   printf("\n");
-  //hashPrint();
 	
   fclose(yyin);
   fclose(fileout);
