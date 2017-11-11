@@ -3,6 +3,7 @@
 	#include <stdio.h>
 	#include "hash.h"
 	#include "astree.h"
+	#include "semantic.h"
 
 	int yyparse(FILE *fileout);
 	int yylex();
@@ -75,6 +76,7 @@ program : stmtlist					{
 									semanticSetType($1);
 									semanticCheckUndeclared();
 									semanticCheckUsage($1);
+									semanticCheckOperands($1);
 							}
 	;
 	

@@ -87,6 +87,7 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR: identifier %s must be vector.\n", node->symbol->text);
 				exit(4);
 			}
+			break;
 		//Verifica lado direito: vetor, escalar e função
 		case AST_FUNC: if(node->symbol->type != SYMBOL_FUN)
 			{
@@ -100,9 +101,9 @@ void semanticCheckUsage(AST *node)
 				exit(4);
 			}
 			break; 
-		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR)
+		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_LIT_INT && node->symbol->type != SYMBOL_LIT_REAL && node->symbol->type != SYMBOL_LIT_CHAR)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", );
+				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", node->symbol->text);
 				exit(4);
 			}
 			break;

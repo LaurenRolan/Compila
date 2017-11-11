@@ -3,7 +3,7 @@ f : double = 9;
 v : byte [5] ;
 g : byte = 8;
 (byte) teste () {
-v = 5;
+NOPE;
 
 }
 

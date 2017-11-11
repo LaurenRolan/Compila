@@ -4,5 +4,5 @@ v: byte [5];
 g: byte = 8;
 
 (byte) teste() {
-	v = 5;
+	v[1] = 5;
 }
