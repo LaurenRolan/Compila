@@ -72,9 +72,10 @@ void semanticCheckUsage(AST *node)
 	for(i=0; i <MAX_SONS; ++i)
 		semanticCheckUsage(node->son[i]);
 
-	//Verifica o lado esquerdo (assign)
+	//Verifica o lado esquerdo (assign) e direito
 	switch(node->type)
 	{
+		//Verifica lado esquerdo: escalar ou vetor
 		case AST_ASS: if(node->symbol->type != SYMBOL_VAR)
 			{
 				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", node->symbol->text);
@@ -86,17 +87,109 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR: identifier %s must be vector.\n", node->symbol->text);
 				exit(4);
 			}
-		/*case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR) //Corrigir
+		//Verifica lado direito: vetor, escalar e função
+		case AST_FUNC: if(node->symbol->type != SYMBOL_FUN)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", );
+				fprintf(stderr, "Semantic ERROR: identifier %s must be a function.\n", node->symbol->text);
+				exit(4);
 			}
 			break;
-		*/
+		case AST_VECT: if(node->symbol->type != SYMBOL_VEC)
+			{
+				fprintf(stderr, "Semantic ERROR: identifier %s must be a vector.\n", node->symbol->text);
+				exit(4);
+			}
+			break; 
+		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR)
+			{
+				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", );
+				exit(4);
+			}
+			break;
 		default: break;
 	}
 }
 
 void semanticCheckOperands(AST *node)
 {
-	return;
+	int i;
+	if(!node) return;
+	
+	//Processa a partir das folhas
+	for(i=0; i <MAX_SONS; ++i)
+		semanticCheckOperands(node->son[i]);
+	
+	//Processa operadores aritméticos, lógicos e relacionais
+	switch(node->type)
+	{
+		case AST_LE:
+		case AST_GE:
+		case AST_EQ: 
+		case AST_NE:
+		case AST_LES:
+		case AST_GRE:
+		case AST_ADD:
+		case AST_SUB:
+		case AST_DIV:
+		case AST_MUL:
+			switch(node->son[0]->type)
+			{
+				case AST_LE:
+				case AST_GE:
+				case AST_EQ: 
+				case AST_NE:
+				case AST_AND:
+				case AST_OR:
+				case AST_LES:
+				case AST_GRE:
+				case AST_NOT:
+					fprintf(stderr, "Semantic ERROR: left operand cannot be relational/logic.\n");
+					exit(4);
+				default: break;
+			}
+			switch(node->son[1]->type)
+			{
+				case AST_LE:
+				case AST_GE:
+				case AST_EQ: 
+				case AST_NE:
+				case AST_AND:
+				case AST_OR:
+				case AST_LES:
+				case AST_GRE:
+				case AST_NOT:
+					fprintf(stderr, "Semantic ERROR: left operand cannot be relational/logic.\n");
+					exit(4);
+				default: break;
+			}
+			break;
+			
+		case AST_AND:
+		case AST_OR:
+		case AST_NOT:
+			switch(node->son[0]->type)
+			{
+				case AST_MUL:
+				case AST_ADD:
+				case AST_SUB: 
+				case AST_DIV:
+					fprintf(stderr, "Semantic ERROR: left operand cannot be arithmetic.\n");
+					exit(4);
+				default: break;
+			}
+			
+			switch(node->son[0]->type)
+			{
+				case AST_MUL:
+				case AST_ADD:
+				case AST_SUB: 
+				case AST_DIV:
+					fprintf(stderr, "Semantic ERROR: left operand cannot be arithmetic.\n");
+					exit(4);
+				default: break;
+			}
+			break;
+		default: break;
+	}
+	//Verificar assign (real para real, inteiro para inteiro)
 }
