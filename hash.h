@@ -29,6 +29,7 @@ typedef struct node {
   int datatype;
 }HASH_NODE;
 
+
 void hashInit(void);
 int hashAddress(char *text);
 HASH_NODE *hashInsert(int type, char *text);

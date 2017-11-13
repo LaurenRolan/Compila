@@ -100,15 +100,15 @@ optcmd 	: ';' cmd optcmd			{$$ = astCreate(AST_OPTCMDL, 0, $2, $3, 0, 0);}
 	| 								{$$ = 0;}
 	;
 
-cmd	: TK_IDENTIFIER '=' expr					{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0);}
+cmd	: TK_IDENTIFIER '=' expr			{$$ = astCreate(AST_ASS, $1, $3, 0, 0, 0);}
 	| TK_IDENTIFIER '[' expr ']' '=' expr		{$$ = astCreate(AST_ASSV, $1, $6, $3, 0, 0);}
 	| KW_IF '('expr')' KW_THEN cmd optelse  	{$$ = astCreate(AST_IF, 0, $3, $6, $7, 0);}
-	| KW_WHILE '(' expr ')' cmd					{$$ = astCreate(AST_WHILE, 0, $3, $5, 0, 0);}
-	| KW_READ '>' TK_IDENTIFIER					{$$ = astCreate(AST_READ, $3, 0, 0, 0, 0);}
-	| KW_RETURN expr							{$$ = astCreate(AST_RETURN, 0, $2, 0, 0, 0);}
-	| KW_PRINT printlist						{$$ = astCreate(AST_PRINT, 0, $2, 0, 0, 0);}
-	| block										{$$ = astCreate(AST_BLOCK, 0, $1, 0, 0, 0);}
-	|											{$$ = 0;}
+	| KW_WHILE '(' expr ')' cmd			{$$ = astCreate(AST_WHILE, 0, $3, $5, 0, 0);}
+	| KW_READ '>' TK_IDENTIFIER			{$$ = astCreate(AST_READ, $3, 0, 0, 0, 0);}
+	| KW_RETURN expr				{$$ = astCreate(AST_RETURN, 0, $2, 0, 0, 0);}
+	| KW_PRINT printlist				{$$ = astCreate(AST_PRINT, 0, $2, 0, 0, 0);}
+	| block						{$$ = astCreate(AST_BLOCK, 0, $1, 0, 0, 0);}
+	|						{$$ = 0;}
 	;
 
 block	: '{'cmdlist'}'				{$$ = $2;}
@@ -127,19 +127,19 @@ literal : LIT_INTEGER		{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
 	;
 
 expr	: TK_IDENTIFIER				{$$ = astCreate(AST_SYMBOL, $1, 0, 0, 0, 0);}
-	| expr '+' expr					{$$ = astCreate(AST_ADD, 0, $1, $3, 0, 0);}
-	| expr '-' expr					{$$ = astCreate(AST_SUB, 0, $1, $3, 0, 0);}
-	| expr '*' expr					{$$ = astCreate(AST_MUL, 0, $1, $3, 0, 0);}
-	| expr '/' expr					{$$ = astCreate(AST_DIV, 0, $1, $3, 0, 0);}
-	| expr '<' expr					{$$ = astCreate(AST_LES, 0, $1, $3, 0, 0);}
-	| expr '>' expr					{$$ = astCreate(AST_GRE, 0, $1, $3, 0, 0);}
+	| expr '+' expr				{$$ = astCreate(AST_ADD, 0, $1, $3, 0, 0);}
+	| expr '-' expr				{$$ = astCreate(AST_SUB, 0, $1, $3, 0, 0);}
+	| expr '*' expr				{$$ = astCreate(AST_MUL, 0, $1, $3, 0, 0);}
+	| expr '/' expr				{$$ = astCreate(AST_DIV, 0, $1, $3, 0, 0);}
+	| expr '<' expr				{$$ = astCreate(AST_LES, 0, $1, $3, 0, 0);}
+	| expr '>' expr				{$$ = astCreate(AST_GRE, 0, $1, $3, 0, 0);}
 	| expr OPERATOR_AND expr		{$$ = astCreate(AST_AND, 0, $1, $3, 0, 0);}
 	| expr OPERATOR_OR expr			{$$ = astCreate(AST_OR, 0, $1, $3, 0, 0);}
 	| expr OPERATOR_NE expr			{$$ = astCreate(AST_NE, 0, $1, $3, 0, 0);}
 	| expr OPERATOR_EQ expr 		{$$ = astCreate(AST_EQ, 0, $1, $3, 0, 0);}
 	| expr OPERATOR_LE expr 		{$$ = astCreate(AST_LE, 0, $1, $3, 0, 0);}
 	| expr OPERATOR_GE expr 		{$$ = astCreate(AST_GE, 0, $1, $3, 0, 0);}
-	| literal						{$$ = $1;}
+	| literal				{$$ = $1;}
 	| TK_IDENTIFIER '[' expr ']'	{$$ = astCreate(AST_VECT, $1, $3, 0, 0, 0);}
 	| '(' expr ')'					{$$ = astCreate(AST_PAR, 0, $2, 0, 0, 0);}
 	| TK_IDENTIFIER '(' arglist ')'	{$$ = astCreate(AST_FUNC, $1, $3, 0, 0, 0);}

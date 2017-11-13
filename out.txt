@@ -1,9 +1,52 @@
-a : byte = 6;
-f : double = 9;
-v : byte [5] ;
-g : byte = 8;
-(byte) teste () {
-NOPE;
+a : short = 0;
+i : long = 0;
+v : long [10] 0 0 0 0 0 0 0 0 0 0;
+mat : long [10] ;
+f : float = 10.55;
+c : byte = 'x';
+d : byte = 65;
+eta : double = 12.13;
+(long) main () {
+a = 10;
+;
+;
+print	" Digite um numero: \n";
+read > i;
+a = i + eta;
+while(i < 10) {
+a = incn(a, 1);
+i = i >= 1 - 8;
+a = 6 / 8 * 9
+};
+print	"Incrementado algumas vezes fica ", a, "\n";
+if (a == 5) then
+print	"Parou no meio\n";
+if (a == 11) then
+;
+if (a == 11) then
+{
+
+}
+else
+;
+;
+;
+;
+{
+d = v[6] + 12;
+a = d / v[2]
+};
+{
+
+};
+
+}
+
+(long) incn (x : long, n : long) {
+return (x + n)
+}
+
+(short) voidfunc () {
 
 }
 

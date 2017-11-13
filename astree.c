@@ -4,16 +4,16 @@
 #include <string.h>
 
 AST *astCreate(int type, HASH_NODE *symbol, AST* son0, AST* son1, AST* son2, AST* son3){
-  AST *newnode;
-  newnode = (AST*) malloc(sizeof(AST));
-  newnode->type = type;
-  if (symbol != NULL)
-	newnode->symbol = symbol;
-  newnode->son[0] = son0;
-  newnode->son[1] = son1;
-  newnode->son[2] = son2;
-  newnode->son[3] = son3;
-  return newnode;
+	AST *newnode;
+  	newnode = (AST*) malloc(sizeof(AST));
+  	newnode->type = type;
+  	if (symbol != NULL)
+		newnode->symbol = symbol;
+  	newnode->son[0] = son0;
+	newnode->son[1] = son1;
+	newnode->son[2] = son2;
+	newnode->son[3] = son3;
+	return newnode;
 }
 
 void nodePrint(AST *node){
@@ -340,8 +340,8 @@ void treeToCode(AST *node, FILE *fileout){
 						treeToCode(node->son[0], fileout);
 						break;
 							   
-      	default: fwrite("NOPE", 4, 1, fileout);
-        break;
+      	default:
+	        break;
     }
 	
 }

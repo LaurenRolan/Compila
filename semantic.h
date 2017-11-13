@@ -9,6 +9,7 @@
 #include "hash.h"
 #include "astree.h"
 
+int propagateDataType(AST *node);
 void semanticSetType(AST *node);
 void semanticCheckUndeclared(void);
 void semanticCheckUsage(AST *node);

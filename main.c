@@ -9,29 +9,31 @@ extern int yyparse(FILE *fileout);
 
 int main(int argc, char **argv){
 	
-  FILE *fileout;
+  	FILE *fileout;
 	
-  if(argc < 3) {
-    fprintf(stderr, "Missing file name.\n Call ./etapa4 <FileInput> <FileOutput>.\n");
-    exit(1);
-  }
+  	if(argc < 3) {
+    		fprintf(stderr, "Missing file name.\n Call ./etapa4 <FileInput> <FileOutput>.\n");
+    		exit(1);
+  	}
   
 
-  if ((yyin = fopen(argv[1], "r")) && (fileout = fopen(argv[2], "w")))
-  {
-	yyparse(fileout);
-  }
+  	if ((yyin = fopen(argv[1], "r")) && (fileout = fopen(argv[2], "w")))
+  	{
+		yyparse(fileout);
+  	}
   
-  else
-  {
-     fprintf(stderr,"nao deu");
-     exit(2);
-  }
+  	else
+  	{
+	     	fprintf(stderr,"nao deu");
+	     	exit(2);
+  	}
 
-  printf("\n");
+  	printf("\n");
 	
-  fclose(yyin);
-  fclose(fileout);
+  	fclose(yyin);
+	fclose(fileout);
 	
-  return 0;
+	hashPrint();
+	
+	return 0;
 }

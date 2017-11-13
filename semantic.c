@@ -1,5 +1,25 @@
 #include "semantic.h"
 
+int propagateDataType(AST *node)
+{
+	int i, typeSon=0, allToReal = 0;
+	if(!node) return;
+
+	//Processa a partir das folhas
+	for(i = 0; i<MAX_SONS; ++i)
+	{
+		if(typeSon == DATATYPE_REAL) allToReal = 1;
+		typeSon = propagateDataType(node->son[i]);
+	}
+	
+	//Seta todos para reais
+	if(allToReal == 1)
+		for(i = 0; i<MAX_SONS; ++i)
+			node->son[i]->symbol->datatype = DATATYPE_REAL;
+	node->symbol->datatype = typeSon;
+	return node->symbol->datatype;
+}
+
 void semanticSetType(AST *node)
 {
 	int i;
@@ -54,6 +74,20 @@ void semanticSetType(AST *node)
 						node->symbol->datatype = DATATYPE_REAL;
 				}
 			break;
+		case AST_PARAM: if (node->symbol->type != SYMBOL_ID)
+				{
+					fprintf(stderr, "Semantic ERROR: identifier %s already declared.\n", node->symbol->text);
+					exit(4); //Tirar depois
+				}
+				else 
+				{
+					node->symbol->type = SYMBOL_VAR;
+					if(node->son[0]->type == AST_BYTE || node->son[0]->type == AST_SHORT || node->son[0]->type == AST_LONG)
+						node->symbol->datatype = DATATYPE_INT;
+					if(node->son[0]->type == AST_FLOAT || node->son[0]->type == AST_DOUBLE)
+						node->symbol->datatype = DATATYPE_REAL;
+				}
+			break;
 		default: break;
 	}
 }
@@ -101,7 +135,7 @@ void semanticCheckUsage(AST *node)
 				exit(4);
 			}
 			break; 
-		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_LIT_INT && node->symbol->type != SYMBOL_LIT_REAL && node->symbol->type != SYMBOL_LIT_CHAR)
+		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_LIT_INT && node->symbol->type != SYMBOL_LIT_REAL && node->symbol->type != SYMBOL_LIT_CHAR && node->symbol->type != SYMBOL_LIT_STRING)
 			{
 				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", node->symbol->text);
 				exit(4);
@@ -123,6 +157,8 @@ void semanticCheckOperands(AST *node)
 	//Processa operadores aritméticos, lógicos e relacionais
 	switch(node->type)
 	{
+		case AST_ASS:
+		case AST_ASSV:
 		case AST_LE:
 		case AST_GE:
 		case AST_EQ: 
@@ -133,36 +169,38 @@ void semanticCheckOperands(AST *node)
 		case AST_SUB:
 		case AST_DIV:
 		case AST_MUL:
-			switch(node->son[0]->type)
-			{
-				case AST_LE:
-				case AST_GE:
-				case AST_EQ: 
-				case AST_NE:
-				case AST_AND:
-				case AST_OR:
-				case AST_LES:
-				case AST_GRE:
-				case AST_NOT:
-					fprintf(stderr, "Semantic ERROR: left operand cannot be relational/logic.\n");
-					exit(4);
-				default: break;
-			}
-			switch(node->son[1]->type)
-			{
-				case AST_LE:
-				case AST_GE:
-				case AST_EQ: 
-				case AST_NE:
-				case AST_AND:
-				case AST_OR:
-				case AST_LES:
-				case AST_GRE:
-				case AST_NOT:
-					fprintf(stderr, "Semantic ERROR: left operand cannot be relational/logic.\n");
-					exit(4);
-				default: break;
-			}
+			if(node->son[0])
+				switch(node->son[0]->type)
+				{
+					case AST_LE:
+					case AST_GE:
+					case AST_EQ: 
+					case AST_NE:
+					case AST_AND:
+					case AST_OR:
+					case AST_LES:
+					case AST_GRE:
+					case AST_NOT:
+						fprintf(stderr, "Semantic ERROR: left operand cannot be relational/logic.\n");
+						exit(4);
+					default: break;
+				}
+			if(node->son[1])		
+				switch(node->son[1]->type)
+				{
+					case AST_LE:
+					case AST_GE:
+					case AST_EQ: 
+					case AST_NE:
+					case AST_AND:
+					case AST_OR:
+					case AST_LES:
+					case AST_GRE:
+					case AST_NOT:
+						fprintf(stderr, "Semantic ERROR: right operand cannot be relational/logic.\n");
+						exit(4);
+					default: break;
+				}
 			break;
 			
 		case AST_AND:
@@ -178,17 +216,17 @@ void semanticCheckOperands(AST *node)
 					exit(4);
 				default: break;
 			}
-			
-			switch(node->son[0]->type)
-			{
-				case AST_MUL:
-				case AST_ADD:
-				case AST_SUB: 
-				case AST_DIV:
-					fprintf(stderr, "Semantic ERROR: left operand cannot be arithmetic.\n");
-					exit(4);
-				default: break;
-			}
+			if(node->son[1])
+				switch(node->son[1]->type)
+				{
+					case AST_MUL:
+					case AST_ADD:
+					case AST_SUB: 
+					case AST_DIV:
+						fprintf(stderr, "Semantic ERROR: right operand cannot be arithmetic.\n");
+						exit(4);
+					default: break;
+				}
 			break;
 		default: break;
 	}
