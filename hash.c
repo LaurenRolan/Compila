@@ -33,6 +33,17 @@ int hashAddress(char *text)
   return address - 1;
 }
 
+int typeToDatatype(int type)
+{
+	switch(type)
+	{
+		case SYMBOL_LIT_INT: 
+		case SYMBOL_LIT_CHAR: return DATATYPE_INT;
+		case SYMBOL_LIT_REAL: return DATATYPE_REAL;
+		default: return 0;
+	}
+}
+
 HASH_NODE *hashInsert(int type, char *text)
 {
   HASH_NODE *newnode;
@@ -42,6 +53,7 @@ HASH_NODE *hashInsert(int type, char *text)
   address = hashAddress(text);
   newnode = (HASH_NODE*) calloc(1, sizeof(HASH_NODE));
   newnode->type = type;
+  newnode->datatype = typeToDatatype(type);
   newnode->text = calloc(strlen(text)+1, sizeof(char));
   strcpy(newnode->text, text);
   newnode->next = Table[address];
@@ -55,7 +67,7 @@ void hashPrint(void)
   HASH_NODE *node;
   for(i=0; i<HASH_SIZE; ++i)
     for(node=Table[i]; node; node = node->next)
-      printf("Table[%d] has %s of data type %d.\n", i, node->text, node->datatype);
+      printf("Table[%d] has %s of datatype %d.\n", i, node->text, node->datatype);
 }
 
 HASH_NODE * hashFind(char *text)

@@ -1,6 +1,5 @@
 #include "semantic.h"
 
-
 int getDataType(AST *node)
 {
 	int i, typeSon=0, allToReal = 0;
@@ -22,8 +21,8 @@ void propagateDataType(AST *node, int datatype)
 	int i;
 	if(!node) return;
 
-	for(i = 0; i<MAX_SONS; ++i) 
-		if(node->son[i]) propagateDataType(node->son[i], datatype);
+	for(i = 0; i<MAX_SONS; ++i) //diferenciar vetor
+		if((node->type != AST_ASSV && node->type != AST_VECT) || i != 0) if(node->son[i]) propagateDataType(node->son[i], datatype);
 	if(node->symbol && node->symbol->datatype)
 		node->symbol->datatype = datatype;
 }
@@ -124,7 +123,6 @@ void semanticCheckUsage(AST *node)
 				exit(4);
 			}
 			else getDataType(node);
-			printf("Chegou aqui.\n");
 			break;
 		case AST_ASSV: if(node->symbol->type != SYMBOL_VEC)
 			{
@@ -132,6 +130,11 @@ void semanticCheckUsage(AST *node)
 				exit(4);
 			}
 			else getDataType(node);
+			if(node->son[0]->symbol->datatype == DATATYPE_REAL)
+			{
+				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", node->son[0]->symbol->text);
+				//exit(4);
+			}
 			break;
 		//Verifica lado direito: vetor, escalar e função
 		case AST_FUNC: if(node->symbol->type != SYMBOL_FUN)
@@ -143,6 +146,12 @@ void semanticCheckUsage(AST *node)
 		case AST_VECT: if(node->symbol->type != SYMBOL_VEC)
 			{
 				fprintf(stderr, "Semantic ERROR: identifier %s must be a vector.\n", node->symbol->text);
+				exit(4);
+			}
+			
+			if(getDataType(node->son[0]) == DATATYPE_REAL)
+			{
+				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar.\n", node->son[0]->symbol->text);
 				exit(4);
 			}
 			break; 

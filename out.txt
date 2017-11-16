@@ -2,6 +2,7 @@ a : byte = 6;
 v : float [5] ;
 d : double = 9.5;
 i : byte [7] 0 0 0 0 0 0 0;
+c : long = 0;
 (long) f (b : long) {
 return (b);
 
@@ -9,6 +10,8 @@ return (b);
 
 (byte) teste () {
 a = v[1] + d;
+;
+;
 ;
 
 }
