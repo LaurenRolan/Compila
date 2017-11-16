@@ -1,4 +1,8 @@
 %{
+	//Feito por
+	//Lauren Silva Rolan Sampaio
+	//Nicolas Eymael da Silva
+
 	#include <stdlib.h>
 	#include <stdio.h>
 	#include "hash.h"
@@ -72,6 +76,7 @@
 %%
 
 program : stmtlist					{
+									treePrint($1, 0);
 									treeToCode($1, fileout);
 									semanticSetType($1);
 									semanticCheckUndeclared();

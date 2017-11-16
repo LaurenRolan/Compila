@@ -1,6 +1,8 @@
 %{
-	//Feito por Lauren Silva Rolan Sampaio
-	// e Nicolas Eymael da Silva
+	//Feito por 
+	//Lauren Silva Rolan Sampaio
+	//Nicolas Eymael da Silva
+
 	#include "hash.h"
 	#include "astree.h"
 	#include "y.tab.h"
@@ -108,9 +110,5 @@ int isRunning()
 int yyerror(FILE *fileout, char *msg)
 {
 	printf("%s at line %d\n", msg, getLineNumber());
-	/* //Para fins de debug, descomentar esta linha.
-	printf("Printing hash table:");
-	hashPrint();
-	*/ 
 	exit(3);
 }

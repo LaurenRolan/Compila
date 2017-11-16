@@ -23,7 +23,7 @@
 #define DATATYPE_REAL 2
 
 typedef struct node {
-  struct node * next;
+  struct node *next;
   char *text;
   int type;
   int datatype;

@@ -1,8 +1,12 @@
 a: byte = 6;
-f: double = 9;
-v: byte [5];
-g: byte = 8;
+v: float [5];
+d: double = 9.5;
+i: byte [7] 0 0 0 0 0 0 0;
 
+(long) f(b : long) {
+	return (b);
+}
 (byte) teste() {
-	v[1] = 5;
+	a = v[1] + d;
+	i[5] = a + v[3];
 }
