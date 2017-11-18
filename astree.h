@@ -75,6 +75,7 @@ typedef struct ast_node {
   int lineNumber;
   HASH_NODE *symbol;
   struct ast_node *son[MAX_SONS];
+  struct ast_node *origin;
 } AST;
 
 void linkOrigin(AST *node);
