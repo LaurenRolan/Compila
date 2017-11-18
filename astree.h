@@ -78,6 +78,7 @@ typedef struct ast_node {
 } AST;
 
 void linkOrigin(AST *node);
+AST *searchForAssign(AST *node, char *name);
 AST *astCreate(int type, HASH_NODE * symbol, AST* son0, AST* son1, AST* son2, AST* son3, int lineNumber);
 void nodePrint(AST *node);
 void treePrint(AST *root, int level);
