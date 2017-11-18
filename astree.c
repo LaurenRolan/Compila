@@ -6,14 +6,30 @@
 void linkOrigin(AST *node)
 {
 	int i = 0;
+	AST *assign;
+	assign = (AST*) malloc(sizeof(AST));
 	if(node)
 	{
+		if(node->type == AST_DECF)
+			while((assign = searchForAssign(node, node->symbol->text) != NULL)
+				assign->origin = node;
 		for(i=0; i < MAX_SONS; i++)
-		{
-			
-		}
+			if(node->son[i]) linkOrigin(node->son[i]);
 	}
+	free(assign);
 	return;
+}
+
+AST *searchForAssign(AST *node, char *name)
+{
+	if(node)
+	{
+		if(node->type == AST_FUNC && node->origin == NULL)
+			if(strcmp(node->symbol->text, name) == 0) return node;
+		for(i=0; i < MAX_SONS; i++)
+			if(node->son[i]) searchForAssign(node->son[i]);
+	}
+	free(assign);
 }
 
 AST *astCreate(int type, HASH_NODE *symbol, AST* son0, AST* son1, AST* son2, AST* son3, int lineNumber){
