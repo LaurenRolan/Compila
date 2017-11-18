@@ -11,7 +11,7 @@ int getDataType(AST *node)
 		if(typeSon == DATATYPE_REAL) allToReal = 1;
 	}
 	//Seta todos para reais
-	if(allToReal == 1) propagateDataType(node, DATATYPE_REAL);
+	if(allToReal == 1) return DATATYPE_REAL;//propagateDataType(node, DATATYPE_REAL);
 	if(node->symbol && node->symbol->datatype) return node->symbol->datatype;
 	return typeSon;
 }
@@ -147,14 +147,17 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar. Line = %d\n", node->symbol->text, node->lineNumber);
 				semanticError = 1;
 			}
-			else getDataType(node);
+			else
+			{
+				if(node->symbol->datatype == DATATYPE_INT && getDataType(node)== DATATYPE_REAL) semanticError = 1;
+			}
 			break;
 		case AST_ASSV: if(node->symbol->type != SYMBOL_VEC)
 			{
 				fprintf(stderr, "Semantic ERROR: identifier %s must be vector. Line = %d\n", node->symbol->text, node->lineNumber);
 				semanticError = 1;
 			}
-			else getDataType(node);
+			else if(node->symbol->datatype == DATATYPE_INT && getDataType(node) == DATATYPE_REAL) semanticError = 1;
 			if(node->son[0]->symbol->datatype == DATATYPE_REAL)
 			{
 				fprintf(stderr, "Semantic ERROR: identifier %s must be an integer. Line = %d\n", node->son[0]->symbol->text, node->lineNumber);
