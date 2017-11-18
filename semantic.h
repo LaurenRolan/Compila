@@ -11,9 +11,12 @@
 
 void propagateDataType(AST *node, int datatype);
 int getDataType(AST *node);
+void semanticCheckAll(AST *node);
 void semanticSetType(AST *node);
-void semanticCheckUndeclared(void);
+void semanticCheckUndeclared(AST *node);
 void semanticCheckUsage(AST *node);
 void semanticCheckOperands(AST *node);
+
+int semanticError;
 
 #endif

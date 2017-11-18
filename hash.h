@@ -36,5 +36,5 @@ int hashAddress(char *text);
 HASH_NODE *hashInsert(int type, char *text);
 void hashPrint(void);
 HASH_NODE * hashFind(char *text);
-void hashCheckUndeclared(void);
+void hashCheckUndeclared(char *text, int lineNumber);
 #endif

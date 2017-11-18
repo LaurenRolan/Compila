@@ -7,14 +7,15 @@
 
 HASH_NODE *Table[HASH_SIZE];
 
-void hashCheckUndeclared(void)
+
+void hashCheckUndeclared(char *text, int lineNumber)
 {
   int i;
   HASH_NODE *node;
   for(i=0; i<HASH_SIZE; ++i)
     for(node = Table[i]; node; node = node->next)
-      if(node->type == SYMBOL_ID)
-	fprintf(stderr, "Identifier %s at line ? is not declared.\n", node->text); //Adicionar linha  
+      if(node->type == SYMBOL_ID && (strcmp(text,node->text)==0))
+		fprintf(stderr, "Identifier %s at line %d is not declared.\n", node->text, lineNumber); //Adicionar linha  
 }
 
 void hashInit(void)

@@ -72,11 +72,12 @@
 
 typedef struct ast_node {
   int type;
+  int lineNumber;
   HASH_NODE *symbol;
   struct ast_node *son[MAX_SONS];
 } AST;
 
-AST *astCreate(int type, HASH_NODE * symbol, AST* son0, AST* son1, AST* son2, AST* son3);
+AST *astCreate(int type, HASH_NODE * symbol, AST* son0, AST* son1, AST* son2, AST* son3, int lineNumber);
 void nodePrint(AST *node);
 void treePrint(AST *root, int level);
 
