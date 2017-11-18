@@ -53,7 +53,7 @@ void semanticSetType(AST *node)
 	{
 		case AST_DEC: if (node->symbol->type != SYMBOL_ID)
 				{
-					fprintf(stderr, "Semantic ERROR: identifier %s already declared. Line = %d\n", node->symbol->text, node->lineNumber);
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s already declared.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 				else 
@@ -67,7 +67,7 @@ void semanticSetType(AST *node)
 			break;
 		case AST_DECV: if (node->symbol->type != SYMBOL_ID)
 				{
-					fprintf(stderr, "Semantic ERROR: identifier %s already declared. Line = %d\n", node->symbol->text, node->lineNumber);
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s already declared.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 				else 
@@ -81,7 +81,7 @@ void semanticSetType(AST *node)
 			break;
 		case AST_DECF: if (node->symbol->type != SYMBOL_ID)
 				{
-					fprintf(stderr, "Semantic ERROR: identifier %s already declared. Line = %d\n", node->symbol->text, node->lineNumber);
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s already declared.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 				else 
@@ -95,7 +95,7 @@ void semanticSetType(AST *node)
 			break;
 		case AST_PARAM: if (node->symbol->type != SYMBOL_ID)
 				{
-					fprintf(stderr, "Semantic ERROR: identifier %s already declared. Line = %d\n", node->symbol->text, node->lineNumber);
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s already declared.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 				else 
@@ -144,7 +144,7 @@ void semanticCheckUsage(AST *node)
 		//Verifica lado esquerdo: escalar ou vetor
 		case AST_ASS: if(node->symbol->type != SYMBOL_VAR)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be scalar. Line = %d\n", node->symbol->text, node->lineNumber);
+				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be scalar.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
 			}
 			else
@@ -154,38 +154,38 @@ void semanticCheckUsage(AST *node)
 			break;
 		case AST_ASSV: if(node->symbol->type != SYMBOL_VEC)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be vector. Line = %d\n", node->symbol->text, node->lineNumber);
+				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be vector.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
 			else if(node->symbol->datatype == DATATYPE_INT && getDataType(node) == DATATYPE_REAL) semanticError = 1;
 			if(node->son[0]->symbol->datatype == DATATYPE_REAL)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be an integer. Line = %d\n", node->son[0]->symbol->text, node->lineNumber);
+				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
 			}
 			break;
 		//Verifica lado direito: vetor, escalar e função
 		case AST_FUNC: if(node->symbol->type != SYMBOL_FUN)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be a function. Line = %d\n", node->symbol->text, node->lineNumber);
+				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be a function.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
 			break;
 		case AST_VECT: if(node->symbol->type != SYMBOL_VEC)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be a vector. Line = %d\n", node->symbol->text, node->lineNumber);
+				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be a vector.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
 			
 			if(getDataType(node->son[0]) == DATATYPE_REAL)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s must be an integer. Line = %d\n", node->son[0]->symbol->text, node->lineNumber);
+				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
 			}
 			break; 
 		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_LIT_INT && node->symbol->type != SYMBOL_LIT_REAL && node->symbol->type != SYMBOL_LIT_CHAR && node->symbol->type != SYMBOL_LIT_STRING)
 			{
-				fprintf(stderr, "Semantic ERROR: identifier %s ...strange error... Line = %d\n", node->symbol->text, node->lineNumber);
+				fprintf(stderr, "Semantic ERROR at line %d: identifier %s ...How can I say?... It's creepy O.O\n", node->lineNumber, node->symbol->text);
 				
 				semanticError = 1;
 			}
@@ -230,7 +230,7 @@ void semanticCheckOperands(AST *node)
 					case AST_LES:
 					case AST_GRE:
 					case AST_NOT:
-						fprintf(stderr, "Semantic ERROR: left operand cannot be relational/logic. Line = %d\n", node->lineNumber);
+						fprintf(stderr, "Semantic ERROR at line %d: left operand cannot be relational/logic.\n", node->lineNumber);
 						semanticError = 1;
 					default: break;
 				}
@@ -246,7 +246,7 @@ void semanticCheckOperands(AST *node)
 					case AST_LES:
 					case AST_GRE:
 					case AST_NOT:
-						fprintf(stderr, "Semantic ERROR: right operand cannot be relational/logic. Line = %d\n", node->lineNumber);
+						fprintf(stderr, "Semantic ERROR at line %d: right operand cannot be relational/logic.\n", node->lineNumber);
 						semanticError = 1;
 					default: break;
 				}
@@ -261,7 +261,7 @@ void semanticCheckOperands(AST *node)
 				case AST_ADD:
 				case AST_SUB: 
 				case AST_DIV:
-					fprintf(stderr, "Semantic ERROR: left operand cannot be arithmetic. Line = %d\n", node->lineNumber);
+					fprintf(stderr, "Semantic ERROR at line %d: left operand cannot be arithmetic.\n", node->lineNumber);
 					semanticError = 1;
 				default: break;
 			}
@@ -272,7 +272,7 @@ void semanticCheckOperands(AST *node)
 					case AST_ADD:
 					case AST_SUB: 
 					case AST_DIV:
-						fprintf(stderr, "Semantic ERROR: right operand cannot be arithmetic. Line = %d\n", node->lineNumber);
+						fprintf(stderr, "Semantic ERROR at line %d: right operand cannot be arithmetic.\n", node->lineNumber);
 						semanticError = 1;
 					default: break;
 				}
