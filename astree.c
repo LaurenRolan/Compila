@@ -3,33 +3,42 @@
 #include <stdio.h>
 #include <string.h>
 
-void linkOrigin(AST *node)
+void linkOrigin(AST *node, AST *root)
 {
-	int i = 0;
+	int i;
 	AST *assign;
-	assign = (AST*) malloc(sizeof(AST));
 	if(node)
 	{
+		
 		if(node->type == AST_DECF)
-			while((assign = searchForAssign(node, node->symbol->text) != NULL)
+		{
+			while((assign = searchForAssign(root, node->symbol->text)) != NULL)
+			{
 				assign->origin = node;
+//				fprintf(stderr, "Function assign at line %d\n", assign->lineNumber);
+			}
+		}
 		for(i=0; i < MAX_SONS; i++)
-			if(node->son[i]) linkOrigin(node->son[i]);
+			if(node->son[i]) linkOrigin(node->son[i], root);
 	}
-	free(assign);
-	return;
 }
 
 AST *searchForAssign(AST *node, char *name)
 {
+	int i;
+	AST *assign;
 	if(node)
 	{
 		if(node->type == AST_FUNC && node->origin == NULL)
-			if(strcmp(node->symbol->text, name) == 0) return node;
+			if(strcmp(node->symbol->text, name) == 0)
+				return node;
 		for(i=0; i < MAX_SONS; i++)
-			if(node->son[i]) searchForAssign(node->son[i]);
+			if(node->son[i]) {
+				assign = searchForAssign(node->son[i], name);
+				if(assign) return assign;
+			}
 	}
-	free(assign);
+	return NULL;
 }
 
 AST *astCreate(int type, HASH_NODE *symbol, AST* son0, AST* son1, AST* son2, AST* son3, int lineNumber){
@@ -43,6 +52,7 @@ AST *astCreate(int type, HASH_NODE *symbol, AST* son0, AST* son1, AST* son2, AST
 	newnode->son[2] = son2;
 	newnode->son[3] = son3;
 	newnode->lineNumber = lineNumber;
+	newnode->origin = NULL;
 	return newnode;
 }
 

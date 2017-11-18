@@ -33,6 +33,7 @@ void semanticCheckAll(AST *node)
 	semanticSetType(node);
 	semanticCheckUndeclared(node);
 	semanticCheckUsage(node);
+	linkOrigin(node, node);
 	semanticCheckOperands(node);
 	//if(semanticError == 1)
 	//	exit(4);
