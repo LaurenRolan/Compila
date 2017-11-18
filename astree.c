@@ -3,6 +3,19 @@
 #include <stdio.h>
 #include <string.h>
 
+void linkOrigin(AST *node)
+{
+	int i = 0;
+	if(node)
+	{
+		for(i=0; i < MAX_SONS; i++)
+		{
+			
+		}
+	}
+	return;
+}
+
 AST *astCreate(int type, HASH_NODE *symbol, AST* son0, AST* son1, AST* son2, AST* son3, int lineNumber){
 	AST *newnode;
   	newnode = (AST*) malloc(sizeof(AST));

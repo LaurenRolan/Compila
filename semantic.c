@@ -170,6 +170,7 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be a function.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
+			//else linkOrigin(node);
 			break;
 		case AST_VECT: if(node->symbol->type != SYMBOL_VEC)
 			{

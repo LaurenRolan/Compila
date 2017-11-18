@@ -77,6 +77,7 @@ typedef struct ast_node {
   struct ast_node *son[MAX_SONS];
 } AST;
 
+void linkOrigin(AST *node);
 AST *astCreate(int type, HASH_NODE * symbol, AST* son0, AST* son1, AST* son2, AST* son3, int lineNumber);
 void nodePrint(AST *node);
 void treePrint(AST *root, int level);
