@@ -7,11 +7,14 @@ c: long = 0;
 (long) f(b : long) {
 	return (b);
 }
-(byte) teste() {
+(byte) teste(x : byte, y : long, z : float) {
 	//a = v[1] + d;
 	i[5] = a + v[3];
+	b = f(a);
 	i[b] = 9.9;
 	v[1] = 8.0;
 	v[a] = 8.0;
-	a = f(5);
+	a = f(a) + c;
+	a = teste(2,3,98)
+	
 }

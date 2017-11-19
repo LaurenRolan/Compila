@@ -15,11 +15,13 @@ void linkOrigin(AST *node, AST *root)
 			while((assign = searchForAssign(root, node->symbol->text)) != NULL)
 			{
 				assign->origin = node;
-//				fprintf(stderr, "Function assign at line %d\n", assign->lineNumber);
+	//			fprintf(stderr, "Function assign at line %d\n", assign->lineNumber);
+	//			fprintf(stderr, "CHAMADA %s, ORIGEM %s\n", assign->symbol->text, assign->origin->symbol->text);
 			}
 		}
 		for(i=0; i < MAX_SONS; i++)
-			if(node->son[i]) linkOrigin(node->son[i], root);
+			if(node->son[i])
+				linkOrigin(node->son[i], root);
 	}
 }
 
@@ -35,7 +37,8 @@ AST *searchForAssign(AST *node, char *name)
 		for(i=0; i < MAX_SONS; i++)
 			if(node->son[i]) {
 				assign = searchForAssign(node->son[i], name);
-				if(assign) return assign;
+				if(assign) 
+					return assign;
 			}
 	}
 	return NULL;
@@ -83,7 +86,7 @@ void nodePrint(AST *node){
 		case AST_CMDL: fprintf(stderr, "CMDL"); break;
 		case AST_BLOCK: fprintf(stderr, "BLOCK"); break;
 		case AST_VECT: fprintf(stderr, "VECTOR"); break;
-		case AST_FUNC: fprintf(stderr, "FUNCTION"); break;
+		case AST_FUNC: fprintf(stderr, "FUNCTION, %s", node->symbol->text); break;
 		case AST_PAR: fprintf(stderr, "PARENTESIS"); break;
 		case AST_DEC: fprintf(stderr, "DECLARATION, %s", node->symbol->text); break;
 		case AST_DECV: fprintf(stderr, "VECTOR DECLARATION, %s", node->symbol->text); break;
@@ -105,7 +108,10 @@ void nodePrint(AST *node){
       default: fprintf(stderr, "NOPE");
         break;
     }
-    fprintf(stderr, ")\n");
+	if(node->symbol)
+    	fprintf(stderr, ")....dado = %d\n", node->symbol->datatype);
+	 else
+		 fprintf(stderr, ")\n");
   }
 }
 

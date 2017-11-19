@@ -76,10 +76,10 @@
 
 %%
 
-program : stmtlist					{
-									//treePrint($1, 0);
-									//treeToCode($1, fileout);
-									semanticCheckAll($1);
+program : stmtlist			{
+							semanticCheckAll($1);	
+							treePrint($1, 0);
+							//treeToCode($1, fileout);
 							}
 	;
 	

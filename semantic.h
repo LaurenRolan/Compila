@@ -9,6 +9,9 @@
 #include "hash.h"
 #include "astree.h"
 
+#define ERRO -1
+#define OK 0
+
 void propagateDataType(AST *node, int datatype);
 int getDataType(AST *node);
 void semanticCheckAll(AST *node);
@@ -16,6 +19,7 @@ void semanticSetType(AST *node);
 void semanticCheckUndeclared(AST *node);
 void semanticCheckUsage(AST *node);
 void semanticCheckOperands(AST *node);
+int compareLists(AST* fcall, AST* fdec);
 
 int semanticError;
 

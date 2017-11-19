@@ -11,11 +11,14 @@ int getDataType(AST *node)
 		if(typeSon == DATATYPE_REAL) allToReal = 1;
 	}
 	//Seta todos para reais
-	if(allToReal == 1) return DATATYPE_REAL;//propagateDataType(node, DATATYPE_REAL);
-	if(node->symbol && node->symbol->datatype) return node->symbol->datatype;
+	if(allToReal == 1)
+		return DATATYPE_REAL;//propagateDataType(node, DATATYPE_REAL);
+	if(node->symbol && node->symbol->datatype) 
+		return node->symbol->datatype;
 	return typeSon;
 }
 
+//maybe this one is useless...
 void propagateDataType(AST *node, int datatype)
 {
 	int i;
@@ -31,9 +34,9 @@ void semanticCheckAll(AST *node)
 {
 	semanticError = 0;
 	semanticSetType(node);
+	linkOrigin(node, node);
 	semanticCheckUndeclared(node);
 	semanticCheckUsage(node);
-	linkOrigin(node, node);
 	semanticCheckOperands(node);
 	//if(semanticError == 1)
 	//	exit(4);
@@ -171,7 +174,14 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be a function.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
-			//else linkOrigin(node);
+			else 
+			{
+				if(compareLists(node, node->origin) == ERRO)
+				{
+					fprintf(stderr, "Semantic ERROR at line %d: function %s with invalid parameters.\n", node->lineNumber, node->symbol->text);
+					semanticError = 1;
+				}
+			}
 			break;
 		case AST_VECT: if(node->symbol->type != SYMBOL_VEC)
 			{
@@ -194,6 +204,32 @@ void semanticCheckUsage(AST *node)
 			break;
 		default: break;
 	}
+}
+
+int compareLists(AST* fcall, AST* fdec)
+{
+	fcall = fcall->son[0];	//aqui começa a lista de argumentos da chamada
+	fdec = fdec->son[1];	//aqui começa a lista de parametros da declaracao
+	
+	while(fcall != NULL)
+	{	
+		if(fdec != NULL) // se tem um parametro na declaracao e um argumento na chamada...
+		{
+			
+			//NESSE ESPAÇO, SE PRECISAR, É PRA COMPARAR OS DATA TYPES DOS ARGSxPARAM
+			
+			//continuar procurando
+			fcall = fcall->son[1];
+			fdec = fdec->son[1];			
+			
+		}
+		else  // nº arg > nº param
+			return ERRO;
+	}
+	if(fdec) // nº param > nº arg
+		return ERRO;
+	else  // acabaram os parametros e os argumentos
+		return OK;
 }
 
 void semanticCheckOperands(AST *node)
