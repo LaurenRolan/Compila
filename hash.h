@@ -21,6 +21,7 @@
 //Datatype
 #define DATATYPE_INT 1
 #define DATATYPE_REAL 2
+#define DATATYPE_BOOL 3
 
 typedef struct node {
   struct node *next;

@@ -123,9 +123,9 @@ void treePrint(AST *root, int level){
     nodePrint(root);
     while(i < 4){
 	 if(root->son[i]) {
-		 if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
-      			treePrint(root->son[i], level);
-	 	else
+		// if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
+      	//		treePrint(root->son[i], level);
+	 	//else
 			treePrint(root->son[i], level+1);
 	}
 	i++;

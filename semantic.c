@@ -2,17 +2,22 @@
 
 int getDataType(AST *node)
 {
-	int i, typeSon=0, allToReal = 0;
+	int i, typeSon=0, allToReal = 0, allToBool = 0;
 	
 	//Processa a partir das folhas
 	for(i = 0; i<MAX_SONS; ++i)
 	{
 		if(node->son[i])
 			typeSon = getDataType(node->son[i]);
-		if(typeSon == DATATYPE_REAL)
-			allToReal = 1;
+		if((node->type == AST_LES) || (node->type == AST_GRE) || (node->type ==AST_AND) || (node->type == AST_OR) || (node->type == AST_NE) || (node->type == AST_EQ) || (node->type == AST_LE) || (node->type == AST_GE) || (node->type ==AST_NOT))
+			allToBool = 1;
+		else
+			if(typeSon == DATATYPE_REAL)
+				allToReal = 1;
 	}
 	//Seta todos para reais
+	if(allToBool == 1)
+		return DATATYPE_BOOL;
 	if(allToReal == 1)
 		return DATATYPE_REAL;//propagateDataType(node, DATATYPE_REAL);
 	if(node->symbol && node->symbol->datatype) 
@@ -178,9 +183,22 @@ void semanticCheckUsage(AST *node)
 			}
 			else 
 			{
-				if(compareLists(node, node->origin) == ERRO)
+				if(compareLists(node, node->origin) == ERROR_MANYARGS)
 				{
-					fprintf(stderr, "Semantic ERROR at line %d: function %s with invalid parameters.\n", node->lineNumber, node->symbol->text);
+					
+					fprintf(stderr, "Semantic ERROR at line %d: function call %s with too many arguments.\n", node->lineNumber, node->symbol->text);
+					semanticError = 1;
+				}
+				else if(compareLists(node, node->origin) == ERROR_FEWARGS)
+				{
+					
+					fprintf(stderr, "Semantic ERROR at line %d: function call %s is missing arguments.\n", node->lineNumber, node->symbol->text);
+					semanticError = 1;
+				}
+				else if(compareLists(node, node->origin) == ERROR_BOOL)
+				{
+					
+					fprintf(stderr, "Semantic ERROR at line %d: function call %s with boolean argument.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 			}
@@ -217,17 +235,24 @@ void semanticCheckUsage(AST *node)
 
 int compareLists(AST* fcall, AST* fdec)
 {
-	fprintf(stderr, "\n\nfuncao: %s\n", fcall->symbol->text);
+	//fprintf(stderr, "\n\nfuncao: %s\n", fcall->symbol->text);
 	fcall = fcall->son[0];	//aqui começa a lista de argumentos da chamada
 	fdec = fdec->son[1];	//aqui começa a lista de parametros da declaracao
+	//fprintf(stderr, "seg fault? \n");
 	
 	while(fcall != NULL)
 	{	
+		//fprintf(stderr, "seg fault? 2 \n");
 		if(fdec != NULL) // se tem um parametro na declaracao e um argumento na chamada...
 		{
-			fprintf(stderr, "call = tipo de dado do %s eh %d\n",fcall->son[0]->symbol->text, getDataType(fcall));
-			fprintf(stderr, "dec = tipo de dado do %s eh %d\n", fdec->son[0]->symbol->text, getDataType(fdec));
+			//fprintf(stderr, "seg fault? 3 \n");
+			//fprintf(stderr, "call = tipo de dado do ? eh %d\n", getDataType(fcall));
+			//fprintf(stderr, "dec = tipo de dado do ? eh %d\n", getDataType(fdec));
+			
 			//NESSE ESPAÇO, SE PRECISAR, É PRA COMPARAR OS DATA TYPES DOS ARGSxPARAM
+			
+			if((getDataType(fcall) == DATATYPE_BOOL) || (getDataType(fdec) == DATATYPE_BOOL))
+				return ERROR_BOOL;
 			
 			//continuar procurando
 			fcall = fcall->son[1];
@@ -235,10 +260,10 @@ int compareLists(AST* fcall, AST* fdec)
 			
 		}
 		else  // nº arg > nº param
-			return ERRO;
+			return ERROR_MANYARGS;
 	}
 	if(fdec) // nº param > nº arg
-		return ERRO;
+		return ERROR_FEWARGS;
 	else  // acabaram os parametros e os argumentos
 		return OK;
 }

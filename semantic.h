@@ -9,7 +9,9 @@
 #include "hash.h"
 #include "astree.h"
 
-#define ERRO -1
+#define ERROR_BOOL -3
+#define ERROR_FEWARGS -2
+#define ERROR_MANYARGS -1
 #define OK 0
 
 void propagateDataType(AST *node, int datatype);
