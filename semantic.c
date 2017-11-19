@@ -7,8 +7,10 @@ int getDataType(AST *node)
 	//Processa a partir das folhas
 	for(i = 0; i<MAX_SONS; ++i)
 	{
-		if(node->son[i]) typeSon = getDataType(node->son[i]);
-		if(typeSon == DATATYPE_REAL) allToReal = 1;
+		if(node->son[i])
+			typeSon = getDataType(node->son[i]);
+		if(typeSon == DATATYPE_REAL)
+			allToReal = 1;
 	}
 	//Seta todos para reais
 	if(allToReal == 1)
@@ -38,8 +40,8 @@ void semanticCheckAll(AST *node)
 	semanticCheckUndeclared(node);
 	semanticCheckUsage(node);
 	semanticCheckOperands(node);
-	//if(semanticError == 1)
-	//	exit(4);
+	if(semanticError == 1)
+		exit(4);
 }
 
 
@@ -197,8 +199,15 @@ void semanticCheckUsage(AST *node)
 			break; 
 		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_LIT_INT && node->symbol->type != SYMBOL_LIT_REAL && node->symbol->type != SYMBOL_LIT_CHAR && node->symbol->type != SYMBOL_LIT_STRING)
 			{
-				fprintf(stderr, "Semantic ERROR at line %d: identifier %s ...How can I say?... It's creepy O.O\n", node->lineNumber, node->symbol->text);
-				
+				if(node->symbol->type == SYMBOL_VEC)
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s is a vector, use %s[index]\n", node->lineNumber, node->symbol->text, node->symbol->text);
+				else
+				{
+					if(node->symbol->type == SYMBOL_FUN)
+						fprintf(stderr, "Semantic ERROR at line %d: identifier %s is a function, use %s(arguments)\n", node->lineNumber, node->symbol->text, node->symbol->text);
+					else
+						fprintf(stderr, "Semantic ERROR at line %d: identifier %s ...How can I say?... It's creepy O.O\n", node->lineNumber, node->symbol->text);
+				}
 				semanticError = 1;
 			}
 			break;
@@ -208,6 +217,7 @@ void semanticCheckUsage(AST *node)
 
 int compareLists(AST* fcall, AST* fdec)
 {
+	fprintf(stderr, "\n\nfuncao: %s\n", fcall->symbol->text);
 	fcall = fcall->son[0];	//aqui começa a lista de argumentos da chamada
 	fdec = fdec->son[1];	//aqui começa a lista de parametros da declaracao
 	
@@ -215,7 +225,8 @@ int compareLists(AST* fcall, AST* fdec)
 	{	
 		if(fdec != NULL) // se tem um parametro na declaracao e um argumento na chamada...
 		{
-			
+			fprintf(stderr, "call = tipo de dado do %s eh %d\n",fcall->son[0]->symbol->text, getDataType(fcall));
+			fprintf(stderr, "dec = tipo de dado do %s eh %d\n", fdec->son[0]->symbol->text, getDataType(fdec));
 			//NESSE ESPAÇO, SE PRECISAR, É PRA COMPARAR OS DATA TYPES DOS ARGSxPARAM
 			
 			//continuar procurando
