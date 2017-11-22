@@ -78,7 +78,7 @@
 
 program : stmtlist			{
 							semanticCheckAll($1);	
-							//treePrint($1, 0);
+							treePrint($1, 0);
 							//treeToCode($1, fileout);
 							}
 	;

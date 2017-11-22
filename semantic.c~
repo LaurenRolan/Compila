@@ -256,9 +256,9 @@ int compareLists(AST* fcall, AST* fdec)
 		{
 			//fprintf(stderr, "seg fault? 3 \n");
 			if(fcall->son[0] != NULL)
-				callType = getDataType(fcall->son[0]);
+				callType = getDataType(fcall->son[0]));
 			if(fdec->son[0] != NULL) 
-				decType = getDataType(fdec->son[0]);
+				decType = getDataType(fdec->son[0]));
 			if(decType != callType)
 				return ERROR_TYPES;
 			
