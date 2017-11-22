@@ -20,11 +20,13 @@
 
 //Datatypes
 #define DATATYPE_BOOL 1
-#define DATATYPE_BYTE 2
-#define DATATYPE_SHORT 3
-#define DATATYPE_LONG 4
-#define DATATYPE_FLOAT 5
-#define DATATYPE_DOUBLE 6
+#define DATATYPE_REAL 2
+#define DATATYPE_INT 3
+//#define DATATYPE_BYTE 2
+//#define DATATYPE_SHORT 3
+//#define DATATYPE_LONG 4
+//#define DATATYPE_FLOAT 5
+//#define DATATYPE_DOUBLE 6
 
 typedef struct node {
   struct node *next;
