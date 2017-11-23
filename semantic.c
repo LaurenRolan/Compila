@@ -1,5 +1,6 @@
 #include "semantic.h"
 
+
 int getDataType(AST *node)
 {
 	int i, typeSon=0, allToReal = 0, allToBool = 0;
@@ -12,22 +13,23 @@ int getDataType(AST *node)
 		if((node->type == AST_LES) || (node->type == AST_GRE) || (node->type ==AST_AND) || (node->type == AST_OR) || (node->type == AST_NE) || (node->type == AST_EQ) || (node->type == AST_LE) || (node->type == AST_GE) || (node->type ==AST_NOT))
 			allToBool = 1;
 		else
-			if(typeSon == DATATYPE_REAL)
+			if(dataTypeIsReal(typeSon) == OK)
 				allToReal = 1;
 	}
 	//Seta todos para reais
 	if(node->type == AST_FUNC)
 		return node->symbol->datatype;
 	if(allToBool == 1)
-		return DATATYPE_BOOL;
+		return BOOLEAN_EXPRESSION;
 	if(allToReal == 1)
-		return DATATYPE_REAL;//propagateDataType(node, DATATYPE_REAL);
+		return DATATYPE_FLOAT;    // nao sei o que botar aqui, entao botei FLOAT			propagateDataType(node, DATATYPE_REAL);
 	if(node->symbol && node->symbol->datatype)
 		return node->symbol->datatype;
 	return typeSon;
 }
 
 //maybe this one is useless...
+/*
 void propagateDataType(AST *node, int datatype)
 {
 	int i;
@@ -38,18 +40,19 @@ void propagateDataType(AST *node, int datatype)
 	if(node->symbol && node->symbol->datatype)
 		node->symbol->datatype = datatype;
 }
+*/
 
 void semanticCheckAll(AST *node)
 {
 	semanticError = 0;
 	semanticSetType(node);
 	linkOrigin(node, node);
-	semanticCheckReturns(node, NULL);
 	semanticCheckUndeclared(node);
+	semanticCheckReturns(node, NULL);
 	semanticCheckUsage(node);
 	semanticCheckOperands(node);
-	//if(semanticError == 1)
-	//	exit(4);
+	if(semanticError == 1)
+		exit(4);
 }
 
 
@@ -73,10 +76,16 @@ void semanticSetType(AST *node)
 				else
 				{
 					node->symbol->type = SYMBOL_VAR;
-					if(node->son[0]->type == AST_BYTE || node->son[0]->type == AST_SHORT || node->son[0]->type == AST_LONG)
-						node->symbol->datatype = DATATYPE_INT;
-					if(node->son[0]->type == AST_FLOAT || node->son[0]->type == AST_DOUBLE)
-						node->symbol->datatype = DATATYPE_REAL;
+					if(node->son[0]->type == AST_BYTE)
+						node->symbol->datatype = DATATYPE_BYTE;
+					if(node->son[0]->type == AST_SHORT)
+						node->symbol->datatype = DATATYPE_SHORT;
+					if(node->son[0]->type == AST_LONG)
+						node->symbol->datatype = DATATYPE_LONG;
+					if(node->son[0]->type == AST_FLOAT)
+						node->symbol->datatype = DATATYPE_FLOAT;
+					if(node->son[0]->type == AST_DOUBLE)
+						node->symbol->datatype = DATATYPE_DOUBLE;
 				}
 			break;
 		case AST_DECV: if (node->symbol->type != SYMBOL_ID)
@@ -87,10 +96,16 @@ void semanticSetType(AST *node)
 				else
 				{
 					node->symbol->type = SYMBOL_VEC;
-					if(node->son[0]->type == AST_BYTE || node->son[0]->type == AST_SHORT || node->son[0]->type == AST_LONG)
-						node->symbol->datatype = DATATYPE_INT;
-					if(node->son[0]->type == AST_FLOAT || node->son[0]->type == AST_DOUBLE)
-						node->symbol->datatype = DATATYPE_REAL;
+					if(node->son[0]->type == AST_BYTE)
+						node->symbol->datatype = DATATYPE_BYTE;
+					if(node->son[0]->type == AST_SHORT)
+						node->symbol->datatype = DATATYPE_SHORT;
+					if(node->son[0]->type == AST_LONG)
+						node->symbol->datatype = DATATYPE_LONG;
+					if(node->son[0]->type == AST_FLOAT)
+						node->symbol->datatype = DATATYPE_FLOAT;
+					if(node->son[0]->type == AST_DOUBLE)
+						node->symbol->datatype = DATATYPE_DOUBLE;
 				}
 			break;
 		case AST_DECF: if (node->symbol->type != SYMBOL_ID)
@@ -101,10 +116,16 @@ void semanticSetType(AST *node)
 				else
 				{
 					node->symbol->type = SYMBOL_FUN;
-					if(node->son[0]->type == AST_BYTE || node->son[0]->type == AST_SHORT || node->son[0]->type == AST_LONG)
-						node->symbol->datatype = DATATYPE_INT;
-					if(node->son[0]->type == AST_FLOAT || node->son[0]->type == AST_DOUBLE)
-						node->symbol->datatype = DATATYPE_REAL;
+					if(node->son[0]->type == AST_BYTE)
+						node->symbol->datatype = DATATYPE_BYTE;
+					if(node->son[0]->type == AST_SHORT)
+						node->symbol->datatype = DATATYPE_SHORT;
+					if(node->son[0]->type == AST_LONG)
+						node->symbol->datatype = DATATYPE_LONG;
+					if(node->son[0]->type == AST_FLOAT)
+						node->symbol->datatype = DATATYPE_FLOAT;
+					if(node->son[0]->type == AST_DOUBLE)
+						node->symbol->datatype = DATATYPE_DOUBLE;
 				}
 			break;
 		case AST_PARAM: if (node->symbol->type != SYMBOL_ID)
@@ -115,10 +136,16 @@ void semanticSetType(AST *node)
 				else
 				{
 					node->symbol->type = SYMBOL_VAR;
-					if(node->son[0]->type == AST_BYTE || node->son[0]->type == AST_SHORT || node->son[0]->type == AST_LONG)
-						node->symbol->datatype = DATATYPE_INT;
-					if(node->son[0]->type == AST_FLOAT || node->son[0]->type == AST_DOUBLE)
-						node->symbol->datatype = DATATYPE_REAL;
+					if(node->son[0]->type == AST_BYTE)
+						node->symbol->datatype = DATATYPE_BYTE;
+					if(node->son[0]->type == AST_SHORT)
+						node->symbol->datatype = DATATYPE_SHORT;
+					if(node->son[0]->type == AST_LONG)
+						node->symbol->datatype = DATATYPE_LONG;
+					if(node->son[0]->type == AST_FLOAT)
+						node->symbol->datatype = DATATYPE_FLOAT;
+					if(node->son[0]->type == AST_DOUBLE)
+						node->symbol->datatype = DATATYPE_DOUBLE;
 				}
 			break;
 		default: break;
@@ -172,7 +199,7 @@ void semanticCheckUsage(AST *node)
 			}
 			//esse if de baixo dá problemas com VAR = FUNCAO, entao o if de cima é uma gambiarra pra arrumar isso
 			else*/
-			if((node->symbol->datatype == DATATYPE_INT && getDataType(node->son[0])== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && getDataType(node->son[0])== DATATYPE_INT))
+			if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[0])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[0])) == OK))
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
@@ -183,7 +210,7 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be vector.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
-			if(node->son[0]->symbol->datatype == DATATYPE_REAL)
+			if(dataTypeIsReal(node->son[0]->symbol->datatype) == OK)
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
@@ -199,7 +226,7 @@ void semanticCheckUsage(AST *node)
 			}
 			//esse if de baixo dá problemas com VAR = FUNCAO, entao o if de cima é uma gambiarra pra arrumar isso
 			else*/
-			if((node->symbol->datatype == DATATYPE_INT && getDataType(node->son[1])== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && getDataType(node->son[1])== DATATYPE_INT))
+			if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[1])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[1])) == OK))
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
@@ -217,25 +244,21 @@ void semanticCheckUsage(AST *node)
 				flagList = compareLists(node, node->origin);
 				if(flagList == ERROR_MANYARGS)
 				{
-
 					fprintf(stderr, "Semantic ERROR at line %d: function call %s with too many arguments.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 				else if(flagList == ERROR_FEWARGS)
 				{
-
 					fprintf(stderr, "Semantic ERROR at line %d: function call %s is missing arguments.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 				else if(flagList == ERROR_BOOL)
 				{
-
 					fprintf(stderr, "Semantic ERROR at line %d: function call %s with boolean argument.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 				else if(flagList == ERROR_TYPES)
 				{
-
 					fprintf(stderr, "Semantic ERROR at line %d: function call %s with incompatible types.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
@@ -247,7 +270,7 @@ void semanticCheckUsage(AST *node)
 				semanticError = 1;
 			}
 
-			if(getDataType(node->son[0]) == DATATYPE_REAL)
+			if(dataTypeIsReal(getDataType(node->son[0])) == OK)
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
@@ -262,7 +285,7 @@ void semanticCheckUsage(AST *node)
 					if(node->symbol->type == SYMBOL_FUN)
 						fprintf(stderr, "Semantic ERROR at line %d: identifier %s is a function, use %s(arguments)\n", node->lineNumber, node->symbol->text, node->symbol->text);
 					else
-						fprintf(stderr, "Semantic ERROR at line %d: identifier %s ...How can I say?... It's creepy O.O\n", node->lineNumber, node->symbol->text);
+						fprintf(stderr, "Semantic ERROR at line %d: identifier %s ...How can I say?... It's creepy O.O\n", node->lineNumber, node->symbol->text); // acho que isso nao deve acontecer
 				}
 				semanticError = 1;
 			}
@@ -289,12 +312,12 @@ int compareLists(AST* fcall, AST* fdec)
 				callType = getDataType(fcall->son[0]);
 			if(fdec->son[0] != NULL)
 				decType = getDataType(fdec->son[0]);
-			if(decType != callType)
+			if(((dataTypeIsReal(decType) == OK) && (dataTypeIsInt(callType)) == OK) || ((dataTypeIsInt(decType) == OK) && (dataTypeIsReal(callType) == OK)))
 				return ERROR_TYPES;
 
 			//NESSE ESPAÇO, SE PRECISAR, É PRA COMPARAR OS DATA TYPES DOS ARGSxPARAM
 
-			if((getDataType(fcall) == DATATYPE_BOOL) || (getDataType(fdec) == DATATYPE_BOOL))
+			if((getDataType(fcall) == BOOLEAN_EXPRESSION) || (getDataType(fdec) == BOOLEAN_EXPRESSION))
 				return ERROR_BOOL;
 
 
@@ -418,7 +441,7 @@ void semanticCheckReturns(AST* nodeR, HASH_NODE *fdec)
 	else if(nodeR->type == AST_RETURN)
 		{
 			//fprintf(stderr, "print 4\n");
-			if((fdec->datatype == DATATYPE_INT && getDataType(nodeR->son[0])== DATATYPE_REAL) || (fdec->datatype == DATATYPE_REAL && getDataType(nodeR->son[0])== DATATYPE_REAL))	
+			if((dataTypeIsInt(fdec->datatype) == OK && dataTypeIsReal(getDataType(nodeR->son[0])) == OK) || (dataTypeIsReal(fdec->datatype) == OK && dataTypeIsInt(getDataType(nodeR->son[0])) == OK))	
 			{
 				//fprintf(stderr, "print 5\n");
 				fprintf(stderr, "Semantic ERROR at line %d: return from function %s has wrong type.\n", nodeR->lineNumber, fdec->text);
@@ -434,6 +457,21 @@ void semanticCheckReturns(AST* nodeR, HASH_NODE *fdec)
 }
 
 
+int dataTypeIsReal(int tipo)
+{
+	if(tipo == DATATYPE_FLOAT || tipo == DATATYPE_DOUBLE)
+		return OK;
+	else
+		return ERROR_TYPES;
+}
+
+int dataTypeIsInt(int tipo)
+{
+	if(tipo == DATATYPE_BYTE || tipo == DATATYPE_SHORT || tipo == DATATYPE_LONG)
+		return OK;
+	else
+		return ERROR_TYPES;
+}
 
 
 

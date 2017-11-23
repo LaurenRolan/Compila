@@ -39,8 +39,8 @@ int typeToDatatype(int type)
 	switch(type)
 	{
 		case SYMBOL_LIT_INT: 
-		case SYMBOL_LIT_CHAR: return DATATYPE_INT;
-		case SYMBOL_LIT_REAL: return DATATYPE_REAL;
+		case SYMBOL_LIT_CHAR: return DATATYPE_BYTE;
+		case SYMBOL_LIT_REAL: return DATATYPE_FLOAT;
 		default: return 0;
 	}
 }

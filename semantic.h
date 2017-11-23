@@ -25,6 +25,9 @@ void semanticCheckOperands(AST *node);
 int compareLists(AST* fcall, AST* fdec);
 void semanticCheckReturns(AST* nodeR, HASH_NODE *fdec);
 
+int dataTypeIsReal(int tipo);
+int dataTypeIsInt(int tipo);
+
 int semanticError;
 
 #endif
