@@ -16,6 +16,8 @@ int getDataType(AST *node)
 				allToReal = 1;
 	}
 	//Seta todos para reais
+	if(node->type == AST_FUNC)
+		return node->symbol->datatype;
 	if(allToBool == 1)
 		return DATATYPE_BOOL;
 	if(allToReal == 1)
@@ -42,6 +44,7 @@ void semanticCheckAll(AST *node)
 	semanticError = 0;
 	semanticSetType(node);
 	linkOrigin(node, node);
+	semanticCheckReturns(node, NULL);
 	semanticCheckUndeclared(node);
 	semanticCheckUsage(node);
 	semanticCheckOperands(node);
@@ -158,8 +161,8 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be scalar.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
 			}
-		//	if(node->son[0]){ //OLHAR ISSO DEPOIS
-			if(node->son[0]->type == AST_FUNC)
+		//	if(node->son[0]){ // ACHO QUE ESSA PARTE COMENTADA AQUI EMBAIXO NAO PRECISA
+		/*	if(node->son[0]->type == AST_FUNC)
 			{
 				if((node->symbol->datatype == DATATYPE_INT && node->son[0]->symbol->datatype== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && node->son[0]->symbol->datatype == DATATYPE_INT))
 				{
@@ -168,7 +171,8 @@ void semanticCheckUsage(AST *node)
 				}
 			}
 			//esse if de baixo dá problemas com VAR = FUNCAO, entao o if de cima é uma gambiarra pra arrumar isso
-			else if((node->symbol->datatype == DATATYPE_INT && getDataType(node->son[1])== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && getDataType(node->son[1])== DATATYPE_INT))
+			else*/
+			if((node->symbol->datatype == DATATYPE_INT && getDataType(node->son[0])== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && getDataType(node->son[0])== DATATYPE_INT))
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
@@ -184,8 +188,8 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
 			}
-			//	if(node->son[1]){ //OLHAR ISSO DEPOIS
-			if(node->son[1]->type == AST_FUNC)
+			//	if(node->son[1]){ // ACHO QUE ESSA PARTE COMENTADA AQUI EMBAIXO NAO PRECISA
+			/*if(node->son[1]->type == AST_FUNC)
 			{
 				if((node->symbol->datatype == DATATYPE_INT && node->son[1]->symbol->datatype== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && node->son[1]->symbol->datatype == DATATYPE_INT))
 				{
@@ -194,7 +198,8 @@ void semanticCheckUsage(AST *node)
 				}
 			}
 			//esse if de baixo dá problemas com VAR = FUNCAO, entao o if de cima é uma gambiarra pra arrumar isso
-			else if((node->symbol->datatype == DATATYPE_INT && getDataType(node->son[1])== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && getDataType(node->son[1])== DATATYPE_INT))
+			else*/
+			if((node->symbol->datatype == DATATYPE_INT && getDataType(node->son[1])== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && getDataType(node->son[1])== DATATYPE_INT))
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
@@ -394,3 +399,41 @@ void semanticCheckOperands(AST *node)
 	}
 	//Verificar assign (real para real, inteiro para inteiro)
 }
+
+void semanticCheckReturns(AST* nodeR, HASH_NODE *fdec)
+{
+	//fprintf(stderr, "print INICIO\n");
+	
+	int i;
+	if(!nodeR) return;
+	
+	//fprintf(stderr, "print 1\n");
+	
+	if(nodeR->type == AST_DECF)
+	{
+		//fprintf(stderr, "print 2\n");
+		fdec = nodeR->symbol;
+		//fprintf(stderr, "print 3\n");
+	}
+	else if(nodeR->type == AST_RETURN)
+		{
+			//fprintf(stderr, "print 4\n");
+			if((fdec->datatype == DATATYPE_INT && getDataType(nodeR->son[0])== DATATYPE_REAL) || (fdec->datatype == DATATYPE_REAL && getDataType(nodeR->son[0])== DATATYPE_REAL))	
+			{
+				//fprintf(stderr, "print 5\n");
+				fprintf(stderr, "Semantic ERROR at line %d: return from function %s has wrong type.\n", nodeR->lineNumber, fdec->text);
+				semanticError = 1;
+				//fprintf(stderr, "print 6\n");
+			}
+		}
+
+	//fprintf(stderr, "print 7\n");
+	for(i=0; i <MAX_SONS; ++i)
+		semanticCheckReturns(nodeR->son[i],fdec);
+	//fprintf(stderr, "print FIM\n");
+}
+
+
+
+
+

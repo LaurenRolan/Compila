@@ -23,6 +23,7 @@ void semanticCheckUndeclared(AST *node);
 void semanticCheckUsage(AST *node);
 void semanticCheckOperands(AST *node);
 int compareLists(AST* fcall, AST* fdec);
+void semanticCheckReturns(AST* nodeR, HASH_NODE *fdec);
 
 int semanticError;
 

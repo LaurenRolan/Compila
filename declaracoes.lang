@@ -9,15 +9,34 @@ c: long = 0;
 }
 
 (byte) teste(x : float, y : long, z : float) {
-	i[5] = a + v[3];
+	i[5] = a + v[3]; // erro byte = float
 	b = f(a);
-	i[b] = 9.9;
+	i[b] = 9.9; // erro byte = float
 	a = f(a) + c;
-	a = teste(2,3,98);
-	a = v[1.5];
-	a = f(a+2>a);
-	a = f(a,x);
-	a = 5.2;
-	d = a;
+	a = teste(2.6,3,98.9) + 5 + c;
+	return (a);
+	a = teste(2.6,3,98.9); 
+	a = teste(2,3,98); // erro parametro byte x float
+	a = v[1.5]; // erros byte = float e index do vetor
+	a = f(a+2>a); // erro parametro booleano
+	a = f(a,x); // erro muito argumento
+	a = 5.2; // erro byte = float
+	d = a; // erro float = byte
+	a = v[2]; // erro byte = float
+	a = i[3];
+	d = v[2];
+
+	return (a+v[2]);	// erro retorno 
+	
+	return (teste(3.5,4,2.5)); // arrumar isso
+
+	d = i[3]; // erro float = byte
+	v[1] = i[3]; // erro float = byte
+	i[2] = v[5]; // erro byte = float
+
+	return (5.5); // erro no retorno
+	
+	return (4);
+	
 
 }
