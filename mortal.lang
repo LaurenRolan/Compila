@@ -17,7 +17,7 @@ float 1: byte = 3.2; 	//redeclaração + float
 (long) funcao long ()
 {
 	//Chamada de funcao cagada
-	funcao byte = byte 1va;	// funcao na attr
+	funcao byte = byte 1;	// funcao na attr
 	//funcao byte (byte 1, float 1) = byte 2; //funcao na attr
 	byte 3 = funcao byte (float 1, byte 1); //args trocados
 	byte 3 = funcao byte (float 1); //arg trocado e menos args

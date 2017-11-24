@@ -32,8 +32,8 @@ void semanticCheckAll(AST *node)
 	semanticCheckReturns(node, NULL);
 	semanticCheckUsage(node);
 	semanticCheckOperands(node);
-	if(semanticError == 1)
-		exit(4);
+	//if(semanticError == 1)
+	//	exit(4);
 }
 
 
@@ -176,15 +176,19 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be vector.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
-			if(node->son[0]) if(dataTypeIsInt(node->son[0]->symbol->datatype) != OK)
-			{
-				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
-				semanticError = 1;
-			}
-			if(node->son[1]) if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[1])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[1])) == OK))
-			{
-				fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
-				semanticError = 1;
+			else {
+				//Nicolas, acho legal testar tudo que possa der seg fault... seu inútil
+				if(node->son[0] && node->son[0]->symbol) if(dataTypeIsInt(node->son[0]->symbol->datatype) != OK)
+				{
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
+					semanticError = 1;
+				}
+				if(node->son[1]) if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[1])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[1])) == OK))
+				{
+					
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
+					semanticError = 1;
+				}
 			}
 			break;
 		//Verifica lado direito: vetor, escalar e função
@@ -225,10 +229,12 @@ void semanticCheckUsage(AST *node)
 				semanticError = 1;
 			}
 
-			if(node->son[0]) if(dataTypeIsInt(getDataType(node->son[0])) != OK)
-			{
-				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
-				semanticError = 1;
+			else {
+				if(node->son[0]) if(dataTypeIsInt(getDataType(node->son[0])) != OK)
+				{
+					fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
+					semanticError = 1;
+				}
 			}
 			break;
 		case AST_SYMBOL: if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_LIT_INT && node->symbol->type != SYMBOL_LIT_REAL && node->symbol->type != SYMBOL_LIT_CHAR && node->symbol->type != SYMBOL_LIT_STRING)
