@@ -1,6 +1,22 @@
 #include "semantic.h"
 
 
+int semanticCheckInit(AST *node, int type)
+{
+	if(node->son[1]) //Se tem optinit (declaração de vetor)
+		return semanticCheckInit(node->son[1], type);
+	if(node->son[0]) //É optinit (declaração de vetor)
+	{
+		if(dataTypeIsReal(type) != dataTypeIsReal(node->son[0]->symbol->datatype))
+			return 1;
+		return 0;
+	}
+	//Se é literal (declaração de variável)
+	if(dataTypeIsReal(type) != dataTypeIsReal(node->symbol->datatype))
+		return 1;
+	return 0;
+}
+
 int getDataType(AST *node)
 {
 	int i, typeSon=0;
@@ -67,6 +83,11 @@ void semanticSetType(AST *node)
 						node->symbol->datatype = DATATYPE_FLOAT;
 					if(node->son[0]->type == AST_DOUBLE)
 						node->symbol->datatype = DATATYPE_DOUBLE;
+					if(semanticCheckInit(node->son[1], node->symbol->datatype))
+					{
+						fprintf(stderr, "Semantic ERROR at line %d: identifier %s initialized with wrong datatype.\n", node->lineNumber, node->symbol->text);
+						semanticError = 1;
+					}
 				}
 			break;
 		case AST_DECV: if (node->symbol->type != SYMBOL_ID)
@@ -87,6 +108,11 @@ void semanticSetType(AST *node)
 						node->symbol->datatype = DATATYPE_FLOAT;
 					if(node->son[0]->type == AST_DOUBLE)
 						node->symbol->datatype = DATATYPE_DOUBLE;
+					if(semanticCheckInit(node->son[2], node->symbol->datatype))
+					{
+						fprintf(stderr, "Semantic ERROR at line %d: vector %s is initializedd with wrong datatype.\n", node->lineNumber, node->symbol->text);
+						semanticError = 1;
+					}
 				}
 			break;
 		case AST_DECF: if (node->symbol->type != SYMBOL_ID)
