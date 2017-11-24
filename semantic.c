@@ -136,14 +136,10 @@ void semanticSetType(AST *node)
 void semanticCheckUndeclared(AST *node)
 {
 	int i = 0;
-	//fprintf(stderr, "1\n");
   	if(node){
-		//fprintf(stderr, "2\n");
 		if(node->symbol)
         	hashCheckUndeclared(node->symbol->text, node->lineNumber);
-		//fprintf(stderr, "3\n");
     	while(i < 4){
-			//fprintf(stderr, "4\n");
 	 		if(node->son[i])
 				semanticCheckUndeclared(node->son[i]);
 			i++;
@@ -169,18 +165,7 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be scalar.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
 			}
-		//	if(node->son[0]){ // ACHO QUE ESSA PARTE COMENTADA AQUI EMBAIXO NAO PRECISA
-		/*	if(node->son[0]->type == AST_FUNC)
-			{
-				if((node->symbol->datatype == DATATYPE_INT && node->son[0]->symbol->datatype== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && node->son[0]->symbol->datatype == DATATYPE_INT))
-				{
-					fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
-					semanticError = 1;
-				}
-			}
-			//esse if de baixo dá problemas com VAR = FUNCAO, entao o if de cima é uma gambiarra pra arrumar isso
-			else*/
-			if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[0])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[0])) == OK))
+			if(node->son[0]) if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[0])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[0])) == OK))
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
@@ -191,23 +176,12 @@ void semanticCheckUsage(AST *node)
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be vector.\n", node->lineNumber, node->symbol->text);
 				semanticError = 1;
 			}
-			if(dataTypeIsReal(node->son[0]->symbol->datatype) == OK)
+			if(node->son[0]) if(dataTypeIsInt(node->son[0]->symbol->datatype) != OK)
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
 			}
-			//	if(node->son[1]){ // ACHO QUE ESSA PARTE COMENTADA AQUI EMBAIXO NAO PRECISA
-			/*if(node->son[1]->type == AST_FUNC)
-			{
-				if((node->symbol->datatype == DATATYPE_INT && node->son[1]->symbol->datatype== DATATYPE_REAL) || (node->symbol->datatype == DATATYPE_REAL && node->son[1]->symbol->datatype == DATATYPE_INT))
-				{
-					fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
-					semanticError = 1;
-				}
-			}
-			//esse if de baixo dá problemas com VAR = FUNCAO, entao o if de cima é uma gambiarra pra arrumar isso
-			else*/
-			if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[1])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[1])) == OK))
+			if(node->son[1]) if((dataTypeIsInt(node->symbol->datatype) == OK && dataTypeIsReal(getDataType(node->son[1])) == OK) || (dataTypeIsReal(node->symbol->datatype) == OK && dataTypeIsInt(getDataType(node->son[1])) == OK))
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s is receiving a wrong type.\n", node->lineNumber , node->symbol->text);
 				semanticError = 1;
@@ -251,7 +225,7 @@ void semanticCheckUsage(AST *node)
 				semanticError = 1;
 			}
 
-			if(dataTypeIsInt(getDataType(node->son[0])) != OK)
+			if(node->son[0]) if(dataTypeIsInt(getDataType(node->son[0])) != OK)
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
@@ -278,10 +252,8 @@ void semanticCheckUsage(AST *node)
 int compareLists(AST* fcall, AST* fdec)
 {
 	int callType, decType;
-	//fprintf(stderr, "\n\nfuncao: %s\n", fcall->symbol->text);
 	fcall = fcall->son[0];	//aqui começa a lista de argumentos da chamada
 	fdec = fdec->son[1];	//aqui começa a lista de parametros da declaracao
-	//fprintf(stderr, "seg fault? \n");
 
 	while(fcall != NULL)
 	{
