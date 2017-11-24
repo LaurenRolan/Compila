@@ -108,7 +108,7 @@ void semanticSetType(AST *node)
 						node->symbol->datatype = DATATYPE_FLOAT;
 					if(node->son[0]->type == AST_DOUBLE)
 						node->symbol->datatype = DATATYPE_DOUBLE;
-					if(semanticCheckInit(node->son[2], node->symbol->datatype))
+					if(node->son[2] && semanticCheckInit(node->son[2], node->symbol->datatype))
 					{
 						fprintf(stderr, "Semantic ERROR at line %d: vector %s is initializedd with wrong datatype.\n", node->lineNumber, node->symbol->text);
 						semanticError = 1;
