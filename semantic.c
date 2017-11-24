@@ -21,7 +21,7 @@ int getDataType(AST *node)
 {
 	int i, typeSon=0;
 
-	if(node->type == AST_FUNC)
+	if((node->type == AST_FUNC) || (node->type == AST_VECT))
 		return node->symbol->datatype;
 	//Processa a partir das folhas
 	for(i = 0; i<MAX_SONS; ++i)
@@ -83,6 +83,7 @@ void semanticSetType(AST *node)
 						node->symbol->datatype = DATATYPE_FLOAT;
 					if(node->son[0]->type == AST_DOUBLE)
 						node->symbol->datatype = DATATYPE_DOUBLE;
+					
 					if(semanticCheckInit(node->son[1], node->symbol->datatype))
 					{
 						fprintf(stderr, "Semantic ERROR at line %d: identifier %s initialized with wrong datatype.\n", node->lineNumber, node->symbol->text);
@@ -108,6 +109,7 @@ void semanticSetType(AST *node)
 						node->symbol->datatype = DATATYPE_FLOAT;
 					if(node->son[0]->type == AST_DOUBLE)
 						node->symbol->datatype = DATATYPE_DOUBLE;
+					
 					if(node->son[2] && semanticCheckInit(node->son[2], node->symbol->datatype))
 					{
 						fprintf(stderr, "Semantic ERROR at line %d: vector %s is initializedd with wrong datatype.\n", node->lineNumber, node->symbol->text);
@@ -255,9 +257,9 @@ void semanticCheckUsage(AST *node)
 			}
 
 			else {
-				if(node->son[0]) if(dataTypeIsInt(getDataType(node->son[0])) != OK)
+				if(dataTypeIsInt(getDataType(node->son[0])) != OK)
 				{
-					fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
+					fprintf(stderr, "Semantic ERROR at line %d: index of vector %s must be an integer.\n", node->lineNumber, node->symbol->text);
 					semanticError = 1;
 				}
 			}
@@ -270,8 +272,7 @@ void semanticCheckUsage(AST *node)
 				{
 					if(node->symbol->type == SYMBOL_FUN)
 						fprintf(stderr, "Semantic ERROR at line %d: identifier %s is a function, use %s(arguments)\n", node->lineNumber, node->symbol->text, node->symbol->text);
-					else
-						fprintf(stderr, "Semantic ERROR at line %d: identifier %s ...How can I say?... It's creepy O.O\n", node->lineNumber, node->symbol->text); // acho que isso nao deve acontecer
+					//else	fprintf(stderr, "Semantic ERROR at line %d: identifier %s ...How can I say?... It's creepy O.O\n", node->lineNumber, node->symbol->text); // acho que isso nao deve acontecer
 				}
 				semanticError = 1;
 			}
