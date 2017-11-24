@@ -22,25 +22,11 @@ int getDataType(AST *node)
 	if(allToBool == 1)
 		return BOOLEAN_EXPRESSION;
 	if(allToReal == 1)
-		return DATATYPE_FLOAT;    // nao sei o que botar aqui, entao botei FLOAT			propagateDataType(node, DATATYPE_REAL);
+		return DATATYPE_FLOAT; 
 	if(node->symbol && node->symbol->datatype)
 		return node->symbol->datatype;
 	return typeSon;
 }
-
-//maybe this one is useless...
-/*
-void propagateDataType(AST *node, int datatype)
-{
-	int i;
-	if(!node) return;
-
-	for(i = 0; i<MAX_SONS; ++i) //diferenciar vetor
-		if((node->type != AST_ASSV && node->type != AST_VECT) || i != 0) if(node->son[i]) propagateDataType(node->son[i], datatype);
-	if(node->symbol && node->symbol->datatype)
-		node->symbol->datatype = datatype;
-}
-*/
 
 void semanticCheckAll(AST *node)
 {
@@ -270,7 +256,7 @@ void semanticCheckUsage(AST *node)
 				semanticError = 1;
 			}
 
-			if(dataTypeIsReal(getDataType(node->son[0])) == OK)
+			if(dataTypeIsInt(getDataType(node->son[0])) == OK)
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
