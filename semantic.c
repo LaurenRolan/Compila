@@ -3,28 +3,23 @@
 
 int getDataType(AST *node)
 {
-	int i, typeSon=0, allToReal = 0, allToBool = 0;
+	int i, typeSon=0;
 
+	if(node->type == AST_FUNC)
+		return node->symbol->datatype;
 	//Processa a partir das folhas
 	for(i = 0; i<MAX_SONS; ++i)
 	{
 		if(node->son[i])
-			typeSon = getDataType(node->son[i]);
+			if(getDataType(node->son[i]) > typeSon)
+				typeSon = getDataType(node->son[i]);
 		if((node->type == AST_LES) || (node->type == AST_GRE) || (node->type ==AST_AND) || (node->type == AST_OR) || (node->type == AST_NE) || (node->type == AST_EQ) || (node->type == AST_LE) || (node->type == AST_GE) || (node->type ==AST_NOT))
-			allToBool = 1;
-		else
-			if(dataTypeIsReal(typeSon) == OK)
-				allToReal = 1;
+			return BOOLEAN_EXPRESSION;
 	}
-	//Seta todos para reais
-	if(node->type == AST_FUNC)
-		return node->symbol->datatype;
-	if(allToBool == 1)
-		return BOOLEAN_EXPRESSION;
-	if(allToReal == 1)
-		return DATATYPE_FLOAT; 
+ 
 	if(node->symbol && node->symbol->datatype)
-		return node->symbol->datatype;
+		if(node->symbol->datatype > typeSon)
+			return node->symbol->datatype;
 	return typeSon;
 }
 
@@ -256,7 +251,7 @@ void semanticCheckUsage(AST *node)
 				semanticError = 1;
 			}
 
-			if(dataTypeIsInt(getDataType(node->son[0])) == OK)
+			if(dataTypeIsInt(getDataType(node->son[0])) != OK)
 			{
 				fprintf(stderr, "Semantic ERROR at line %d: identifier %s must be an integer.\n", node->lineNumber, node->son[0]->symbol->text);
 				semanticError = 1;
