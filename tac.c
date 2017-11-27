@@ -30,10 +30,11 @@ TAC *tacGenerator(AST *node)
 		code[i] = tacGenerator(node->son[i]);
 	switch(node->type)
 	{
-		case AST_SYMBOL: return tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
-		case AST_ADD: tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_ADD, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_SYMBOL: return tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
+		case AST_ADD: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_ADD, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_ASS: return tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0);
 	}
-	return 0;
+	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 }
 
 void tacPrintBack(TAC *last)
