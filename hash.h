@@ -37,7 +37,7 @@ typedef struct node {
   int datatype;
 }HASH_NODE;
 
-
+HASH_NODE *makeTemp(void);
 int typeToDatatype(int type);
 void hashInit(void);
 int hashAddress(char *text);

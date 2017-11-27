@@ -7,6 +7,13 @@
 
 HASH_NODE *Table[HASH_SIZE];
 
+HASH_NODE *makeTemp(void)
+{
+	static int factorySerialNumber = 0;
+	cah *nameBuffer[256];
+	sprintf(nameBuffer, "___variavelTemporaria-%d___", factorySerialNumber++);
+	return hashInsert(SYMBOL_VAR, nameBuffer);
+}
 
 void hashCheckUndeclared(char *text, int lineNumber)
 {
