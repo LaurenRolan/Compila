@@ -18,6 +18,9 @@
 #define SYMBOL_VEC 7
 #define SYMBOL_VAR 8
 
+//Extra
+#define SYMBOL_LABEL 9
+
 //Datatypes
 #define DATATYPE_BYTE 2
 #define DATATYPE_SHORT 3
