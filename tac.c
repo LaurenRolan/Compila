@@ -32,7 +32,20 @@ TAC *tacGenerator(AST *node)
 	{
 		case AST_SYMBOL: return tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
 		case AST_ADD: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_ADD, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_SUB: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_SUB, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_MUL: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_MUL, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_DIV: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_DIV, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_LE: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_LE, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_GE: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_GE, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_EQ: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_EQ, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_NE: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_NE, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_AND: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_AND, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_OR: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_OR, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_LES: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_LES, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_GRE: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_GRE, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_NOT: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_NOT, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_ASS: return tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0);
+		case AST_ASSV: return tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, 0);
 	}
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 }
@@ -50,7 +63,7 @@ void tacPrintSingle(TAC *tac)
 	fprintf(stderr, "TAC(");
 	switch(tac->type)
 	{
-		case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
+		case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break; //tirar depois
 		case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
 		case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
 		case TAC_MUL: fprintf(stderr, "TAC_MUL"); break;
@@ -66,6 +79,21 @@ void tacPrintSingle(TAC *tac)
 		case TAC_NOT: fprintf(stderr, "TAC_GE"); break;
 		case TAC_ASS: fprintf(stderr, "TAC_ASS"); break;
 		case TAC_ASSV: fprintf(stderr, "TAC_ASSV"); break;
+		case TAC_IF: fprintf(stderr, "TAC_IF"); break;
+		case TAC_WHILE: fprintf(stderr, "TAC_WHILE"); break;
+		case TAC_FOR: fprintf(stderr, "TAC_FOR"); break;
+		case TAC_READ: fprintf(stderr, "TAC_READ"); break;
+		case TAC_RETURN: fprintf(stderr, "TAC_RETURN"); break;
+		case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
+		case TAC_ELSE: fprintf(stderr, "TAC_ELSE"); break;
+		case TAC_BEGIN: fprintf(stderr, "TAC_BEGIN"); break;
+		case TAC_END: fprintf(stderr, "TAC_END"); break;
+		case TAC_JZ: fprintf(stderr, "TAC_JZ"); break;
+		case TAC_JMP: fprintf(stderr, "TAC_JMP"); break;
+		case TAC_CALL: fprintf(stderr, "TAC_CALL"); break;
+		case TAC_ARG: fprintf(stderr, "TAC_ARG"); break;
+		case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
+		case TAC_VECT: fprintf(stderr, "TAC_VECT"); break;
 		default: fprintf(stderr, "UNKNOWN"); break;
 	}
 	if(tac->res) fprintf(stderr, ", %s", tac->res->text); else fprintf(stderr, ", null");
@@ -81,7 +109,7 @@ TAC *tacJoin(TAC *l1, TAC *l2)
 	if(!l2) return l1;
 	while(tac->prev) tac = tac->prev;
 	tac->prev = l1;
-	//l1->next = tac;
+	l1->next = tac;
 	return l2;
 }
 
