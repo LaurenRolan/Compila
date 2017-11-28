@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 //Protótipos internos
-TAC* makeIfThenElse(TAC *code0, TAC *code1);
+TAC* makeIfThenElse(TAC *code0, TAC *code1, TAC *code2);
 TAC* makeWhile(TAC *code0, TAC *code1);
 
 //Fim dos protótipos internos
@@ -52,7 +52,7 @@ TAC *tacGenerator(AST *node)
 		case AST_NOT: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_NOT, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_ASS: return tacJoin(code[0], tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0));
 		case AST_ASSV: return tacJoin(code[0], tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, 0));
-		case AST_IF: return makeIfThenElse(code[0], code[1]);
+		case AST_IF: return makeIfThenElse(code[0], code[1], code[2]);
 		case AST_WHILE: return makeWhile(code[0], code[1]);
 	}
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
@@ -120,18 +120,38 @@ TAC *tacJoin(TAC *l1, TAC *l2)
 	return l2;
 }
 
-TAC *makeIfThenElse(TAC *code0, TAC *code1)
+TAC *makeIfThenElse(TAC *code0, TAC *code1, TAC *code2)
 {
-	TAC *newJumpTac = 0;
-	TAC *newLabelTac = 0;
-	HASH_NODE *newLabel = 0;
+	TAC *JzTac = 0;
+	TAC *LabelElseTac = 0;
+	TAC *JmpEndTac = 0;
+	TAC *LabelEndTac = 0;
+	HASH_NODE *newLabelElse = 0;
+	HASH_NODE *newLabelEnd = 0;
 
-	newLabel = makeLabel();
+	newLabelEnd = makeLabel();
+
+	if(code2) //Caso tenha else
+	{
+		newLabelElse = makeLabel();
+		//Caso o if seja falso, pula PARA o else
+		JzTac = tacCreate(TAC_JZ, newLabelElse, code0?code0->res:0, 0);	
+		LabelElseTac = tacCreate(TAC_LABEL, newLabelElse, 0, 0);
 	
-	newJumpTac = tacCreate(TAC_JZ, newLabel, code0?code0->res:0, 0);
-	newLabelTac = tacCreate(TAC_LABEL, newLabel, 0, 0);
+		//Ao terminar o if, pula SOBRE o else
+		JmpEndTac = tacCreate(TAC_JMP, newLabelEnd, code1?code1->res:0, 0);
+		LabelEndTac = tacCreate(TAC_LABEL, newLabelEnd, 0, 0);
 
-	return tacJoin(tacJoin(tacJoin(code0, newJumpTac), code1), newLabelTac);
+		//Ordem: code0 -> JZ -> code1 -> Jmp -> LElse -> code2 -> LEnd 
+		return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0, JzTac), code1), JmpEndTac), LabelElseTac), code2), LabelEndTac);
+	}
+
+	//Caso não tenha else
+	JzTac = tacCreate(TAC_JZ, newLabelEnd, code0?code0->res:0, 0);
+	LabelEndTac = tacCreate(TAC_LABEL, newLabelEnd, 0, 0);
+	
+	//Ordem: code0 -> Jz -> code1 -> LEnd
+	return tacJoin(tacJoin(tacJoin(code0, JzTac), code1), LabelEndTac);	
 }
 
 TAC *makeWhile(TAC *code0, TAC *code1)

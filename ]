@@ -7,6 +7,6 @@ a: byte = 7;
 	else
 		a = a - 1;
 
-//	if (a < 2) then
-//		a = a * 2;
+	if (a < 2) then
+		a = a * 2;
 }
