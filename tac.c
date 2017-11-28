@@ -88,7 +88,6 @@ void tacPrintSingle(TAC *tac)
 		case TAC_ASSV: fprintf(stderr, "TAC_ASSV"); break;
 		case TAC_IF: fprintf(stderr, "TAC_IF"); break;
 		case TAC_WHILE: fprintf(stderr, "TAC_WHILE"); break;
-		case TAC_FOR: fprintf(stderr, "TAC_FOR"); break;
 		case TAC_READ: fprintf(stderr, "TAC_READ"); break;
 		case TAC_RETURN: fprintf(stderr, "TAC_RETURN"); break;
 		case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
@@ -101,6 +100,7 @@ void tacPrintSingle(TAC *tac)
 		case TAC_ARG: fprintf(stderr, "TAC_ARG"); break;
 		case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
 		case TAC_VECT: fprintf(stderr, "TAC_VECT"); break;
+		case TAC_FUNC: fprintf(stderr, "TAC_FUNC"); break;
 		default: fprintf(stderr, "UNKNOWN"); break;
 	}
 	if(tac->res) fprintf(stderr, ", %s", tac->res->text); else fprintf(stderr, ", null");
