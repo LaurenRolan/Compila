@@ -7,6 +7,14 @@
 
 HASH_NODE *Table[HASH_SIZE];
 
+HASH_NODE *makeLabel(void)
+{
+	static int factorySerialNumber = 0;
+	char nameBuffer[256];
+	sprintf(nameBuffer, "___Label-%d___", factorySerialNumber++);
+	return hashInsert(SYMBOL_LABEL, nameBuffer);
+}
+
 HASH_NODE *makeTemp(void)
 {
 	static int factorySerialNumber = 0;
