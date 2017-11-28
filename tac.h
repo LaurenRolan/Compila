@@ -45,8 +45,6 @@
 #define TAC_ASS 31
 #define TAC_ASSV 32
 #define TAC_VECT 33
-#define TAC_INPUT 34
-#define TAC_OUTPUT 35 //No print, é um por objeto na lista
 
 typedef struct struct_tac
 {
