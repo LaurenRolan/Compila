@@ -8,7 +8,7 @@
 
 //Protótipos internos
 TAC* makeIfThenElse(TAC *code0, TAC *code1);
-TAC* makeWhile(TAC *code);
+TAC* makeWhile(TAC *code0, TAC *code1);
 
 //Fim dos protótipos internos
 
@@ -52,6 +52,8 @@ TAC *tacGenerator(AST *node)
 		case AST_NOT: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_NOT, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_ASS: return tacJoin(code[0], tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0));
 		case AST_ASSV: return tacJoin(code[0], tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, 0));
+		case AST_IF: return makeIfThenElse(code[0], code[1]);
+		case AST_WHILE: return makeWhile(code[0], code[1]);
 	}
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 }
@@ -65,11 +67,10 @@ void tacPrintBack(TAC *last)
 
 void tacPrintSingle(TAC *tac)
 {
-	if(!tac) return;
+	if(!tac || tac->type == TAC_SYMBOL) return;
 	fprintf(stderr, "TAC(");
 	switch(tac->type)
 	{
-		case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break; //tirar depois
 		case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
 		case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
 		case TAC_MUL: fprintf(stderr, "TAC_MUL"); break;
@@ -131,4 +132,28 @@ TAC *makeIfThenElse(TAC *code0, TAC *code1)
 	newLabelTac = tacCreate(TAC_LABEL, newLabel, 0, 0);
 
 	return tacJoin(tacJoin(tacJoin(code0, newJumpTac), code1), newLabelTac);
+}
+
+TAC *makeWhile(TAC *code0, TAC *code1)
+{
+	TAC *newJz = 0;
+	TAC *newJmp = 0;
+	TAC *newLabelWhileTac = 0;
+	TAC *newLabelEndTac = 0;
+	HASH_NODE *newLabelWhile = 0;
+	HASH_NODE *newLabelEnd = 0;
+
+	newLabelWhile = makeLabel();
+	newLabelEnd = makeLabel();
+
+	//Continuidade do loop
+	newJmp = tacCreate(TAC_JMP, newLabelWhile, code0?code0->res:0, 0);
+	newLabelWhileTac = tacCreate(TAC_LABEL, newLabelWhile, 0, 0);
+
+	//Saída do loop
+	newJz = tacCreate(TAC_JZ, newLabelEnd, code0?code0->res:0, 0);
+	newLabelEndTac = tacCreate(TAC_LABEL, newLabelEnd, 0, 0);
+
+	//Ordem: LWhile -> code0 -> JZ -> code1 -> JMP -> LEnd
+	return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(newLabelWhileTac, code0), newJz), code1), newJmp), newLabelEndTac);
 }
