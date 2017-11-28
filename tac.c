@@ -6,6 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Protótipos internos
+TAC* makeIfThenElse(TAC *code0, TAC *code1);
+TAC* makeWhile(TAC *code);
+
+//Fim dos protótipos internos
+
 TAC *tacCreate(int type, HASH_NODE *res, HASH_NODE *op1, HASH_NODE *op2)
 {
 	TAC *newtac;
@@ -113,3 +119,16 @@ TAC *tacJoin(TAC *l1, TAC *l2)
 	return l2;
 }
 
+TAC *makeIfThenElse(TAC *code0, TAC *code1)
+{
+	TAC *newJumpTac = 0;
+	TAC *newLabelTac = 0;
+	HASH_NODE *newLabel = 0;
+
+	newLabel = makeLabel();
+	
+	newJumpTac = tacCreate(TAC_JZ, newLabel, code0?code0->res:0, 0);
+	newLabelTac = tacCreate(TAC_LABEL, newLabel, 0, 0);
+
+	return tacJoin(tacJoin(tacJoin(code0, newJumpTac), code1), newLabelTac);
+}
