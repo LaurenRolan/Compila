@@ -44,8 +44,8 @@ TAC *tacGenerator(AST *node)
 		case AST_LES: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_LES, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_GRE: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_GRE, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_NOT: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_NOT, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
-		case AST_ASS: return tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0);
-		case AST_ASSV: return tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, 0);
+		case AST_ASS: return tacJoin(code[0], tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0));
+		case AST_ASSV: return tacJoin(code[0], tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, 0));
 	}
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 }

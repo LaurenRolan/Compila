@@ -1,4 +1,5 @@
 a: byte = 6;
+c: long = 2;
 
 (long) f(b : long) {
 	return (b);
@@ -6,5 +7,6 @@ a: byte = 6;
 
 (byte) teste(x : float, y : long, z : float) {
 	a = 4 + 5;
+	c = c * 1;
 	return (4);
 }
