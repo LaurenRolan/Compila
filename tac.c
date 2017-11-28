@@ -65,6 +65,7 @@ void tacPrintSingle(TAC *tac)
 		case TAC_GRE: fprintf(stderr, "TAC_GE"); break;
 		case TAC_NOT: fprintf(stderr, "TAC_GE"); break;
 		case TAC_ASS: fprintf(stderr, "TAC_ASS"); break;
+		case TAC_ASSV: fprintf(stderr, "TAC_ASSV"); break;
 		default: fprintf(stderr, "UNKNOWN"); break;
 	}
 	if(tac->res) fprintf(stderr, ", %s", tac->res->text); else fprintf(stderr, ", null");
