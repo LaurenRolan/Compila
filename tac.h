@@ -7,15 +7,14 @@
 #include "hash.h"
 #include "astree.h"
 
+//Símbolo
 #define TAC_SYMBOL 1
+
+//Lógico-aritméticas
 #define TAC_ADD 2
 #define TAC_SUB 3
 #define TAC_MUL 4
 #define TAC_DIV 5
-#define TAC_ASS 50
-#define TAC_ASSV 51
-
-//Esses eu não sei se precisa
 #define TAC_LE 6
 #define TAC_GE 7
 #define TAC_EQ 10
@@ -26,6 +25,28 @@
 #define TAC_GRE 15
 #define TAC_NOT 16
 
+//Controle de fluxo e função
+#define TAC_IF 17
+#define TAC_WHILE 18
+#define TAC_FOR 19
+#define TAC_READ 20
+#define TAC_RETURN 21
+#define TAC_PRINT 22
+#define TAC_ELSE 23
+#define TAC_BEGIN 24
+#define TAC_END 25
+#define TAC_JZ 26
+#define TAC_JMP 27
+#define TAC_CALL 28
+#define TAC_ARG 29
+#define TAC_LABEL 30
+
+//Assign e vetor
+#define TAC_ASS 31
+#define TAC_ASSV 32
+#define TAC_VECT 33
+#define TAC_INPUT 34
+#define TAC_OUTPUT 35 //No print, é um por objeto na lista
 
 typedef struct struct_tac
 {
