@@ -1,5 +1,5 @@
 etapa5: hash.o astree.o y.tab.o lex.yy.o semantic.o tac.o
-	gcc -Wall -o etapa4 hash.o astree.o y.tab.o lex.yy.o semantic.o tac.o
+	gcc -Wall -o etapa5 hash.o astree.o y.tab.o lex.yy.o semantic.o tac.o
 y.tab.o: y.tab.c
 	gcc -c y.tab.c
 hash.o: hash.c

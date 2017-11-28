@@ -8,6 +8,7 @@
 	#include "hash.h"
 	#include "astree.h"
 	#include "semantic.h"
+	#include "tac.h"
 
 	int yyparse(FILE *fileout);
 	int yylex();
@@ -76,11 +77,10 @@
 
 %%
 
-program : stmtlist			{
+program : stmtlist				{
 							semanticCheckAll($1);	
-							//treePrint($1, 0);
-							//treeToCode($1, fileout);
-							}
+							tacPrintBack(tacGenerator($1));
+						}
 	;
 	
 stmtlist: stmt stmtlist				{$$ = astCreate(AST_STMTL, 0, $1, $2, 0, 0, getLineNumber());}

@@ -13,12 +13,18 @@
 #define TAC_MUL 4
 #define TAC_DIV 5
 #define TAC_ASS 50
+#define TAC_ASSV 51
 
 //Esses eu não sei se precisa
 #define TAC_LE 6
 #define TAC_GE 7
-#define TAC_GRE 8
-#define TAC_LES 9
+#define TAC_EQ 10
+#define TAC_NE 11
+#define TAC_AND 12
+#define TAC_OR 13
+#define TAC_LES 14
+#define TAC_GRE 15
+#define TAC_NOT 16
 
 
 typedef struct struct_tac

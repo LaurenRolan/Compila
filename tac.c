@@ -28,7 +28,7 @@ TAC *tacGenerator(AST *node)
 	//Gera filhos primeiro
 	for(i=0; i<MAX_SONS; ++i)
 		code[i] = tacGenerator(node->son[i]);
-	switch(node->type)
+	switch (node->type)
 	{
 		case AST_SYMBOL: return tacCreate(TAC_SYMBOL, node->symbol, 0, 0);
 		case AST_ADD: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_ADD, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
@@ -40,7 +40,7 @@ TAC *tacGenerator(AST *node)
 void tacPrintBack(TAC *last)
 {
 	TAC *tac;
-	for(tac = last; tac; tac = tac->next)
+	for(tac = last; tac; tac = tac->prev)
 		tacPrintSingle(tac);
 }
 
@@ -57,12 +57,20 @@ void tacPrintSingle(TAC *tac)
 		case TAC_DIV: fprintf(stderr, "TAC_DIV"); break;
 		case TAC_LE: fprintf(stderr, "TAC_LE"); break;
 		case TAC_GE: fprintf(stderr, "TAC_GE"); break;
+		case TAC_EQ: fprintf(stderr, "TAC_GE"); break;
+		case TAC_NE: fprintf(stderr, "TAC_GE"); break;
+		case TAC_AND: fprintf(stderr, "TAC_GE"); break;
+		case TAC_OR: fprintf(stderr, "TAC_GE"); break;
+		case TAC_LES: fprintf(stderr, "TAC_GE"); break;
+		case TAC_GRE: fprintf(stderr, "TAC_GE"); break;
+		case TAC_NOT: fprintf(stderr, "TAC_GE"); break;
+		case TAC_ASS: fprintf(stderr, "TAC_ASS"); break;
 		default: fprintf(stderr, "UNKNOWN"); break;
 	}
-	if(tac->res) fprintf(stderr, ", %s", tac->res->text); else printf(stderr, ", null");
-	if(tac->op1) fprintf(stderr, ", %s", tac->op1->text); else printf(stderr, ", null");
-	if(tac->op2) fprintf(stderr, ", %s", tac->op2->text); else printf(stderr, ", null");
-	fprintf(stderr, ")");
+	if(tac->res) fprintf(stderr, ", %s", tac->res->text); else fprintf(stderr, ", null");
+	if(tac->op1) fprintf(stderr, ", %s", tac->op1->text); else fprintf(stderr, ", null");
+	if(tac->op2) fprintf(stderr, ", %s", tac->op2->text); else fprintf(stderr, ", null");
+	fprintf(stderr, ")\n");
 }
 
 TAC *tacJoin(TAC *l1, TAC *l2)
@@ -72,6 +80,7 @@ TAC *tacJoin(TAC *l1, TAC *l2)
 	if(!l2) return l1;
 	while(tac->prev) tac = tac->prev;
 	tac->prev = l1;
+	//l1->next = tac;
 	return l2;
 }
 
