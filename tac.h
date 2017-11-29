@@ -40,11 +40,12 @@
 #define TAC_CALL 28
 #define TAC_ARG 29
 #define TAC_FUNC 30
+#define TAC_PARAM 31
 
 //Assign e vetor
-#define TAC_ASS 31
-#define TAC_ASSV 32
-#define TAC_VECT 33
+#define TAC_ASS 32
+#define TAC_ASSV 33
+#define TAC_VECT 34
 
 typedef struct struct_tac
 {

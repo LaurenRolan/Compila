@@ -11,6 +11,7 @@ TAC* makeIfThenElse(TAC *code0, TAC *code1, TAC *code2);
 TAC* makeWhile(TAC *code0, TAC *code1);
 TAC *makePrint(AST *node);
 TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash);
+TAC *makeParams(AST *node, int order, HASH_NODE *funcHash);
 
 //Fim dos protótipos internos
 
@@ -64,7 +65,7 @@ TAC *tacGenerator(AST *node)
 		case AST_PRINT: return makePrint(node->son[0]);
 		
 		//acho que falta essas	
-		case AST_DECF: return tacJoin(tacCreate(TAC_BEGIN, node->symbol, 0, 0), tacJoin(code[2], tacCreate(TAC_END, node->symbol, 0, 0)));
+		case AST_DECF: return tacJoin(tacCreate(TAC_BEGIN, node->symbol, 0, 0), tacJoin(makeParams(node->son[1], 0, node->symbol), tacJoin(code[2], tacCreate(TAC_END, node->symbol, 0, 0))));
 		//case AST_PARAM: return;
 		case AST_VECT: return tacJoin(code[0], tacCreate(TAC_VECT, makeTemp(), node->symbol, code[0]?code[0]->res:0)); 
 		case AST_FUNC: return tacJoin(tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0), tacJoin(makeArgs(node->son[0], 0, node->symbol), tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0))); //quem veio primeiro? o ovo ou a galinha? a call ou os argumentos?
@@ -119,6 +120,7 @@ void tacPrintSingle(TAC *tac)
 		case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
 		case TAC_VECT: fprintf(stderr, "TAC_VECT"); break;
 		case TAC_FUNC: fprintf(stderr, "TAC_FUNC"); break;
+		case TAC_PARAM: fprintf(stderr, "TAC_PARAM"); break;
 		default: fprintf(stderr, "UNKNOWN"); break;
 	}
 	if(tac->res) fprintf(stderr, ", %s", tac->res->text); else fprintf(stderr, ", null");
@@ -224,3 +226,13 @@ TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash)
 	return tacJoin(code0, tacJoin(tacCreate(TAC_ARG, funcHash,code0?code0->res:0, makeNumber(order)), codeFinal)); 	
 }
 
+TAC *makeParams(AST *node, int order, HASH_NODE *funcHash)
+{	
+	TAC *codeFinal = 0;
+	
+	if(!node) return 0;
+	if(node->son[1])
+		codeFinal = makeParams(node->son[1], order+1, funcHash);
+	
+	return tacJoin(tacCreate(TAC_PARAM, funcHash,node->son[0]->symbol, makeNumber(order)), codeFinal); 	
+}
