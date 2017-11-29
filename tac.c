@@ -9,6 +9,7 @@
 //Protótipos internos
 TAC* makeIfThenElse(TAC *code0, TAC *code1, TAC *code2);
 TAC* makeWhile(TAC *code0, TAC *code1);
+TAC *makePrint(AST *node);
 
 //Fim dos protótipos internos
 
@@ -50,10 +51,24 @@ TAC *tacGenerator(AST *node)
 		case AST_LES: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_LES, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_GRE: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_GRE, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_NOT: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_NOT, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+			
 		case AST_ASS: return tacJoin(code[0], tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0));
-		case AST_ASSV: return tacJoin(code[0], tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, 0));
+		case AST_ASSV: return tacJoin(tacJoin(code[0], code[1]), tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 		case AST_IF: return makeIfThenElse(code[0], code[1], code[2]);
 		case AST_WHILE: return makeWhile(code[0], code[1]);
+		
+		case AST_RETURN: return tacJoin(code[0], tacCreate(TAC_RETURN, code[0]?code[0]->res:0, 0, 0)); 
+		case AST_READ: return tacCreate(TAC_READ, node->symbol, 0, 0);
+			
+		case AST_PRINT: return makePrint(node->son[0]);
+		
+		//acho que falta essas	
+		//case AST_DECF: return;
+		//case AST_VECT: return;
+		//case AST_FUNC: return;
+		//case AST_PARAM: return;
+
+			
 	}
 	return tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 }
@@ -67,23 +82,25 @@ void tacPrintBack(TAC *last)
 
 void tacPrintSingle(TAC *tac)
 {
+	//if(!tac) return;
 	if(!tac || tac->type == TAC_SYMBOL) return;
-	fprintf(stderr, "TAC(");
+	fprintf(stderr, "(");
 	switch(tac->type)
 	{
+		case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
 		case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
 		case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
 		case TAC_MUL: fprintf(stderr, "TAC_MUL"); break;
 		case TAC_DIV: fprintf(stderr, "TAC_DIV"); break;
 		case TAC_LE: fprintf(stderr, "TAC_LE"); break;
 		case TAC_GE: fprintf(stderr, "TAC_GE"); break;
-		case TAC_EQ: fprintf(stderr, "TAC_GE"); break;
-		case TAC_NE: fprintf(stderr, "TAC_GE"); break;
-		case TAC_AND: fprintf(stderr, "TAC_GE"); break;
-		case TAC_OR: fprintf(stderr, "TAC_GE"); break;
-		case TAC_LES: fprintf(stderr, "TAC_GE"); break;
-		case TAC_GRE: fprintf(stderr, "TAC_GE"); break;
-		case TAC_NOT: fprintf(stderr, "TAC_GE"); break;
+		case TAC_EQ: fprintf(stderr, "TAC_EQ"); break;
+		case TAC_NE: fprintf(stderr, "TAC_NE"); break;
+		case TAC_AND: fprintf(stderr, "TAC_AND"); break;
+		case TAC_OR: fprintf(stderr, "TAC_OR"); break;
+		case TAC_LES: fprintf(stderr, "TAC_LES"); break;
+		case TAC_GRE: fprintf(stderr, "TAC_GRE"); break;
+		case TAC_NOT: fprintf(stderr, "TAC_NOT"); break;
 		case TAC_ASS: fprintf(stderr, "TAC_ASS"); break;
 		case TAC_ASSV: fprintf(stderr, "TAC_ASSV"); break;
 		case TAC_IF: fprintf(stderr, "TAC_IF"); break;
@@ -177,3 +194,19 @@ TAC *makeWhile(TAC *code0, TAC *code1)
 	//Ordem: LWhile -> code0 -> JZ -> code1 -> JMP -> LEnd
 	return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(newLabelWhileTac, code0), newJz), code1), newJmp), newLabelEndTac);
 }
+
+TAC *makePrint(AST *node)
+{	
+	TAC *code0 = 0;
+	TAC *codeFinal = 0;
+	
+	if(!node) return 0;
+	if(node->son[1])
+		codeFinal = makePrint(node->son[1]);
+	
+	code0 = tacGenerator(node->son[0]);
+	
+	return tacJoin(tacCreate(TAC_PRINT, code0?code0->res:0, 0, 0), tacJoin(code0, codeFinal)); 
+	
+}
+
