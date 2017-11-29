@@ -10,6 +10,7 @@
 TAC* makeIfThenElse(TAC *code0, TAC *code1, TAC *code2);
 TAC* makeWhile(TAC *code0, TAC *code1);
 TAC *makePrint(AST *node);
+TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash);
 
 //Fim dos protótipos internos
 
@@ -53,7 +54,7 @@ TAC *tacGenerator(AST *node)
 		case AST_NOT: return tacJoin(tacJoin(code[0], code[1]),tacCreate(TAC_NOT, makeTemp(), code[0]?code[0]->res:0, code[1]?code[1]->res:0));
 			
 		case AST_ASS: return tacJoin(code[0], tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0));
-		case AST_ASSV: return tacJoin(tacJoin(code[0], code[1]), tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0));
+		case AST_ASSV: return tacJoin(tacJoin(code[0], code[1]), tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); // será que precisa de TEMP = v[i]????
 		case AST_IF: return makeIfThenElse(code[0], code[1], code[2]);
 		case AST_WHILE: return makeWhile(code[0], code[1]);
 		
@@ -63,10 +64,10 @@ TAC *tacGenerator(AST *node)
 		case AST_PRINT: return makePrint(node->son[0]);
 		
 		//acho que falta essas	
-		//case AST_DECF: return;
-		//case AST_VECT: return;
-		//case AST_FUNC: return;
+		case AST_DECF: return tacJoin(tacCreate(TAC_BEGIN, node->symbol, 0, 0), tacJoin(code[2], tacCreate(TAC_END, node->symbol, 0, 0)));
 		//case AST_PARAM: return;
+		case AST_VECT: return tacJoin(code[0], tacCreate(TAC_VECT, makeTemp(), node->symbol, code[0]?code[0]->res:0)); 
+		case AST_FUNC: return tacJoin(tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0), tacJoin(makeArgs(node->son[0], 0, node->symbol), tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0))); //quem veio primeiro? o ovo ou a galinha? a call ou os argumentos?
 
 			
 	}
@@ -207,6 +208,19 @@ TAC *makePrint(AST *node)
 	code0 = tacGenerator(node->son[0]);
 	
 	return tacJoin(tacCreate(TAC_PRINT, code0?code0->res:0, 0, 0), tacJoin(code0, codeFinal)); 
+}
+
+TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash)
+{	
+	TAC *code0 = 0;
+	TAC *codeFinal = 0;
 	
+	if(!node) return 0;
+	if(node->son[1])
+		codeFinal = makeArgs(node->son[1], order+1, funcHash);
+	
+	code0 = tacGenerator(node->son[0]);
+	
+	return tacJoin(code0, tacJoin(tacCreate(TAC_ARG, funcHash,code0?code0->res:0, makeNumber(order)), codeFinal)); 	
 }
 

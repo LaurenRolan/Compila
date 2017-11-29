@@ -2,7 +2,7 @@ a: byte = 6;
 v: float [5];
 d: double = 9.5;
 c: long = 0;
-x: float = 10;
+x: float = 10.6;
 
 
 (byte) teste() {

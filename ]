@@ -1,8 +1,9 @@
 a: byte = 7;
 v: long[5];
 
-(byte) main (b : byte)
+(byte) main (b : byte, c : long, d : float)
 {
+	/*
 	if(a > 2) then
 		a = a + 1
 	else
@@ -13,12 +14,22 @@ v: long[5];
 		
 	v[5+2] = 9+7;
 	
+	a = v[2];
+	
 	while(a>7)
 		a = 2+3;
+	*/
 		
 	
 	
 	print "Incrementado algumas vezes fica ",a,"\n";
+	
+	//a = main(5+45+2, 9+18, 5.5);
+	a = main(5, 9, 5.5);
+	
+	v[5+2] = 9+7;
+	
+	a = v[2];
 	
 		
 	

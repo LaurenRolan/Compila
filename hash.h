@@ -39,6 +39,7 @@ typedef struct node {
 
 HASH_NODE *makeLabel(void);
 HASH_NODE *makeTemp(void);
+HASH_NODE *makeNumber(int number);
 int typeToDatatype(int type);
 void hashInit(void);
 int hashAddress(char *text);

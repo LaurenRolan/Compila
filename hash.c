@@ -23,6 +23,13 @@ HASH_NODE *makeTemp(void)
 	return hashInsert(SYMBOL_VAR, nameBuffer);
 }
 
+HASH_NODE *makeNumber(int number)
+{
+	char nameBuffer[256];
+	sprintf(nameBuffer, "%d", number);
+	return hashInsert(SYMBOL_VAR, nameBuffer);
+}
+
 void hashCheckUndeclared(char *text, int lineNumber)
 {
   int i;

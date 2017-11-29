@@ -79,6 +79,7 @@
 
 program : stmtlist				{
 							semanticCheckAll($1);	
+							//treePrint($1, 0);
 							tacPrintBack(tacGenerator($1));
 						}
 	;
