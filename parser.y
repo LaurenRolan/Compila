@@ -80,7 +80,10 @@
 program : stmtlist				{
 							semanticCheckAll($1);	
 							//treePrint($1, 0);
-							tacPrintBack(tacGenerator($1));
+							TAC* tac = tacGenerator($1);
+							tacPrintBack(tac);
+							fprintf(stderr, "\n\n\n");
+							tacPrintInOrder(tac);
 						}
 	;
 	

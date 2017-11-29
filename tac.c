@@ -13,6 +13,7 @@ TAC *makePrint(AST *node);
 TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash);
 TAC *makeParams(AST *node, int order, HASH_NODE *funcHash);
 
+
 //Fim dos protótipos internos
 
 TAC *tacCreate(int type, HASH_NODE *res, HASH_NODE *op1, HASH_NODE *op2)
@@ -79,6 +80,15 @@ void tacPrintBack(TAC *last)
 {
 	TAC *tac;
 	for(tac = last; tac; tac = tac->prev)
+		tacPrintSingle(tac);
+}
+
+void tacPrintInOrder(TAC *last)
+{
+	TAC *tac, *newtac;
+	for(tac = last; tac; tac = tac->prev)
+		newtac = tac;
+	for(tac = newtac; tac; tac = tac->next)
 		tacPrintSingle(tac);
 }
 
@@ -236,3 +246,5 @@ TAC *makeParams(AST *node, int order, HASH_NODE *funcHash)
 	
 	return tacJoin(tacCreate(TAC_PARAM, funcHash,node->son[0]->symbol, makeNumber(order)), codeFinal); 	
 }
+
+
