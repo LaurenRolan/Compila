@@ -69,7 +69,7 @@ TAC *tacGenerator(AST *node)
 		case AST_DECF: return tacJoin(tacCreate(TAC_BEGIN, node->symbol, 0, 0), tacJoin(makeParams(node->son[1], 0, node->symbol), tacJoin(code[2], tacCreate(TAC_END, node->symbol, 0, 0))));
 		//case AST_PARAM: return;
 		case AST_VECT: return tacJoin(code[0], tacCreate(TAC_VECT, makeTemp(), node->symbol, code[0]?code[0]->res:0)); 
-		case AST_FUNC: return tacJoin(tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0), tacJoin(makeArgs(node->son[0], 0, node->symbol), tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0))); //quem veio primeiro? o ovo ou a galinha? a call ou os argumentos?
+		case AST_FUNC: return tacJoin(tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0), tacJoin(makeArgs(node->son[0], 0, node->symbol), tacCreate(TAC_FUNC, makeTemp(), node->symbol, 0)));
 
 			
 	}
@@ -94,7 +94,6 @@ void tacPrintInOrder(TAC *last)
 
 void tacPrintSingle(TAC *tac)
 {
-	//if(!tac) return;
 	if(!tac || tac->type == TAC_SYMBOL) return;
 	fprintf(stderr, "(");
 	switch(tac->type)
