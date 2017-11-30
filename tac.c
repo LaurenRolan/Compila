@@ -78,6 +78,7 @@ TAC *tacGenerator(AST *node)
 
 void tacPrintBack(TAC *last)
 {
+	if(!last) return;
 	TAC *tac;
 	for(tac = last; tac; tac = tac->prev)
 		tacPrintSingle(tac);
@@ -85,6 +86,7 @@ void tacPrintBack(TAC *last)
 
 void tacPrintInOrder(TAC *last)
 {
+	if(!last) return;
 	TAC *tac, *newtac;
 	for(tac = last; tac; tac = tac->prev)
 		newtac = tac;
@@ -218,7 +220,7 @@ TAC *makePrint(AST *node)
 	
 	code0 = tacGenerator(node->son[0]);
 	
-	return tacJoin(tacCreate(TAC_PRINT, code0?code0->res:0, 0, 0), tacJoin(code0, codeFinal)); 
+	return tacJoin(code0, tacJoin(tacCreate(TAC_PRINT, code0?code0->res:0, 0, 0), codeFinal)); 
 }
 
 TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash)
