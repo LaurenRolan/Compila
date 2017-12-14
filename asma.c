@@ -12,45 +12,44 @@ void makeOR(TAC *tac, FILE *fout);
 void makeAND(TAC *tac, FILE *fout);
 void makeGRE(TAC *tac, FILE *fout);
 void makeLES(TAC *tac, FILE *fout);
-void makeGEQ(TAC *tac, FILE *fout);
-void makeLEQ(TAC *tac, FILE *fout);
+void makeGE(TAC *tac, FILE *fout);
+void makeLE(TAC *tac, FILE *fout);
+void makeNE(TAC *tac, FILE *fout);
 void makeAss(TAC *tac, FILE *fout);
-void makePrint(TAC *tac, FILE *fout);
+void makePrintASM(TAC *tac, FILE *fout);
 void makeRead(TAC *tac, FILE *fout);
-void makeWhile(TAC *tac, FILE *fout);
+void makeWhileASM(TAC *tac, FILE *fout);
 void makeIfElse(TAC *tac, FILE *fout);
 //Fim dos protótipos internos
-void asmGenerator (char *filename, TAC *code)
+void asmGenerator (FILE *fout, TAC *code)
 {
-	FILE *fout;
 	TAC *tac = code;
-	if(!(fout = fopen(filename,, 'w')))
-	{
-		fprintf(stderr, "Unable to open ASM file.\n");
-		exit(5);
-	}
+	fprintf(stderr, "Oi, crianças. A mamãe voltou.\n");
 	for(tac = code; tac; tac = tac->next)
 	{
+		fprintf(stderr, "Entro aqui para tac->type = %d\n", tac->type);
 		switch(tac->type)
 		{
 			case TAC_ADD: makeAdd(tac, fout); break;
 			case TAC_SUB: makeSub(tac, fout); break;
 			case TAC_DIV: makeDiv(tac, fout); break;
 			case TAC_MUL: makeMul(tac, fout); break;
-			case TAC_AND: makeAnd(tac, fout); break;
-			case TAC_OR: makeOr(tac, fout); break;
+			case TAC_AND: makeAND(tac, fout); break;
+			case TAC_OR: makeOR(tac, fout); break;
 			case TAC_LES: makeLES(tac, fout); break;
 			case TAC_GRE: makeGRE(tac, fout); break;
-			case TAC_LEQ: makeLEQ(tac, fout); break;
-			case TAC_GEQ: makeGEQ(tac, fout); break;
+			case TAC_LE: makeLE(tac, fout); break;
+			case TAC_GE: makeGE(tac, fout); break;
+			case TAC_NE: makeNE(tac, fout); break;
 			case TAC_ASS: makeAss(tac, fout); break;
-			case TAC_PRINT: makePrint(tac, fout); break;
+			case TAC_PRINT: makePrintASM(tac, fout); break;
 			case TAC_READ: makeRead(tac, fout); break;
-			case TAC_WHILE: makeWhile(tac, fout); break;
+			case TAC_WHILE: makeWhileASM(tac, fout); break;
 			case TAC_IF: makeIfElse(tac, fout); break;
 			default: fprintf(fout, "Deu ruim\n");
 		}
 	}
+	fclose(fout);
 }
 
 void makeAdd(TAC* tac, FILE *fout)
@@ -69,42 +68,46 @@ void makeAdd(TAC* tac, FILE *fout)
 }	
 void makeSub(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
 
 void makeMul(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
 
 void makeDiv(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
 
 void makeOR(TAC *tac, FILE *fout)	
 {
-	
+	return;
 }
 void makeAND(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
 void makeGRE(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
 void makeLES(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
-void makeGEQ(TAC *tac, FILE *fout)
+void makeNE(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
-void makeLEQ(TAC *tac, FILE *fout)
+void makeGE(TAC *tac, FILE *fout)
 {
-	
+	return;
+}
+void makeLE(TAC *tac, FILE *fout)
+{
+	return;
 }
 
 void makeAss(TAC *tac, FILE *fout)
@@ -116,25 +119,21 @@ void makeAss(TAC *tac, FILE *fout)
 			"movq\t%%rax, %s(%%rip)", tac->op1->text, tac->res->text);
 }
 
-void makePrint(TAC *tac, FILE *fout)
+void makePrintASM(TAC *tac, FILE *fout)
 {
-	fprintf(fout, "\nmovq\t %s(%%rip), %%rax\n"
-		"movq\t %%rax, %%rsi\n"
-		"movl\t$printable, %%edi\n"
-		"movl\t$0, %%eax\n"
-		"call\tprintf\n", tac->res->text); break;
+	return;
 }
 
 void makeRead(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
 
-void makeWhile(TAC *tac, FILE *fout)
+void makeWhileASM(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
 void makeIfElse(TAC *tac, FILE *fout)
 {
-	
+	return;
 }
