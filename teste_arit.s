@@ -1,10 +1,7 @@
-#	.file	"teste_arit.c"
-	#NAO INCIALIZADOS
+	.file	"teste_arit.c"
 	.comm	a,8,8
 	.comm	b,8,8
 	.comm	c,8,8
-
-	#INCIALIZADOS
 	.globl	d
 	.data
 	.align 8
@@ -13,19 +10,20 @@
 d:
 	.quad	3
 	.text
-
 	.globl	main
-#	.type	main, @function
+	.type	main, @function
 main:
-#.LFB2:
-#	.cfi_startproc
+.LFB2:
+	.cfi_startproc
 	pushq	%rbp
-#	.cfi_def_cfa_offset 16
-#	.cfi_offset 6, -16
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-#	.cfi_def_cfa_register 6
+	.cfi_def_cfa_register 6
 	movq	$6, a(%rip)
 	movq	$3, b(%rip)
+	movq	a(%rip), %rax
+	movq	%rax, c(%rip)
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	addq	%rdx, %rax
@@ -164,10 +162,10 @@ main:
 .L9:
 	movl	$0, %eax
 	popq	%rbp
-#	.cfi_def_cfa 7, 8
+	.cfi_def_cfa 7, 8
 	ret
-#	.cfi_endproc
-#.LFE2:
-#	.size	main, .-main
-#	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.5) 5.4.0 20160609"
-#	.section	.note.GNU-stack,"",@progbits
+	.cfi_endproc
+.LFE2:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.5) 5.4.0 20160609"
+	.section	.note.GNU-stack,"",@progbits
