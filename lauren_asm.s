@@ -1,11 +1,11 @@
-	#.file	"to_asm.c"
-	#.section	.rodata
-#Define string
+#	.file	"to_asm.c"
+	.comm	a,8,8
+	.comm	b,8,8
+	.comm	c,8,8
+#	.section	.rodata
 printable:
 	.string	"%ld"
-	.text
-
-#Define função
+	#.text
 	.globl	main
 	#.type	main, @function
 main:
@@ -16,26 +16,25 @@ main:
 #	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 #	.cfi_def_cfa_register 6
-#	subq	$32, %rsp
-	#Atribuicao 1
-	movq	$5, -24(%rbp)
-	#Atribuicao 2
-	movq	$120, -16(%rbp)
-	#Soma
-	movq	-24(%rbp), %rdx
-	movq	-16(%rbp), %rax
+	#ATRIBUICOES
+	movq	$5, a(%rip)
+	movq	$120, b(%rip)
+	#ADD
+	movq	a(%rip), %rdx
+	movq	b(%rip), %rax
 	addq	%rdx, %rax
-	movq	%rax, -8(%rbp)
 
-	#print
-	movq	-8(%rbp), %rax
+	#ATRIBUICAO
+	movq	%rax, c(%rip)
+
+	#PRINT
+	movq	c(%rip), %rax
 	movq	%rax, %rsi
 	movl	$printable, %edi
 	movl	$0, %eax
 	call	printf
-
 #	movl	$0, %eax
-#	leave
+	popq	%rbp
 #	.cfi_def_cfa 7, 8
 	ret
 #	.cfi_endproc

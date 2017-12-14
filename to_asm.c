@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+long a, b, c;
 
 int main()
 {
-	long a, b, c;
 	a = 5;
 	b = 120;
 	c = a + b;
