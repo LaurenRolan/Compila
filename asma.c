@@ -15,7 +15,14 @@ void asmGenerator (char *filename, TAC *code)
 	{
 		switch(tac->type)
 		{
-			case TAC_ADD: fprintf(fout, ""); break;
+			case TAC_ADD: fprintf(fout, "\nmovq\t %s(%%rip), %%rdx\n"
+					      "movq\t %s(%%rip), %%rax\n"
+					      "addq\t %%rdx, %%rax\n", tac->op1->text, tac->op2->text); break;
+			case TAC_PRINT: fprintf(fout, "\nmovq\t %s(%%rip), %%rax\n"
+						"movq\t %%rax, %%rsi\n"
+						"movl\t$printable, %%edi\n"
+						"movl\t$0, %%eax\n"
+						"call\tprintf\n", tac->res->text); break;
 			
 		}
 	}
