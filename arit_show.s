@@ -20,29 +20,49 @@ main:
 	movq	$5, a(%rip)
 	movq	$3, b(%rip)
 
-	#SOMA
+	#ADD
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	addq	%rdx, %rax
 
 	#ATRIBUICAO
 	movq	%rax, c(%rip)
-	
+
 	#SUBTRACAO
 	movq	a(%rip), %rdx
 	movq	c(%rip), %rax
 	subq	%rax, %rdx
 	movq	%rdx, %rax
-	
+
 	#ATRIBUICAO
 	movq	%rax, b(%rip)
 
+	#MULTIPLICAO
+	movq	a(%rip), %rdx
+	movq	c(%rip), %rax
+	imulq	%rdx, %rax
+
+	#ATRIBUICAO
+	movq	%rax, b(%rip)
+
+	#DIVISAO
+	movq	a(%rip), %rax
+	movq	c(%rip), %rcx
+	cqto
+	idivq	%rcx
+
+	#ATRIBUICAO
+	movq	%rax, b(%rip)
+
+	#COISAS MUITO LOUCAS DE FLOAT
 	movsd	.LC0(%rip), %xmm0
 	movsd	%xmm0, x(%rip)
 	movsd	x(%rip), %xmm0
 	movsd	.LC1(%rip), %xmm1
 	divsd	%xmm1, %xmm0
 	movsd	%xmm0, y(%rip)
+
+
 	movq	a(%rip), %rax
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
