@@ -37,8 +37,17 @@ void asmGenerator (char *filename, TAC *code)
 			case TAC_SUB: makeSub(tac, fout); break;
 			case TAC_DIV: makeDiv(tac, fout); break;
 			case TAC_MUL: makeMul(tac, fout); break;
+			case TAC_AND: makeAnd(tac, fout); break;
+			case TAC_OR: makeOr(tac, fout); break;
+			case TAC_LES: makeLES(tac, fout); break;
+			case TAC_GRE: makeGRE(tac, fout); break;
+			case TAC_LEQ: makeLEQ(tac, fout); break;
+			case TAC_GEQ: makeGEQ(tac, fout); break;
 			case TAC_ASS: makeAss(tac, fout); break;
-			case TAC_PRINT: 
+			case TAC_PRINT: makePrint(tac, fout); break;
+			case TAC_READ: makeRead(tac, fout); break;
+			case TAC_WHILE: makeWhile(tac, fout); break;
+			case TAC_IF: makeIfElse(tac, fout); break;
 			
 		}
 	}
