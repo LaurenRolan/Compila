@@ -7,7 +7,7 @@ long funcao1(long x, long y, long z)
 {
   return x + y + z;
 }
-logn funcao2 ()
+long funcao2 ()
 {
   return 3333;
 }

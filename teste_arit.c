@@ -10,6 +10,8 @@ int main()
   b = 3;
   c = a + b;
   b = a - c;
+  b = a * c;
+  b = a / c;
   x = 1.2 * 3.5;
   y = x / 3.0;
   if(a >= y) z = y * x;
