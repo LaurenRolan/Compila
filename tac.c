@@ -83,14 +83,19 @@ void tacPrintBack(TAC *last)
 	for(tac = last; tac; tac = tac->prev)
 		tacPrintSingle(tac);
 }
-
-void tacPrintInOrder(TAC *last)
+TAC *tacInvert (TAC *last)
 {
-	if(!last) return;
+	if(!last) return 0;
 	TAC *tac, *newtac;
 	for(tac = last; tac; tac = tac->prev)
 		newtac = tac;
-	for(tac = newtac; tac; tac = tac->next)
+	return newtac;
+}
+void tacPrintInOrder(TAC *first)
+{
+	TAC* tac;
+	if(!first) return;
+	for(tac = first; tac; tac = tac->next)
 		tacPrintSingle(tac);
 }
 

@@ -60,6 +60,7 @@ typedef struct struct_tac
 TAC *tacCreate(int type, HASH_NODE *res, HASH_NODE *op1, HASH_NODE *op2);
 TAC *tacGenerator(AST *node);
 void tacPrintBack(TAC *last);
+TAC *tacInvert (TAC *last);
 void tacPrintInOrder(TAC *last);
 void tacPrintSingle(TAC *tac);
 TAC *tacJoin(TAC *l1, TAC *l2);
