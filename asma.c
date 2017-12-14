@@ -48,18 +48,25 @@ void asmGenerator (char *filename, TAC *code)
 			case TAC_READ: makeRead(tac, fout); break;
 			case TAC_WHILE: makeWhile(tac, fout); break;
 			case TAC_IF: makeIfElse(tac, fout); break;
-			
+			default: fprintf(fout, "Deu ruim\n");
 		}
 	}
 }
 
 void makeAdd(TAC* tac, FILE *fout)
 {
-	//Testar se é lit + lit, lit + var ou var + var
-	fprintf(fout, "\nmovq\t %s(%%rip), %%rdx\n"
-		"movq\t %s(%%rip), %%rax\n"
-		"addq\t %%rdx, %%rax\n", tac->op1->text, tac->op2->text); break;
-}
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
+		fprintf(fout, "\nmovq\n$%s, %%rdx\n"
+			"movq\t$%s, %%rax\n"
+			"addq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	if((tac->op1->type == SYMBOL_ID && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_ID))//lit + var
+		fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n"
+			"addq\t$%s, %%rax\n", ((tac->op1->type == SYMBOL_ID)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
+	if(tac->op1->type == SYMBOL_ID && tac->op2->type == SYMBOL_ID)//var + var
+		fprintf(fout, "movq\t%s(%%rip), %%rdx\n"
+			"movq\t%s(%%rip), %%rax\n"
+			"addq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+}	
 void makeSub(TAC *tac, FILE *fout)
 {
 	
@@ -102,7 +109,11 @@ void makeLEQ(TAC *tac, FILE *fout)
 
 void makeAss(TAC *tac, FILE *fout)
 {
-	
+	if(tac->op1->type == SYMBOL_LIT_INT) //Se for do tipo var <- lit_int
+		fprintf(fout, "movq\t$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
+	if(tac->op1->type == SYMBOL_ID) //Se for do tipo var <- var
+		fprintf(fout, "movq\t%s(%%rip), %%rax"
+			"movq\t%%rax, %s(%%rip)", tac->op1->text, tac->res->text);
 }
 
 void makePrint(TAC *tac, FILE *fout)
