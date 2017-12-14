@@ -1,17 +1,17 @@
-long: a;
-long: b; 
-long: c;
+a: long = 0;
+b: long = 0; 
+c: long = 0;
 
-long funcao1(long x, long y, long z)
+(long) funcao1(x:long, y:long, z:long)
 {
-  return x + y + z;
+  return (x + y + z);
 }
-long funcao2 ()
+(long) funcao2 ()
 {
-  return 3333;
+  return (3333);
 }
 
-long main()
+(long) main()
 {
   a = funcao1(1, 2, 3);
   b = funcao2();

@@ -1,11 +1,11 @@
-long: a;
-long: b;
-long: c;
-long: d=3;
+a: long=2;
+b: long=2;
+c: long=2;
+d: long=3;
 
 //double x, y, z;
 
-long main()
+(long) main()
 {
   a = 6;
   b = 3;
