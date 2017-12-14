@@ -9,6 +9,7 @@
 	#include "astree.h"
 	#include "semantic.h"
 	#include "tac.h"
+	#include "asma.h"
 
 	int yyparse(FILE *fileout);
 	int yylex();
@@ -81,9 +82,10 @@ program : stmtlist				{
 							semanticCheckAll($1);	
 							treePrint($1, 0);
 							TAC* tac = tacGenerator($1);
-							tacPrintBack(tac);
+							//tacPrintBack(tac);
 							fprintf(stderr, "\n\n\n");
 							tacPrintInOrder(tac);
+							asmGenerator(tac);
 						}
 	;
 	
