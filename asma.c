@@ -1,6 +1,7 @@
 #include "asma.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //Protótipos internos
 void makeAdd(TAC *tac, FILE *fout);
@@ -94,8 +95,8 @@ void makeAdd(TAC* tac, FILE *fout)
 			"movq\t$%s, %%rax\n"
 			"addq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit + var
-		fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n"
-			"addq\t$%s, %%rax\n", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
+				fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n"
+				"addq\t$%s, %%rax\n", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
 	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var + var
 		fprintf(fout, "movq\t%s(%%rip), %%rdx\n"
 			"movq\t%s(%%rip), %%rax\n"
@@ -150,8 +151,12 @@ void makeAss(TAC *tac, FILE *fout)
 	if(tac->op1->type == SYMBOL_LIT_INT) //Se for do tipo var <- lit_int
 		fprintf(fout, "\nmovq\t$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
 	else if(tac->op1->type != SYMBOL_LIT_INT) //Se for do tipo var <- var
-		fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n"
-			"movq\t%%rax, %s(%%rip)\n", tac->op1->text, tac->res->text);
+	{
+		fprintf(stderr, "Chegou aqui\n");
+		if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria-", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria-", 22)))
+			fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n", tac->op1->text);
+		fprintf(fout, "movq\t%%rax, %s(%%rip)\n", tac->res->text);
+	}
 }
 
 void makePrintASM(TAC *tac, FILE *fout)

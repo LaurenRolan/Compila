@@ -3,7 +3,6 @@ Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
 
 movq	$6, a(%rip)
 Deu ruim
@@ -18,24 +17,18 @@ Deu ruim
 movq	a(%rip), %rdx
 movq	b(%rip), %rax
 addq	%rdx, %rax
-
-movq	___variavelTemporaria-0___(%rip), %rax
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 
 movq	a(%rip), %rax
 addq	$3, %rax
-
-movq	___variavelTemporaria-1___(%rip), %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
 
 movq	a(%rip), %rax
 addq	$6, %rax
-
-movq	___variavelTemporaria-2___(%rip), %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
@@ -43,131 +36,75 @@ Deu ruim
 movq	$6, %rdx
 movq	$3, %rax
 addq	%rdx, %rax
-
-movq	___variavelTemporaria-3___(%rip), %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-4___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-5___(%rip), %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-6___(%rip), %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-7___(%rip), %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-8___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-9___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-10___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-11___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-12___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-13___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-14___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-
-movq	___variavelTemporaria-15___(%rip), %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
-
-movq	___variavelTemporaria-17___(%rip), %rax
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
-Deu ruim
-
-movq	___variavelTemporaria-19___(%rip), %rax
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
-Deu ruim
-
-movq	___variavelTemporaria-21___(%rip), %rax
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
-Deu ruim
-
-movq	___variavelTemporaria-23___(%rip), %rax
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
-Deu ruim
-Deu ruim
-
-movq	___variavelTemporaria-25___(%rip), %rax
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
-Deu ruim
-
-movq	___variavelTemporaria-27___(%rip), %rax
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
-Deu ruim
-Deu ruim
-
-movq	___variavelTemporaria-29___(%rip), %rax
 movq	%rax, c(%rip)
-Deu ruim
-Deu ruim
