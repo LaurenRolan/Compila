@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-long a, b, c, d=3;
+long a, b, c, d='c';
 //double x, y, z;
 
 int main()
@@ -28,7 +28,8 @@ int main()
   b = a / d;
   b = a / 3;
   b = 6 / d;
-  b = 6 / 3; 
+  b = 6 / 3;
+  printf("%ld", d);
 /*
   x = 1.2 * 3.5;
   y = x / 3.0;
@@ -41,7 +42,8 @@ int main()
   if(a < y) z = y * x;
   if(a == y) z = y * x;
 */
-  if(a >= b) c = a / b;
+
+  if(a >= b || a < b) c = a / b;
   if(a <= b) c = a / b;
   if(a > b) c = a / b;
   if(a < b) c = a /b;

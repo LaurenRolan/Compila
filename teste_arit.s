@@ -1,98 +1,77 @@
-#	.file	"teste_arit.c"
+	.file	"teste_arit.c"
 	.comm	a,8,8
 	.comm	b,8,8
 	.comm	c,8,8
 	.globl	d
 	.data
 	.align 8
-#	.type	d, @object
+	.type	d, @object
 	.size	d, 8
 d:
-	.quad	3
-	.text
+	.quad	99
+	.section	.rodata
+printable:
+	.string	"%ld"
+#	.text
 	.globl	main
 #	.type	main, @function
 main:
-#.LFB2:
-#	.cfi_startproc
+.LFB2:
+	.cfi_startproc
 	pushq	%rbp
-#	.cfi_def_cfa_offset 16
-#	.cfi_offset 6, -16
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-#	.cfi_def_cfa_register 6
-	pushq	%rbx
-#	.cfi_offset 3, -24
-
+	.cfi_def_cfa_register 6
 	movq	$6, a(%rip)
 	movq	$3, b(%rip)
-
 	movq	a(%rip), %rax
 	movq	%rax, c(%rip)
-
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	addq	%rdx, %rax
-
 	movq	%rax, c(%rip)
-
 	movq	a(%rip), %rax
 	addq	$3, %rax
-
 	movq	%rax, a(%rip)
-
 	movq	a(%rip), %rax
 	addq	$6, %rax
-
 	movq	%rax, a(%rip)
-
 	movq	$9, a(%rip)
-
 	movq	c(%rip), %rdx
 	movq	a(%rip), %rax
 	subq	%rax, %rdx
 	movq	%rdx, %rax
-
 	movq	%rax, b(%rip)
-
 	movq	b(%rip), %rax
 	subq	$3, %rax
-
 	movq	%rax, a(%rip)
-	
 	movq	b(%rip), %rax
 	movl	$3, %edx
 	subq	%rax, %rdx
 	movq	%rdx, %rax
-	
 	movq	%rax, a(%rip)
 	movq	$3, a(%rip)
-	
 	movq	a(%rip), %rdx
 	movq	c(%rip), %rax
 	imulq	%rdx, %rax
-	
-	movq	%rax, b(%rip)
-	
-	movq	a(%rip), %rdx
-	movq	%rdx, %rax
-	addq	%rax, %rax
-	addq	%rdx, %rax
 	movq	%rax, b(%rip)
 	movq	a(%rip), %rdx
 	movq	%rdx, %rax
 	addq	%rax, %rax
 	addq	%rdx, %rax
+	movq	%rax, b(%rip)
+	movq	a(%rip), %rdx
+	movq	%rdx, %rax
+	addq	%rax, %rax
+	addq	%rdx, %rax
 	addq	%rax, %rax
 	movq	%rax, b(%rip)
-	
 	movq	$18, b(%rip)
-	
-	#DIVISÃO
 	movq	a(%rip), %rax
 	movq	d(%rip), %rsi
 	cqto
 	idivq	%rsi
-	
 	movq	%rax, b(%rip)
 	movq	a(%rip), %rcx
 	movabsq	$6148914691236517206, %rdx
@@ -103,71 +82,66 @@ main:
 	subq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rax, b(%rip)
-	
 	movq	d(%rip), %rdi
 	movl	$6, %eax
 	cqto
 	idivq	%rdi
-	
 	movq	%rax, b(%rip)
 	movq	$2, b(%rip)
-	
+	movq	d(%rip), %rax
+	movq	%rax, %rsi
+	movl	$printable, %edi
+	movl	$0, %eax
+	call	printf
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	cmpq	%rax, %rdx
-	jl	.L2
-	movq	a(%rip), %rax
-	movq	b(%rip), %rbx
-	cqto
-	idivq	%rbx
-	movq	%rax, c(%rip)
+	jge	.L2
+	movq	a(%rip), %rdx
+	movq	b(%rip), %rax
+	cmpq	%rax, %rdx
+	jge	.L3
 .L2:
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rax
-	cmpq	%rax, %rdx
-	jg	.L3
 	movq	a(%rip), %rax
-	movq	b(%rip), %rsi
+	movq	b(%rip), %rcx
 	cqto
-	idivq	%rsi
+	idivq	%rcx
 	movq	%rax, c(%rip)
 .L3:
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	cmpq	%rax, %rdx
-	jle	.L4
+	jg	.L4
 	movq	a(%rip), %rax
-	movq	b(%rip), %rdi
+	movq	b(%rip), %rsi
 	cqto
-	idivq	%rdi
+	idivq	%rsi
 	movq	%rax, c(%rip)
 .L4:
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	cmpq	%rax, %rdx
-	jge	.L5
+	jle	.L5
 	movq	a(%rip), %rax
-	movq	b(%rip), %rbx
+	movq	b(%rip), %rdi
 	cqto
-	idivq	%rbx
+	idivq	%rdi
 	movq	%rax, c(%rip)
 .L5:
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	cmpq	%rax, %rdx
-	jne	.L6
+	jge	.L6
 	movq	a(%rip), %rax
 	movq	b(%rip), %rcx
 	cqto
 	idivq	%rcx
 	movq	%rax, c(%rip)
 .L6:
-	movq	a(%rip), %rax
-	testq	%rax, %rax
-	je	.L7
+	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
-	testq	%rax, %rax
-	je	.L7
+	cmpq	%rax, %rdx
+	jne	.L7
 	movq	a(%rip), %rax
 	movq	b(%rip), %rsi
 	cqto
@@ -176,23 +150,35 @@ main:
 .L7:
 	movq	a(%rip), %rax
 	testq	%rax, %rax
-	jne	.L8
+	je	.L8
 	movq	b(%rip), %rax
 	testq	%rax, %rax
-	je	.L10
-.L8:
+	je	.L8
 	movq	a(%rip), %rax
 	movq	b(%rip), %rdi
 	cqto
 	idivq	%rdi
 	movq	%rax, c(%rip)
+.L8:
+	movq	a(%rip), %rax
+	testq	%rax, %rax
+	jne	.L9
+	movq	b(%rip), %rax
+	testq	%rax, %rax
+	je	.L10
+.L9:
+	movq	a(%rip), %rax
+	movq	b(%rip), %rcx
+	cqto
+	idivq	%rcx
+	movq	%rax, c(%rip)
 .L10:
-	popq	%rbx
+	movl	$0, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE2:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4"
+	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.5) 5.4.0 20160609"
 	.section	.note.GNU-stack,"",@progbits

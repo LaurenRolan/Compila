@@ -82,11 +82,11 @@ program : stmtlist				{
 							semanticCheckAll($1);	
 							treePrint($1, 0);
 							TAC* tac = tacGenerator($1);
-							//tacPrintBack(tac);
 							fprintf(stderr, "\n\n\n");
 							tac = tacInvert(tac);
 							tacPrintInOrder(tac);
 							hashPrint();
+							astDeclaration($1, fileout);
 							asmGenerator(fileout, tac);
 						}
 	;

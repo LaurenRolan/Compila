@@ -7,6 +7,17 @@
 
 HASH_NODE *Table[HASH_SIZE];
 
+void hashToAsm(FILE *fout)
+{
+	int i;
+	HASH_NODE *node;
+	for(i=0; i<HASH_SIZE; ++i)
+		for(node=Table[i]; node; node = node->next)
+			if(node->type == SYMBOL_LIT_STRING)
+				fprintf(fout, "\n___string-%d___:\n"
+					"\t.string\t\"%s\"\n", i, node->text);
+}
+
 HASH_NODE *makeLabel(void)
 {
 	static int factorySerialNumber = 0;

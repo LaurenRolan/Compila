@@ -3,6 +3,31 @@
 #include <stdio.h>
 #include <string.h>
 
+void astDeclaration(AST *node, FILE *fout)
+{
+	int j, i = 0;
+	if(node){
+		switch(node->type)
+		{
+			case AST_DEC: 
+				if(node->son[1]) //Se for inicializado
+					fprintf(fout, "\t.data\n"
+						"%s:\n"
+						"\t.quad\t%s\n", node->symbol->text, node->son[1]->symbol->text);
+				else
+					fprintf(fout, ".comm\t%s,8,8", node->symbol->text);
+			//case AST_DECV: fprintf(stderr, "VECTOR DECLARATION, %s", node->symbol->text); break;
+			//case AST_DECF: fprintf(stderr, "FUNCTION DECLARATION, %s", node->symbol->text); break;
+		}
+		while(i < 4){
+			if(node->son[i]) {
+				astDeclaration(node->son[i], fout);
+			}
+			i++;
+		}
+	}
+}
+
 void linkOrigin(AST *node, AST *root)
 {
 	int i;
@@ -13,11 +38,7 @@ void linkOrigin(AST *node, AST *root)
 		if(node->type == AST_DECF)
 		{
 			while((assign = searchForAssign(root, node->symbol->text)) != NULL)
-			{
 				assign->origin = node;
-	//			fprintf(stderr, "Function assign at line %d\n", assign->lineNumber);
-	//			fprintf(stderr, "CHAMADA %s, ORIGEM %s\n", assign->symbol->text, assign->origin->symbol->text);
-			}
 		}
 		for(i=0; i < MAX_SONS; i++)
 			if(node->son[i])
@@ -122,13 +143,10 @@ void treePrint(AST *root, int level){
 	  fprintf(stderr, " | ");
     nodePrint(root);
     while(i < 4){
-	 if(root->son[i]) {
-		// if(root->type == AST_LIST || root->type == AST_CMDL || root->type == AST_STMTL)
-      	//		treePrint(root->son[i], level);
-	 	//else
+		if(root->son[i]) {
 			treePrint(root->son[i], level+1);
-	}
-	i++;
+		}
+		i++;
     }
   }
 }

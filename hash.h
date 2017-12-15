@@ -5,7 +5,8 @@
 #define HASH_HEADER
 
 #define HASH_SIZE 256
-
+#include <stdlib.h>
+#include <stdio.h>
 
 #define SYMBOL_LIT_INT 1
 #define SYMBOL_LIT_REAL 2
@@ -37,6 +38,7 @@ typedef struct node {
   int datatype;
 }HASH_NODE;
 
+void hashToAsm(FILE *fout);
 HASH_NODE *makeLabel(void);
 HASH_NODE *makeTemp(void);
 HASH_NODE *makeNumber(int number);
