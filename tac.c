@@ -57,6 +57,7 @@ TAC *tacGenerator(AST *node)
 			
 		case AST_ASS: return tacJoin(code[0], tacCreate(TAC_ASS, node->symbol, code[0]?code[0]->res:0, 0));
 		case AST_ASSV: return tacJoin(tacJoin(code[0], code[1]), tacCreate(TAC_ASSV, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); // será que precisa de TEMP = v[i]????
+		
 		case AST_IF: return makeIfThenElse(code[0], code[1], code[2]);
 		case AST_WHILE: return makeWhile(code[0], code[1]);
 		
@@ -242,6 +243,7 @@ TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash)
 	return tacJoin(code0, tacJoin(tacCreate(TAC_ARG, funcHash,code0?code0->res:0, makeNumber(order)), codeFinal)); 	
 }
 
+/* nao utilizado
 TAC *makeParams(AST *node, int order, HASH_NODE *funcHash)
 {	
 	TAC *codeFinal = 0;
@@ -252,5 +254,5 @@ TAC *makeParams(AST *node, int order, HASH_NODE *funcHash)
 	
 	return tacJoin(tacCreate(TAC_PARAM, funcHash,node->son[0]->symbol, makeNumber(order)), codeFinal); 	
 }
-
+*/
 

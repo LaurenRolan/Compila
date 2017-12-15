@@ -37,7 +37,7 @@
 
 [-+*;()=,:{}/<>!&$#\[\]]		return yytext[0];
 
-[ \t]		{}
+[ \t\r]		{}
 "\n"		lineNumber++;
 
 "<="		return OPERATOR_LE;

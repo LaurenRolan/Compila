@@ -20,6 +20,8 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	pushq	%rbx
+	.cfi_offset 3, -24
 	movq	$6, a(%rip)
 	movq	$3, b(%rip)
 	movq	a(%rip), %rax
@@ -90,9 +92,9 @@ main:
 	cmpq	%rax, %rdx
 	jl	.L2
 	movq	a(%rip), %rax
-	movq	b(%rip), %rsi
+	movq	b(%rip), %rbx
 	cqto
-	idivq	%rsi
+	idivq	%rbx
 	movq	%rax, c(%rip)
 .L2:
 	movq	a(%rip), %rdx
@@ -100,9 +102,9 @@ main:
 	cmpq	%rax, %rdx
 	jg	.L3
 	movq	a(%rip), %rax
-	movq	b(%rip), %rdi
+	movq	b(%rip), %rsi
 	cqto
-	idivq	%rdi
+	idivq	%rsi
 	movq	%rax, c(%rip)
 .L3:
 	movq	a(%rip), %rdx
@@ -110,9 +112,9 @@ main:
 	cmpq	%rax, %rdx
 	jle	.L4
 	movq	a(%rip), %rax
-	movq	b(%rip), %rcx
+	movq	b(%rip), %rdi
 	cqto
-	idivq	%rcx
+	idivq	%rdi
 	movq	%rax, c(%rip)
 .L4:
 	movq	a(%rip), %rdx
@@ -120,9 +122,9 @@ main:
 	cmpq	%rax, %rdx
 	jge	.L5
 	movq	a(%rip), %rax
-	movq	b(%rip), %rsi
+	movq	b(%rip), %rbx
 	cqto
-	idivq	%rsi
+	idivq	%rbx
 	movq	%rax, c(%rip)
 .L5:
 	movq	a(%rip), %rdx
@@ -130,9 +132,9 @@ main:
 	cmpq	%rax, %rdx
 	jne	.L6
 	movq	a(%rip), %rax
-	movq	b(%rip), %rdi
+	movq	b(%rip), %rcx
 	cqto
-	idivq	%rdi
+	idivq	%rcx
 	movq	%rax, c(%rip)
 .L6:
 	movq	a(%rip), %rax
@@ -142,9 +144,9 @@ main:
 	testq	%rax, %rax
 	je	.L7
 	movq	a(%rip), %rax
-	movq	b(%rip), %rcx
+	movq	b(%rip), %rsi
 	cqto
-	idivq	%rcx
+	idivq	%rsi
 	movq	%rax, c(%rip)
 .L7:
 	movq	a(%rip), %rax
@@ -152,20 +154,20 @@ main:
 	jne	.L8
 	movq	b(%rip), %rax
 	testq	%rax, %rax
-	je	.L9
+	je	.L10
 .L8:
 	movq	a(%rip), %rax
-	movq	b(%rip), %rsi
+	movq	b(%rip), %rdi
 	cqto
-	idivq	%rsi
+	idivq	%rdi
 	movq	%rax, c(%rip)
-.L9:
-	movl	$0, %eax
+.L10:
+	popq	%rbx
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE2:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.5) 5.4.0 20160609"
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4"
 	.section	.note.GNU-stack,"",@progbits

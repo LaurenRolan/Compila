@@ -14,16 +14,32 @@ void makeGRE(TAC *tac, FILE *fout);
 void makeLES(TAC *tac, FILE *fout);
 void makeGE(TAC *tac, FILE *fout);
 void makeLE(TAC *tac, FILE *fout);
+void makeEQ(TAC *tac, FILE *fout);
+void makeNOT(TAC *tac, FILE *fout);
 void makeNE(TAC *tac, FILE *fout);
 void makeAss(TAC *tac, FILE *fout);
+void makeAssV(TAC *tac, FILE *fout);
 void makePrintASM(TAC *tac, FILE *fout);
 void makeRead(TAC *tac, FILE *fout);
+void makeReturn(TAC *tac, FILE *fout);
+/*acho que nao
 void makeWhileASM(TAC *tac, FILE *fout);
 void makeIfElse(TAC *tac, FILE *fout);
+*/
+void makeBegin(TAC *tac, FILE *fout);
+void makeEnd(TAC *tac, FILE *fout);
+void makeVect(TAC *tac, FILE *fout);
+void makeFunc(TAC *tac, FILE *fout);
+void makeJZ(TAC *tac, FILE *fout);
+void makeJump(TAC *tac, FILE *fout);
+void makeLABEL(TAC *tac, FILE *fout);
+void makeArg(TAC *tac, FILE *fout);
 
 //Fim dos protótipos internos
 void asmGenerator (FILE *fout, TAC *code)
 {
+	if(!code) return;
+	
 	TAC *tac = code;
 	fprintf(stderr, "Oi, crianças. A mamãe voltou.\n");
 	for(tac = code; tac; tac = tac->next)
@@ -35,18 +51,36 @@ void asmGenerator (FILE *fout, TAC *code)
 			case TAC_SUB: makeSub(tac, fout); break;
 			case TAC_DIV: makeDiv(tac, fout); break;
 			case TAC_MUL: makeMul(tac, fout); break;
+			
 			case TAC_AND: makeAND(tac, fout); break;
 			case TAC_OR: makeOR(tac, fout); break;
 			case TAC_LES: makeLES(tac, fout); break;
 			case TAC_GRE: makeGRE(tac, fout); break;
 			case TAC_LE: makeLE(tac, fout); break;
 			case TAC_GE: makeGE(tac, fout); break;
+			case TAC_EQ: makeEQ(tac, fout); break;
+			case TAC_NOT: makeNOT(tac, fout); break;
 			case TAC_NE: makeNE(tac, fout); break;
+			
 			case TAC_ASS: makeAss(tac, fout); break;
+			case TAC_ASSV: makeAssV(tac, fout); break;
+			
 			case TAC_PRINT: makePrintASM(tac, fout); break;
 			case TAC_READ: makeRead(tac, fout); break;
+			case TAC_RETURN: makeReturn(tac, fout); break;
+			/* acho que nao
 			case TAC_WHILE: makeWhileASM(tac, fout); break;
 			case TAC_IF: makeIfElse(tac, fout); break;
+			*/
+			case TAC_BEGIN: makeBegin(tac, fout); break;
+			case TAC_END: makeEnd(tac, fout); break;
+			case TAC_VECT: makeVect(tac, fout); break;
+			case TAC_FUNC: makeFunc(tac, fout); break;
+			
+			case TAC_JZ: makeJZ(tac, fout); break;
+			case TAC_JMP: makeJump(tac, fout); break;
+			case TAC_LABEL: makeLABEL(tac, fout); break;
+			case TAC_ARG: makeArg(tac, fout); break;
 			default: fprintf(fout, "Deu ruim\n");
 		}
 	}
@@ -135,6 +169,55 @@ void makeWhileASM(TAC *tac, FILE *fout)
 	return;
 }
 void makeIfElse(TAC *tac, FILE *fout)
+{
+	return;
+}
+
+void makeBegin(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeEnd(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeVect(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeFunc(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeJZ(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeJump(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeLABEL(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeArg(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeEQ(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeNOT(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeAssV(TAC *tac, FILE *fout)
+{
+	return;
+}
+void makeReturn(TAC *tac, FILE *fout)
 {
 	return;
 }
