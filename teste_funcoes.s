@@ -13,9 +13,9 @@ funcao1:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movq	%rdi, -8(%rbp)
-	movq	%rsi, -16(%rbp)
-	movq	%rdx, -24(%rbp)
+	movq	%r8, -8(%rbp)
+	movq	%r9, -16(%rbp)
+	movq	%r10, -24(%rbp)
 	movq	-8(%rbp), %rdx
 	movq	-16(%rbp), %rax
 	addq	%rax, %rdx
@@ -44,6 +44,10 @@ funcao2:
 	.cfi_endproc
 .LFE3:
 	.size	funcao2, .-funcao2
+	.section	.rodata
+.LC0:
+	.string	"%ld"
+	.text
 	.globl	main
 	.type	main, @function
 main:
@@ -55,25 +59,32 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	pushq	%rbx
+	subq	$8, %rsp
 	.cfi_offset 3, -24
-	movl	$3, %edx
-	movl	$2, %esi
-	movl	$1, %edi
+	movq	$3, %r10
+	movq	$2, %r9
+	movq	$1, %r8
 	call	funcao1
 	movq	%rax, a(%rip)
 	movl	$0, %eax
 	call	funcao2
 	movq	%rax, b(%rip)
-	movl	$3, %edx
-	movl	$2, %esi
-	movl	$1, %edi
+	movq	$3, %r10
+	movq	$2, %r9
+	movq	$1, %r8
 	call	funcao1
 	movq	%rax, %rbx
 	movl	$0, %eax
 	call	funcao2
 	addq	%rbx, %rax
 	movq	%rax, c(%rip)
+	movq	a(%rip), %rax
+	movq	%rax, %rsi
+	movl	$.LC0, %edi
 	movl	$0, %eax
+	call	printf
+	movl	$0, %eax
+	addq	$8, %rsp
 	popq	%rbx
 	popq	%rbp
 	.cfi_def_cfa 7, 8

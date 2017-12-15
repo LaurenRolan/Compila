@@ -17,4 +17,5 @@ int main()
   a = funcao1(1, 2, 3);
   b = funcao2();
   c = funcao1(1, 2, 3) + funcao2();
+  printf("%ld", a);
 }
