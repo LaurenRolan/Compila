@@ -225,7 +225,9 @@ void makePrintASM(TAC *tac, FILE *fout)
 
 void makeRead(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n\tmovl\t$%s, %%esi\n"
+			"\tmovl\t$stringgod, %%edi\n"
+			"\tcall\t__isoc99_scanf\n", tac->res->text);
 }
 
 void makeWhileASM(TAC *tac, FILE *fout)

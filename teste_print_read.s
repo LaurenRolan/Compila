@@ -46,10 +46,8 @@ g:
 .LC0:
 	.string	"Nao"
 .LC1:
-	.string	"a = %ld e b = %ld\n"
+	.string	"%ld\n"
 .LC2:
-	.string	"%ld %ld %ld %ld %ld %ld %ld\n"
-.LC3:
 	.string	"%ld"
 	.text
 	.globl	main
@@ -64,32 +62,19 @@ main:
 	.cfi_def_cfa_register 6
 	movl	$.LC0, %edi
 	call	puts
-	movq	b(%rip), %rdx
 	movq	a(%rip), %rax
-#	movq	%rax, %rsi
-	movl	$.LC1, %edi
-#	movl	$0, %eax
-	call	printf
-	movq	g(%rip), %rdi
-	movq	f(%rip), %rsi
-	movq	e(%rip), %r9
-	movq	d(%rip), %r8
-	movq	c(%rip), %rdx
-	movq	b(%rip), %rcx
-	movq	a(%rip), %rax
-	pushq	%rdi
-	pushq	%rsi
 	movq	%rax, %rsi
-	movl	$.LC2, %edi
+	movl	$.LC1, %edi
 	movl	$0, %eax
 	call	printf
-	addq	$16, %rsp
+
 	movl	$a, %esi
-	movl	$.LC3, %edi
-	movl	$0, %eax
+	movl	$.LC2, %edi
+#	movl	$0, %eax
 	call	__isoc99_scanf
+
 	movl	$0, %eax
-	leave
+	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc

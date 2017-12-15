@@ -23,6 +23,9 @@ string103:
 
 string209:
 	.string	" e b = "
+
+string229:
+	.string	"/n"
 #CÓDIGO
 
 	.text
@@ -82,6 +85,24 @@ main:
 	movq	%rax, %rsi
 	movl	$stringgod, %edi
 	call	printf
+
+
+	movl	$string229, %edi
+	call	puts
+
+	movl	$a, %esi
+	movl	$stringgod, %edi
+	call	__isoc99_scanf
+
+
+	movq	a(%rip), %rax
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
+
+
+	movl	$string229, %edi
+	call	puts
 
 	popq	%rbp
 	ret

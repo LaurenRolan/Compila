@@ -8,7 +8,9 @@ d: long=1999;
   
   print "a = ", a, " e b = ", b;
   
-  print 	a, b, c, d;
+  print 	a, b, c, d, "\n";
   
   read > a;
+  
+  print 	a, "\n";
 }
