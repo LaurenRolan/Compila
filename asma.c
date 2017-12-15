@@ -45,6 +45,8 @@ void asmGenerator (FILE *fout, TAC *code)
 	
 	TAC *tac = code;
 	fprintf(fout, "#STRINGS\n");
+	fprintf(fout, "\nstringgod:\n"
+			"\t.string\t\"%%ld\"\n");
 	hashToAsm(fout);
 	fprintf(fout, "#CÓDIGO\n");
 	fprintf(fout, "\n\t.text\n"
@@ -209,7 +211,16 @@ void makeAss(TAC *tac, FILE *fout)
 
 void makePrintASM(TAC *tac, FILE *fout)
 {
-	return;
+	//Caso queira imprimir apenas uma string
+	if(tac->res->type == SYMBOL_LIT_STRING)
+		fprintf(fout, "\n\tmovl\t$string%d, %%edi\n"
+			"\tcall\tputs\n", hashAddress(tac->res->text));
+	//Caso queira imprimir apenas uma variável
+	else
+		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
+			"\tmovq\t%%rax, %%rsi\n"
+			"\tmovl\t$stringgod, %%edi\n"
+			"\tcall	printf\n", tac->res->text);
 }
 
 void makeRead(TAC *tac, FILE *fout)

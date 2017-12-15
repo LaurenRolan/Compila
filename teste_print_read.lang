@@ -1,11 +1,14 @@
 a: long=111;
 b: long=222;
 c: long=333;
-
+d: long=1999;
 (long) main()
 {
   print "Nao";
+  
   print "a = ", a, " e b = ", b;
-  print 	a, b, c;
+  
+  print 	a, b, c, d;
+  
   read > a;
 }

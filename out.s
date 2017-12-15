@@ -1,16 +1,28 @@
 	.data
 a:
-	.quad	2
+	.quad	111
 	.data
 b:
-	.quad	2
+	.quad	222
 	.data
 c:
-	.quad	2
+	.quad	333
 	.data
 d:
-	.quad	3
+	.quad	1999
 #STRINGS
+
+stringgod:
+	.string	"%ld"
+
+string40:
+	.string	"a = "
+
+string103:
+	.string	"Nao"
+
+string209:
+	.string	" e b = "
 #CÓDIGO
 
 	.text
@@ -24,196 +36,52 @@ main:
 
 
 
-	movq	$6, a(%rip)
+	movl	$string103, %edi
+	call	puts
 
 
-	movq	$3, b(%rip)
-
-
-	movq	a(%rip), %rax
-	movq	%rax, c(%rip)
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rax
-	addq	%rdx, %rax
-	movq	%rax, c(%rip)
-
+	movl	$string40, %edi
+	call	puts
 
 
 	movq	a(%rip), %rax
-	addq	$3, %rax
-	movq	%rax, a(%rip)
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
 
 
-
-	movq	a(%rip), %rax
-	addq	$6, %rax
-	movq	%rax, a(%rip)
-
-
-
-	movq	$6, %rdx
-	movq	$3, %rax
-	addq	%rdx, %rax
-	movq	%rax, a(%rip)
-
-
-
-	movq	c(%rip), %rdx
-	movq	a(%rip), %rax
-	subq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, b(%rip)
-
+	movl	$string209, %edi
+	call	puts
 
 
 	movq	b(%rip), %rax
-	subq	$3, %rax
-	movq	%rax, a(%rip)
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
 
+
+	movq	a(%rip), %rax
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
 
 
 	movq	b(%rip), %rax
-	subq	$3, %rax
-	movq	%rax, a(%rip)
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
 
 
-
-	movq	$6, %rdx
-	movq	$3, %rax
-	subq	%rax, %rdx
-	movq	%rdx, %rax
-	movq	%rax, a(%rip)
-
-
-
-	movq	a(%rip), %rdx
 	movq	c(%rip), %rax
-	imulq	%rdx, %rax
-	movq	%rax, b(%rip)
-
-
-
-	movq	a(%rip), %rax
-	imulq	$3, %rax
-	movq	%rax, b(%rip)
-
-
-
-	movq	a(%rip), %rax
-	imulq	$6, %rax
-	movq	%rax, b(%rip)
-
-
-
-	movq	$6, %rdx
-	movq	$3, %rax
-	imulq	%rdx, %rax
-	movq	%rax, b(%rip)
-
-
-
-	movq	a(%rip), %rdx
-	movq	d(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, b(%rip)
-
-
-
-	movq	a(%rip), %rax
-	movl	$3, %eax
-	cqto
-	idivq	%rdi
-	movq	%rax, b(%rip)
-
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
 
 
 	movq	d(%rip), %rax
-	movl	$6, %eax
-	cqto
-	idivq	%rdi
-	movq	%rax, b(%rip)
-
-
-
-	movq	$6, %rdx
-	movq	$3, %rax
-	cqto
-	idivq	%rdi
-	movq	%rax, b(%rip)
-
-
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, c(%rip)
-
-
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, c(%rip)
-
-
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, c(%rip)
-
-
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, c(%rip)
-
-
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, c(%rip)
-
-
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, c(%rip)
-
-
-
-
-
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rsi
-	cqto
-	idivq	%rsi
-	movq	%rax, c(%rip)
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
 
 	popq	%rbp
 	ret

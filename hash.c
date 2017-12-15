@@ -14,8 +14,8 @@ void hashToAsm(FILE *fout)
 	for(i=0; i<HASH_SIZE; ++i)
 		for(node=Table[i]; node; node = node->next)
 			if(node->type == SYMBOL_LIT_STRING)
-				fprintf(fout, "\n___string-%d___:\n"
-					"\t.string\t\"%s\"\n", i, node->text);
+				fprintf(fout, "\nstring%d:\n"
+					"\t.string\t%s\n", i, node->text);
 }
 
 HASH_NODE *makeLabel(void)
