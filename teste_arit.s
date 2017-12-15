@@ -1,60 +1,78 @@
-	.file	"teste_arit.c"
+#	.file	"teste_arit.c"
 	.comm	a,8,8
 	.comm	b,8,8
 	.comm	c,8,8
 	.globl	d
 	.data
 	.align 8
-	.type	d, @object
+#	.type	d, @object
 	.size	d, 8
 d:
 	.quad	3
 	.text
 	.globl	main
-	.type	main, @function
+#	.type	main, @function
 main:
-.LFB2:
-	.cfi_startproc
+#.LFB2:
+#	.cfi_startproc
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
+#	.cfi_def_cfa_offset 16
+#	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
+#	.cfi_def_cfa_register 6
 	pushq	%rbx
-	.cfi_offset 3, -24
+#	.cfi_offset 3, -24
+
 	movq	$6, a(%rip)
 	movq	$3, b(%rip)
+
 	movq	a(%rip), %rax
 	movq	%rax, c(%rip)
+
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	addq	%rdx, %rax
+
 	movq	%rax, c(%rip)
+
 	movq	a(%rip), %rax
 	addq	$3, %rax
+
 	movq	%rax, a(%rip)
+
 	movq	a(%rip), %rax
 	addq	$6, %rax
+
 	movq	%rax, a(%rip)
+
 	movq	$9, a(%rip)
+
 	movq	c(%rip), %rdx
 	movq	a(%rip), %rax
 	subq	%rax, %rdx
 	movq	%rdx, %rax
+
 	movq	%rax, b(%rip)
+
 	movq	b(%rip), %rax
 	subq	$3, %rax
+
 	movq	%rax, a(%rip)
+	
 	movq	b(%rip), %rax
 	movl	$3, %edx
 	subq	%rax, %rdx
 	movq	%rdx, %rax
+	
 	movq	%rax, a(%rip)
 	movq	$3, a(%rip)
+	
 	movq	a(%rip), %rdx
 	movq	c(%rip), %rax
 	imulq	%rdx, %rax
+	
 	movq	%rax, b(%rip)
+	
 	movq	a(%rip), %rdx
 	movq	%rdx, %rax
 	addq	%rax, %rax
@@ -66,11 +84,15 @@ main:
 	addq	%rdx, %rax
 	addq	%rax, %rax
 	movq	%rax, b(%rip)
+	
 	movq	$18, b(%rip)
+	
+	#DIVISÃO
 	movq	a(%rip), %rax
 	movq	d(%rip), %rsi
 	cqto
 	idivq	%rsi
+	
 	movq	%rax, b(%rip)
 	movq	a(%rip), %rcx
 	movabsq	$6148914691236517206, %rdx
@@ -81,12 +103,15 @@ main:
 	subq	%rax, %rdx
 	movq	%rdx, %rax
 	movq	%rax, b(%rip)
+	
 	movq	d(%rip), %rdi
 	movl	$6, %eax
 	cqto
 	idivq	%rdi
+	
 	movq	%rax, b(%rip)
 	movq	$2, b(%rip)
+	
 	movq	a(%rip), %rdx
 	movq	b(%rip), %rax
 	cmpq	%rax, %rdx

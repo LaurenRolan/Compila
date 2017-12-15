@@ -88,6 +88,7 @@ void asmGenerator (FILE *fout, TAC *code)
 	fclose(fout);
 }
 
+//Talvez os movq tenham que virar movl pros lit
 void makeAdd(TAC* tac, FILE *fout)
 {
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
@@ -104,17 +105,53 @@ void makeAdd(TAC* tac, FILE *fout)
 }	
 void makeSub(TAC *tac, FILE *fout)
 {
-	return;
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit - lit
+		fprintf(fout, "\nmovq\t$%s, %%rdx\n"
+			"movq\t$%s, %%rax\n"
+			"subq\t%%rax, %%rdx\n"
+			"movq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit - var
+				fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n"
+				"subq\t$%s, %%rax\n", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var - var
+		fprintf(fout, "movq\t%s(%%rip), %%rdx\n"
+			"movq\t%s(%%rip), %%rax\n"
+			"subq\t%%rax, %%rdx\n"
+			"movq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
 }
 
 void makeMul(TAC *tac, FILE *fout)
 {
-	return;
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit * lit
+		fprintf(fout, "\nmovq\t$%s, %%rdx\n"
+			"movq\t$%s, %%rax\n"
+			"imulq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit * var
+				fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n"
+				"imulq\t$%s, %%rax\n", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var * var
+		fprintf(fout, "movq\t%s(%%rip), %%rdx\n"
+			"movq\t%s(%%rip), %%rax\n"
+			"imulq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
 }
 
 void makeDiv(TAC *tac, FILE *fout)
 {
-	return;
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit * lit
+		fprintf(fout, "\nmovq\t$%s, %%rdx\n"
+			"movq\t$%s, %%rax\n"
+			"cqto\n"
+			"idivq\t%%rdi", tac->op1->text, tac->op2->text);
+	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit * var
+				fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n"
+				"movl\t$%s, %%eax\n"
+				"cqto\n"
+				"idivq\t%%rdi", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var * var
+		fprintf(fout, "movq\t%s(%%rip), %%rdx\n"
+			"movq\t%s(%%rip), %%rsi\n"
+			"cqto\n"
+			"idivq\t%%rsi\n", tac->op1->text, tac->op2->text);
 }
 
 void makeOR(TAC *tac, FILE *fout)	
@@ -152,7 +189,6 @@ void makeAss(TAC *tac, FILE *fout)
 		fprintf(fout, "\nmovq\t$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
 	else if(tac->op1->type != SYMBOL_LIT_INT) //Se for do tipo var <- var
 	{
-		fprintf(stderr, "Chegou aqui\n");
 		if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria-", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria-", 22)))
 			fprintf(fout, "\nmovq\t%s(%%rip), %%rax\n", tac->op1->text);
 		fprintf(fout, "movq\t%%rax, %s(%%rip)\n", tac->res->text);

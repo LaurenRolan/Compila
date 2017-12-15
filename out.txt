@@ -39,72 +39,144 @@ addq	%rdx, %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
+movq	c(%rip), %rdx
+movq	a(%rip), %rax
+subq	%rax, %rdx
+movq	%rdx, %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
+
+movq	b(%rip), %rax
+subq	$3, %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
+
+movq	b(%rip), %rax
+subq	$3, %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
+
+movq	$6, %rdx
+movq	$3, %rax
+subq	%rax, %rdx
+movq	%rdx, %rax
 movq	%rax, a(%rip)
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	c(%rip), %rax
+imulq	%rdx, %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
+
+movq	a(%rip), %rax
+imulq	$3, %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
+
+movq	a(%rip), %rax
+imulq	$6, %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
+
+movq	$6, %rdx
+movq	$3, %rax
+imulq	%rdx, %rax
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	d(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-movq	%rax, b(%rip)
+
+movq	a(%rip), %rax
+movl	$3, %eax
+cqto
+idivq	%rdimovq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-movq	%rax, b(%rip)
+
+movq	d(%rip), %rax
+movl	$6, %eax
+cqto
+idivq	%rdimovq	%rax, b(%rip)
 Deu ruim
 Deu ruim
-movq	%rax, b(%rip)
+
+movq	$6, %rdx
+movq	$3, %rax
+cqto
+idivq	%rdimovq	%rax, b(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	b(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	b(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	b(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	b(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	b(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	b(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, c(%rip)
 Deu ruim
 Deu ruim
 Deu ruim
 Deu ruim
+movq	a(%rip), %rdx
+movq	b(%rip), %rsi
+cqto
+idivq	%rsi
 movq	%rax, c(%rip)
