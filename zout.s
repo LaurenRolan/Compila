@@ -9,6 +9,29 @@ b:
 c:
 	.quad	333
 
+### TEMP VARS ###
+	.data
+___variavelTemporaria_0___:
+	.quad	0
+	.data
+___variavelTemporaria_1___:
+	.quad	0
+	.data
+___variavelTemporaria_2___:
+	.quad	0
+	.data
+___variavelTemporaria_3___:
+	.quad	0
+	.data
+___variavelTemporaria_4___:
+	.quad	0
+	.data
+___variavelTemporaria_5___:
+	.quad	0
+	.data
+___variavelTemporaria_6___:
+	.quad	0
+
 ### STRINGS ###
 
 stringgod:		#nosso compilador só lida com variaveis do tipo LONG por enquanto
@@ -41,23 +64,26 @@ main:
 
 
 
-#TAC AND
+#TAC OR
 	movq	b(%rip), %rdx
 	movq	$1, %rax
 	testq	%rdx, %rdx
-	je	.LogicLabel__2
+	jne	.LogicLabel__2
 	testq	%rax, %rax
-	je	.LogicLabel__2
-	movq	$1, %rcx
-	jmp	.LogicLabel__3
+	je	.LogicLabel__3
 .LogicLabel__2:
-	movq	$0, %rcx
+	movq	$1, ___variavelTemporaria_0___(%rip)
+	jmp	.LogicLabel__4
 .LogicLabel__3:
+	movq	$0, ___variavelTemporaria_0___(%rip)
+.LogicLabel__4:
 
 #TAC JZ
+	movq	___variavelTemporaria_0___(%rip), %rax
+
 	movq	$0, %rdx
 
-	cmpq	%rcx, %rdx
+	cmpq	%rax, %rdx
 	jz	___Label_0___
 
 
@@ -69,6 +95,27 @@ ___Label_0___:
 
 #TAC PRINT
 	movl	$string94, %edi
+	call	puts
+
+#TAC FUNCALL
+	movl	$0, %eax
+	call	funcao
+
+#TAC ASS
+	movq	___variavelTemporaria_1___(%rip), %rax
+
+	movq	%rax, c(%rip)
+
+
+#TAC PRINT
+	movq	c(%rip), %rax
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
+
+
+#TAC PRINT
+	movl	$string18, %edi
 	call	puts
 
 	popq	%rbp
@@ -87,17 +134,19 @@ ___Label_1___:
 	movq	a(%rip), %rdx
 	movq	$4, %rax
 	cmpq	%rax, %rdx
-	jge	.LogicLabel__4
-	movq	$1, %rcx
-	jmp	.LogicLabel__5
-.LogicLabel__4:
-	movq	$0, %rcx
+	jge	.LogicLabel__5
+	movq	$1, ___variavelTemporaria_2___(%rip)
+	jmp	.LogicLabel__6
 .LogicLabel__5:
+	movq	$0, ___variavelTemporaria_2___(%rip)
+.LogicLabel__6:
 
 #TAC JZ
+	movq	___variavelTemporaria_2___(%rip), %rax
+
 	movq	$0, %rdx
 
-	cmpq	%rcx, %rdx
+	cmpq	%rax, %rdx
 	jz	___Label_2___
 
 
@@ -117,14 +166,55 @@ ___Label_1___:
 #TAC ADD
 	movq	a(%rip), %rax
 	addq	$1, %rax
+	movq	%rax, ___variavelTemporaria_3___(%rip)
 
 #TAC ASS
+	movq	___variavelTemporaria_3___(%rip), %rax
+
 	movq	%rax, a(%rip)
 
 #TAC JMP
 	jmp	___Label_1___
 
 ___Label_2___:
+
+
+#TAC ADD
+	movq	$1, %rdx
+	movq	$2, %rax
+	addq	%rdx, %rax
+	movq	%rax, ___variavelTemporaria_4___(%rip)
+
+
+#TAC ADD
+	movq	___variavelTemporaria_4___(%rip), %rax
+	addq	$3, %rax
+	movq	%rax, ___variavelTemporaria_5___(%rip)
+
+
+#TAC ADD
+	movq	___variavelTemporaria_5___(%rip), %rax
+	addq	$4, %rax
+	movq	%rax, ___variavelTemporaria_6___(%rip)
+
+#TAC ASS
+	movq	___variavelTemporaria_6___(%rip), %rax
+
+	movq	%rax, a(%rip)
+
+
+#TAC PRINT
+	movq	a(%rip), %rax
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
+
+
+#TAC PRINT
+	movl	$string18, %edi
+	call	puts
+
+
 	popq	%rbp
 	ret
 

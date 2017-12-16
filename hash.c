@@ -11,6 +11,19 @@ void hashToAsm(FILE *fout)
 {
 	int i;
 	HASH_NODE *node;
+	
+	fprintf(fout, "\n### TEMP VARS ###\n");
+	for(i=0; i<HASH_SIZE; ++i)
+		for(node=Table[i]; node; node = node->next)
+			if(node->type == SYMBOL_VAR && node->datatype == 0)
+				fprintf(fout, "\t.data\n"
+						"%s:\n"
+						"\t.quad\t0\n", node->text);
+	
+	fprintf(fout, "\n### STRINGS ###\n");
+	fprintf(fout, "\nstringgod:"
+			"\t\t#nosso compilador só lida com variaveis do tipo LONG por enquanto\n"
+			"\t.string\t\"%%ld\"\n");	
 	for(i=0; i<HASH_SIZE; ++i)
 		for(node=Table[i]; node; node = node->next)
 			if(node->type == SYMBOL_LIT_STRING)
@@ -30,7 +43,7 @@ HASH_NODE *makeTemp(void)
 {
 	static int factorySerialNumber = 0;
 	char nameBuffer[256];
-	sprintf(nameBuffer, "___variavelTemporaria-%d___", factorySerialNumber++);
+	sprintf(nameBuffer, "___variavelTemporaria_%d___", factorySerialNumber++);
 	return hashInsert(SYMBOL_VAR, nameBuffer);
 }
 
@@ -101,7 +114,21 @@ void hashPrint(void)
   HASH_NODE *node;
   for(i=0; i<HASH_SIZE; ++i)
     for(node=Table[i]; node; node = node->next)
-      printf("Table[%d] has %s of datatype %d.\n", i, node->text, node->datatype);
+		{
+		printf("Table[%d] has %s of datatype = %d and ", i, node->text, node->datatype);
+		switch(node->type)
+			{
+			case SYMBOL_LIT_INT: printf("type = LIT_INT.\n"); break;
+			case SYMBOL_LIT_REAL: printf("type = LIT_REAL.\n"); break;
+			case SYMBOL_LIT_CHAR: printf("type = LIT_CHAR.\n"); break;
+			case SYMBOL_LIT_STRING: printf("type = LIT_STRING.\n"); break;
+			case SYMBOL_ID: printf("type = ID.\n"); break;
+			case SYMBOL_FUN: printf("type = FUNC.\n"); break;
+			case SYMBOL_VEC: printf("type = VECT.\n"); break;
+			case SYMBOL_VAR: printf("type = VAR.\n"); break;
+			case SYMBOL_LABEL: printf("type = LABEL.\n"); break;
+			}
+		}
 }
 
 HASH_NODE * hashFind(char *text)

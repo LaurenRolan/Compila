@@ -48,13 +48,8 @@ void asmGenerator (FILE *fout, TAC *code)
 	TAC *tac = code;
 	
 	///////////// INICIALIZACOES
-	fprintf(fout, "\n### STRINGS ###\n");
-	fprintf(fout, "\nstringgod:"
-			"\t\t#nosso compilador só lida com variaveis do tipo LONG por enquanto\n"
-			"\t.string\t\"%%ld\"\n");
 	hashToAsm(fout);
 	fprintf(fout, "\n\n### CÓDIGO ###\n");
-	
 	///////////////////////////////////
 	
 	for(tac = code; tac; tac = tac->next)
@@ -121,6 +116,7 @@ void makeAdd(TAC* tac, FILE *fout)
 		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
 			"\tmovq\t%s(%%rip), %%rax\n"
 			"\taddq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	fprintf(fout, "\tmovq\t%%rax, %s(%%rip)\n", tac->res->text);
 }	
 void makeSub(TAC *tac, FILE *fout)
 {
@@ -138,6 +134,7 @@ void makeSub(TAC *tac, FILE *fout)
 			"\tmovq\t%s(%%rip), %%rax\n"
 			"\tsubq\t%%rax, %%rdx\n"
 			"\tmovq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	fprintf(fout, "\tmovq\t%%rax, %s(%%rip)\n", tac->res->text);
 }
 
 void makeMul(TAC *tac, FILE *fout)
@@ -154,6 +151,7 @@ void makeMul(TAC *tac, FILE *fout)
 		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
 			"\tmovq\t%s(%%rip), %%rax\n"
 			"\timulq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	fprintf(fout, "\tmovq\t%%rax, %s(%%rip)\n", tac->res->text);
 }
 
 void makeDiv(TAC *tac, FILE *fout)
@@ -174,15 +172,17 @@ void makeDiv(TAC *tac, FILE *fout)
 			"\tmovq\t%s(%%rip), %%rsi\n"
 			"\tcqto\n"
 			"\tidivq\t%%rsi\n", tac->op1->text, tac->op2->text);
+	fprintf(fout, "\tmovq\t%%rax, %s(%%rip)\n", tac->res->text);
 }
 
 void makeOR(TAC *tac, FILE *fout)	
 {
 	fprintf(fout, "\n#TAC OR");
 	
-	char nameBuffer1[256], nameBuffer2[256];
+	char nameBuffer1[256], nameBuffer2[256], nameBuffer3[256];
 	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
 	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer3, ".LogicLabel__%d", factorySerialNumber++);
 	
 	
 	
@@ -204,11 +204,12 @@ void makeOR(TAC *tac, FILE *fout)
 					"\tjne\t%s\n"	
 					"\ttestq\t%%rax, %%rax\n"
 					"\tje\t%s\n"
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"%s:\n"
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer3, nameBuffer2, tac->res->text, nameBuffer3);
 }
 void makeAND(TAC *tac, FILE *fout)
 {
@@ -238,11 +239,11 @@ void makeAND(TAC *tac, FILE *fout)
 					"\tje\t%s\n"	
 					"\ttestq\t%%rax, %%rax\n"
 					"\tje\t%s\n"
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, nameBuffer1,tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 }
 void makeGRE(TAC *tac, FILE *fout)
 {
@@ -270,11 +271,11 @@ void makeGRE(TAC *tac, FILE *fout)
 	
 	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
 					"\tjle\t%s\n"	
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 }
 void makeLES(TAC *tac, FILE *fout)
 {
@@ -302,11 +303,11 @@ void makeLES(TAC *tac, FILE *fout)
 	
 	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
 					"\tjge\t%s\n"	
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 	
 }
 void makeNE(TAC *tac, FILE *fout)
@@ -335,11 +336,11 @@ void makeNE(TAC *tac, FILE *fout)
 	
 	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
 					"\tje\t%s\n"	
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 }
 void makeGE(TAC *tac, FILE *fout)
 {
@@ -367,11 +368,11 @@ void makeGE(TAC *tac, FILE *fout)
 	
 	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
 					"\tjl\t%s\n"	
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 }
 void makeLE(TAC *tac, FILE *fout)
 {
@@ -399,11 +400,11 @@ void makeLE(TAC *tac, FILE *fout)
 	
 	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
 					"\tjg\t%s\n"	
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 }
 
 void makeAss(TAC *tac, FILE *fout)
@@ -472,24 +473,18 @@ void makeVect(TAC *tac, FILE *fout)
 }
 void makeFunc(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC FUNCALL");
+	fprintf(fout, "\n\tmovl\t$0, %%eax"
+					"\n\tcall\t%s\n", tac->op1->text);
 }
 void makeJZ(TAC *tac, FILE *fout)
 {
 	fprintf(fout, "\n#TAC JZ");
 	
-	if(tac->op1->datatype != 0)  // caso tipo  IF (A)   ou   IF (1)    em que nao há uma expressao dentro
-	{
-		if(tac->op1->type == SYMBOL_LIT_INT)
-			fprintf(fout, "\n\tmovq\t$%s, %%rcx\n", tac->op1->text);
-		else if (tac->op1->type == SYMBOL_VAR)
-			fprintf(fout, "\n\tmovq\t%s(%%rip), %%rcx\n", tac->op1->text);
-	}
-	
-	
-	fprintf(fout, 	"\n\tmovq\t$0, %%rdx\n"	
-					"\n\tcmpq\t%%rcx, %%rdx\n"
-					"\tjz\t%s\n", tac->res->text);
+	fprintf(fout, 	"\n\tmovq\t%s(%%rip), %%rax\n"
+					"\n\tmovq\t$0, %%rdx\n"	
+					"\n\tcmpq\t%%rax, %%rdx\n"
+					"\tjz\t%s\n", tac->op1->text, tac->res->text);
 }
 void makeJump(TAC *tac, FILE *fout)
 {
@@ -530,11 +525,11 @@ void makeEQ(TAC *tac, FILE *fout)
 	
 	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
 					"\tjne\t%s\n"	
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 }
 void makeNOT(TAC *tac, FILE *fout)
 {
@@ -552,11 +547,11 @@ void makeNOT(TAC *tac, FILE *fout)
 	
 	fprintf(fout, 	"\ttestq\t%%rax, %%rax\n"
 					"\tjne\t%s\n"	
-					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tmovq\t$1, %s(%%rip)\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
 					"\tjmp\t%s\n"
 					"%s:\n"
-					"\tmovq\t$0, %%rcx\n"
-					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
+					"\tmovq\t$0, %s(%%rip)\n"
+					"%s:\n", nameBuffer1, tac->res->text, nameBuffer2, nameBuffer1, tac->res->text, nameBuffer2);
 }
 void makeAssV(TAC *tac, FILE *fout)
 {
@@ -564,5 +559,10 @@ void makeAssV(TAC *tac, FILE *fout)
 }
 void makeReturn(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC RETURN");
+	
+	fprintf(fout, 	"\n\tmovq\t%s(%%rip), %%rax\n"
+					"\n\tpopq\t%%rbp\n"
+					"\tret\n", tac->res->text);
+	
 }

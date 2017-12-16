@@ -10,26 +10,49 @@ c: long=333;
   {
 
   b = 2;
-  if(b && 1) then
+  if(b || 1) then
 	  print "oi1\n";
-  print "tchau1\n";
+  print "tchau1\n", (2);
+  
+  c = funcao();
+  print (c), "\n";
+  
   }
   
- (long) funcao(z : long)
+ (long) funcao()
  {
   while(a<4)
   {
 	  print (a), "\n";
 	  a = a+1;
-  }
+  };
+  
+  a = 1+2+3+4;
+  print (a), "\n";
+  
+  return (a);
  }
 
 
 /*
+
 long a = 222;
 long b = 111;
 long c = 0;
 long x = 333;
+long nicolas = 0;
+
+
+long func()
+{
+	if(a){
+	printf("OI EU SOU GOKU");
+	return c+x;}
+	
+	if(!a){
+	printf("nao");
+	return a+b;}
+}
 
 long main()
 {
@@ -38,11 +61,10 @@ if(c && a)
 
 else
 printf("tchau1\n");
-}
 
-long func()
-{
-	printf("OI EU SOU GOKU");
+c = func();
+
 }
 
 */
+
