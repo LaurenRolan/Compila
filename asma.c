@@ -416,7 +416,7 @@ void makeAss(TAC *tac, FILE *fout)
 		fprintf(fout, "\n\tmovq\t$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
 	else if(tac->op1->type != SYMBOL_LIT_INT) //Se for do tipo var <- var
 	{
-		if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria-", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria-", 22)))
+		if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria_", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria_", 22)))
 			fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n", tac->op1->text);
 		fprintf(fout, "\n\tmovq\t%%rax, %s(%%rip)\n", tac->res->text);
 	}
@@ -490,28 +490,47 @@ void makeLabelASM(TAC *tac, FILE *fout)
 }
 void makeArg(TAC *tac, FILE *fout, AST *node)
 {
-	int i = 0;
+	int i = 0,j = 0, argNumber = 0;
 	HASH_NODE *hashNode;
 	AST *nodeAux;
 	
 	if(!node) return;
 	
-	hashNode = hashFind(tac->res->text);
+	hashNode = hashFind(tac->res->text); //PEGA A FUNCAO NA HASH
 	
-	while(i < 4){
+	while(i < 4)	// RECURSAO
+	{
 		if(node->son[i]) 
 			makeArg(tac, fout, node->son[i]);
 		i++;
 	}
 	
-	if(strcmp(node->symbol->text, hashNode->text) == 0) // achou a declaracao da funcao que ta na TAC
+	if(node->type == AST_DECF)	// ACHOU UMA DECLARACAO DE FUNCAO
 	{
-		nodeAux = node->son[1];
+		if(strcmp(node->symbol->text, hashNode->text) == 0) // ACHOU A DECLARACAO DE FUNCAO CERTA (IGUAL A DA HASH)
+		{
+			nodeAux = node->son[1];	// INICIO DA LISTA DE PARAMETROS
+			argNumber = atoi(tac->op2->text);
+			
+			for(j=0; j<argNumber; j++)	//PERCORRE A LISTA ATE ACHAR O PARAMETRO CERTO
+				nodeAux = nodeAux->son[1];
+
+			nodeAux = nodeAux->son[0]; // NODE AUX = PARAMETRO CERTO
+			
+			// AGORA É IGUAL A UM TAC_ASS
+			fprintf(fout, "\n#TAC ARG");
+			if(tac->op1->type == SYMBOL_LIT_INT) //Se for do tipo var <- lit_int
+				fprintf(fout, "\n\tmovq\t$%s, %s(%%rip)\n", tac->op1->text, nodeAux->symbol->text);
+			else if(tac->op1->type != SYMBOL_LIT_INT) //Se for do tipo var <- var
+			{
+				if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria_", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria_", 22)))
+					fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n", tac->op1->text);
+				fprintf(fout, "\n\tmovq\t%%rax, %s(%%rip)\n", nodeAux->symbol->text);
+			}
+		}
 	}
-	
-	
-	
 }
+
 void makeEQ(TAC *tac, FILE *fout)
 {
 	fprintf(fout, "\n#TAC EQ");

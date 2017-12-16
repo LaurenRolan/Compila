@@ -33,6 +33,10 @@ x:
 	.size	nicolas, 8
 nicolas:
 	.zero	8
+	
+	
+	
+	
 	.text
 	.globl	func
 	.type	func, @function
@@ -44,8 +48,10 @@ func:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	
 	movq	$10, a(%rip)
 	movq	a(%rip), %rax
+	
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
@@ -55,6 +61,11 @@ func:
 	.section	.rodata
 .LC0:
 	.string	"%ld"
+	
+	
+	
+	
+	
 	.text
 	.globl	main
 	.type	main, @function
@@ -66,13 +77,16 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	
 	movq	c(%rip), %rax
 	movq	%rax, %rsi
 	movl	$.LC0, %edi
 	movl	$0, %eax
 	call	printf
+	
 	movl	$0, %eax
 	call	func
+	
 	movq	%rax, c(%rip)
 	movq	c(%rip), %rax
 	movq	%rax, %rsi

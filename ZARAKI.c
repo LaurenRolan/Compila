@@ -1,7 +1,7 @@
 // UFRGS - Compiladores - Marcelo Johann - 2017/2
 
 
-/*
+
 a: long=0;
 b: long=111;
 c: long=333;
@@ -9,34 +9,21 @@ c: long=333;
 (long) main(n : long, k : long)
   {
 
-  b = 2;
-  if(b || 1) then
-	  print "oi1\n";
-  print "tchau1\n", (2);
-  
-  c = funcao();
-  print (c), "\n";
+ print (c), "\n";
+ c = funcao(a, 8923);
+ print(c), "\n";
   
   }
   
- (long) funcao()
+ (long) funcao(xis : long, ypsilo : long)
  {
-  while(a<4)
-  {
-	  print (a), "\n";
-	  a = a+1;
-  };
-  
   a = 1+2+3+4;
-  print (a), "\n";
-  
-
-  
-  return (a);
+  print (xis), "\t", (ypsilo), "\n";
+  return (a+10);
  }
-*/
 
 
+/*
 
 long a = 222;
 long b = 111;
@@ -60,5 +47,5 @@ printf("%ld", c);
 
 }
 
-
+*/
 
