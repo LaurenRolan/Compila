@@ -5,6 +5,6 @@
 #define ASMA_HEADER
 #include "tac.h"
 
-void asmGenerator(FILE *fout, TAC *code);
+void asmGenerator(FILE *fout, TAC *code, AST *node);
 
 #endif

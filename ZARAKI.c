@@ -1,7 +1,7 @@
 // UFRGS - Compiladores - Marcelo Johann - 2017/2
 
 
-
+/*
 a: long=0;
 b: long=111;
 c: long=333;
@@ -30,11 +30,13 @@ c: long=333;
   a = 1+2+3+4;
   print (a), "\n";
   
+
+  
   return (a);
  }
+*/
 
 
-/*
 
 long a = 222;
 long b = 111;
@@ -45,26 +47,18 @@ long nicolas = 0;
 
 long func()
 {
-	if(a){
-	printf("OI EU SOU GOKU");
-	return c+x;}
-	
-	if(!a){
-	printf("nao");
-	return a+b;}
+	a = 1+2+3+4;
+	return a;
 }
 
 long main()
 {
-if(c && a)
-	printf("oi1\n");
 
-else
-printf("tchau1\n");
-
+printf("%ld", c);
 c = func();
+printf("%ld", c);
 
 }
 
-*/
+
 

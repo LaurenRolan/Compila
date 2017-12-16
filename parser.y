@@ -85,9 +85,7 @@ program : stmtlist				{
 							fprintf(stderr, "\n\n\n");
 							tac = tacInvert(tac);
 							tacPrintInOrder(tac);
-							fprintf(fileout, "### VARIABLES ###\n");
-							astDeclaration($1, fileout);
-							asmGenerator(fileout, tac);
+							asmGenerator(fileout, tac, $1);
 						}
 	;
 	

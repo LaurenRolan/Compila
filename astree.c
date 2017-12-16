@@ -6,18 +6,31 @@
 void astDeclaration(AST *node, FILE *fout)
 {
 	int i = 0;
+	AST *nodeAux;
+	
 	if(node){
 		switch(node->type)
 		{
 			case AST_DEC: 
-				if(node->son[1]) //Se for inicializado
 					fprintf(fout, "\t.data\n"
 						"%s:\n"
 						"\t.quad\t%s\n", node->symbol->text, node->son[1]->symbol->text);
-				else
-					fprintf(fout, ".comm\t%s,8,8", node->symbol->text);
+					break;
 			//case AST_DECV: fprintf(stderr, "VECTOR DECLARATION, %s", node->symbol->text); break;
-			//case AST_DECF: fprintf(stderr, "FUNCTION DECLARATION, %s", node->symbol->text); break;
+			case AST_DECF: 
+					if(node->son[1])
+					{	
+						nodeAux = node->son[1];
+						while(nodeAux != NULL)
+						{
+							if(nodeAux->son[0])
+								fprintf(fout, 	"\t.data\n"
+												"%s:\n"
+												"\t.quad\t0\n", nodeAux->son[0]->symbol->text);
+							nodeAux = nodeAux->son[1];
+						}
+					}
+					break;
 		}
 		while(i < 4){
 			if(node->son[i]) {

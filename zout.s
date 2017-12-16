@@ -8,6 +8,12 @@ b:
 	.data
 c:
 	.quad	333
+	.data
+n:
+	.quad	0
+	.data
+k:
+	.quad	0
 
 ### TEMP VARS ###
 	.data
@@ -97,9 +103,17 @@ ___Label_0___:
 	movl	$string94, %edi
 	call	puts
 
+
+#TAC PRINT
+	movq	2(%rip), %rax
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
+
 #TAC FUNCALL
 	movl	$0, %eax
 	call	funcao
+	movq	%rax, ___variavelTemporaria_1___(%rip)
 
 #TAC ASS
 	movq	___variavelTemporaria_1___(%rip), %rax
@@ -214,6 +228,12 @@ ___Label_2___:
 	movl	$string18, %edi
 	call	puts
 
+
+#TAC RETURN
+	movq	a(%rip), %rax
+
+	popq	%rbp
+	ret
 
 	popq	%rbp
 	ret
