@@ -461,7 +461,8 @@ void makeEnd(TAC *tac, FILE *fout)
 void makeVect(TAC *tac, FILE *fout)
 {
 	fprintf(fout, "\n#VECTOR");
-	fprintf(fout, "\n\tmovq\t%s+%d(%%rip), %s(%%rip)\n", tac->op1->text, (atoi(tac->op2->text)*8), tac->res->text);
+	fprintf(fout, "\n\tmovq\t%s+%d(%%rip), %%r10\n"
+			"\tmovq\t %%r10, %s(%%rip)\n", tac->op1->text, (atoi(tac->op2->text)*8), tac->res->text);
 }
 void makeFunc(TAC *tac, FILE *fout)
 {

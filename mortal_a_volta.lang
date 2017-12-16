@@ -1,0 +1,30 @@
+bytezao: long = 1;
+shortzao: short = 23;
+longzao: long = 456;
+
+vetor_inicializado: long [5] 1 2 3 4 5;
+vetor_vazio: long [5];
+
+(long) main ()
+{
+	if(longzao >= shortzao) then
+		print	"Eu sou um longzao de valor ", longzao, "\n"
+	else
+		read > longzao;
+	print	"Os valores do vetor inicializado sao: ";
+	print	vetor_inicializado[0], " ";
+	print	vetor_inicializado[1], " ";
+	print	vetor_inicializado[2], " ";
+	print	vetor_inicializado[3], " ";
+	print	vetor_inicializado[4], "\n";
+	
+	print	"Agora vamos mudar o vazio:\n";
+	print 	"vetor_vazio[0] = ";
+	read > longzao;
+	vetor_vazio[0] = longzao;
+	
+	longzao = vetor_vazio[0] + vetor_inicializado[0];
+	
+	print 	vetor_vazio[0], " + ", vetor_inicializado[0], " = ", longzao, "\n" 
+	
+}
