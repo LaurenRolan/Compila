@@ -3,6 +3,12 @@
 #include <stdio.h>
 #include <string.h>
 
+//Internal protoypes
+
+void printValues(FILE *fout, AST *node);
+
+//
+
 void astDeclaration(AST *node, FILE *fout)
 {
 	int i = 0;
@@ -16,7 +22,16 @@ void astDeclaration(AST *node, FILE *fout)
 						"%s:\n"
 						"\t.quad\t%s\n", node->symbol->text, node->son[1]->symbol->text);
 					break;
-			//case AST_DECV: fprintf(stderr, "VECTOR DECLARATION, %s", node->symbol->text); break;
+			case AST_DECV:
+				if(node->son[2]) //Se foi inicializado
+				{
+					fprintf(fout, "\t.data\n"
+							"\n\t.size\t%s, %d\n"
+							"%s:\n", node->symbol->text, atoi(node->son[1]->symbol->text)*8, node->symbol->text);
+							printValues(fout, node->son[2]);
+				}
+				else fprintf(fout, "\n\t.comm\t%s,%d,32", node->symbol->text, atoi(node->son[1]->symbol->text)*8);
+				break;
 			case AST_DECF: 
 					if(node->son[1])
 					{	
@@ -423,3 +438,13 @@ void treeToCode(AST *node, FILE *fileout){
 	
 }
 	
+
+void printValues(FILE *fout, AST *node)
+{
+	if(node)
+		fprintf(fout, "\t.quad\t%s\n", node->son[0]->symbol->text);
+	if(node->son[1])
+		printValues(fout, node->son[1]);
+}
+
+//EOF

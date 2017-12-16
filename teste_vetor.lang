@@ -1,0 +1,10 @@
+a: long [5];
+epsilon: long [9];
+b: long = 6;
+c: long[3] 555 444 333;
+
+(long) main()
+{
+	a[3] = b;
+	b = a[0];
+}
