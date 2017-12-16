@@ -46,16 +46,17 @@ void asmGenerator (FILE *fout, TAC *code)
 	if(!code) return;
 	
 	TAC *tac = code;
-	fprintf(fout, "#STRINGS\n");
-	fprintf(fout, "\nstringgod:\n"
+	
+	///////////// INICIALIZACOES
+	fprintf(fout, "\n### STRINGS ###\n");
+	fprintf(fout, "\nstringgod:"
+			"\t\t#nosso compilador só lida com variaveis do tipo LONG por enquanto\n"
 			"\t.string\t\"%%ld\"\n");
 	hashToAsm(fout);
-	fprintf(fout, "#CÓDIGO\n");
-	fprintf(fout, "\n\t.text\n"
-		"\t.globl\tmain\n"
-		"main:\n"
-		"\tpushq\t%%rbp\n"
-		"\tmovq\t%%rsp, %%rbp\n");
+	fprintf(fout, "\n\n### CÓDIGO ###\n");
+	
+	///////////////////////////////////
+	
 	for(tac = code; tac; tac = tac->next)
 	{
 		switch(tac->type)
@@ -67,6 +68,9 @@ void asmGenerator (FILE *fout, TAC *code)
 			
 			case TAC_AND: makeAND(tac, fout); break;
 			case TAC_OR: makeOR(tac, fout); break;
+			
+			//OBS: o assembly de cada uma dessas funcoes logicas está complementado
+			//ou seja...no TAC_GREATER o assembly está como LESS||EQUAL
 			case TAC_LES: makeLES(tac, fout); break;
 			case TAC_GRE: makeGRE(tac, fout); break;
 			case TAC_LE: makeLE(tac, fout); break;
@@ -92,14 +96,12 @@ void asmGenerator (FILE *fout, TAC *code)
 			
 			case TAC_JZ: makeJZ(tac, fout); break;
 			case TAC_JMP: makeJump(tac, fout); break;
-			case TAC_LabelASM: makeLABEL(tac, fout); break;
+			case TAC_LABEL: makeLabelASM(tac, fout); break;
 			case TAC_ARG: makeArg(tac, fout); break;
 			default: fprintf(fout, "\n");
 		}
 	}
-	fprintf(fout, "\n\tpopq\t%%rbp\n"
-			"\tret\n"
-			"#FIM DO PROGRAMA\n");
+	fprintf(fout, "\n\n#FIM DO PROGRAMA\n");
 	
 	fclose(fout);
 }
@@ -176,11 +178,71 @@ void makeDiv(TAC *tac, FILE *fout)
 
 void makeOR(TAC *tac, FILE *fout)	
 {
-	return;
+	fprintf(fout, "\n#TAC OR");
+	
+	char nameBuffer1[256], nameBuffer2[256];
+	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	
+	
+	
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//var + lit
+		fprintf(fout,	"\n\tmovq\t%s(%%rip), %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//lit + var
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+		
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var + var
+		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
+			"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+	
+	fprintf(fout, 	"\ttestq\t%%rdx, %%rdx\n"
+					"\tjne\t%s\n"	
+					"\ttestq\t%%rax, %%rax\n"
+					"\tje\t%s\n"
+					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tjmp\t%s\n"
+					"%s:\n"
+					"\tmovq\t$0, %%rcx\n"
+					"%s:\n", nameBuffer1, nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
 }
 void makeAND(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC AND");
+	
+	char nameBuffer1[256], nameBuffer2[256];
+	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	
+	
+	
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//var + lit
+		fprintf(fout,	"\n\tmovq\t%s(%%rip), %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//lit + var
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+		
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var + var
+		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
+			"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+	
+	fprintf(fout, 	"\ttestq\t%%rdx, %%rdx\n"
+					"\tje\t%s\n"	
+					"\ttestq\t%%rax, %%rax\n"
+					"\tje\t%s\n"
+					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tjmp\t%s\n"
+					"%s:\n"
+					"\tmovq\t$0, %%rcx\n"
+					"%s:\n", nameBuffer1, nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
 }
 void makeGRE(TAC *tac, FILE *fout)
 {
@@ -249,15 +311,99 @@ void makeLES(TAC *tac, FILE *fout)
 }
 void makeNE(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC NE");
+	
+	char nameBuffer1[256], nameBuffer2[256];
+	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	
+	
+	
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//var + lit
+		fprintf(fout,	"\n\tmovq\t%s(%%rip), %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//lit + var
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+		
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var + var
+		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
+			"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+	
+	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
+					"\tje\t%s\n"	
+					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tjmp\t%s\n"
+					"%s:\n"
+					"\tmovq\t$0, %%rcx\n"
+					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
 }
 void makeGE(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC GE");
+	
+	char nameBuffer1[256], nameBuffer2[256];
+	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	
+	
+	
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//var + lit
+		fprintf(fout,	"\n\tmovq\t%s(%%rip), %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//lit + var
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+		
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var + var
+		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
+			"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+	
+	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
+					"\tjl\t%s\n"	
+					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tjmp\t%s\n"
+					"%s:\n"
+					"\tmovq\t$0, %%rcx\n"
+					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
 }
 void makeLE(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC LE");
+	
+	char nameBuffer1[256], nameBuffer2[256];
+	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	
+	
+	
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//var + lit
+		fprintf(fout,	"\n\tmovq\t%s(%%rip), %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//lit + var
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+		
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var + var
+		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
+			"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+	
+	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
+					"\tjg\t%s\n"	
+					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tjmp\t%s\n"
+					"%s:\n"
+					"\tmovq\t$0, %%rcx\n"
+					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
 }
 
 void makeAss(TAC *tac, FILE *fout)
@@ -269,7 +415,7 @@ void makeAss(TAC *tac, FILE *fout)
 	{
 		if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria-", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria-", 22)))
 			fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n", tac->op1->text);
-		fprintf(fout, "\tmovq\t%%rax, %s(%%rip)\n", tac->res->text);
+		fprintf(fout, "\n\tmovq\t%%rax, %s(%%rip)\n", tac->res->text);
 	}
 }
 
@@ -309,11 +455,16 @@ void makeIfElse(TAC *tac, FILE *fout)
 */
 void makeBegin(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n\t.text\n"
+		"\t.globl\t%s\n"
+		"%s:\n"
+		"\tpushq\t%%rbp\n"
+		"\tmovq\t%%rsp, %%rbp\n", tac->res->text, tac->res->text);
 }
 void makeEnd(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n\tpopq\t%%rbp\n"
+			"\tret\n");
 }
 void makeVect(TAC *tac, FILE *fout)
 {
@@ -326,13 +477,24 @@ void makeFunc(TAC *tac, FILE *fout)
 void makeJZ(TAC *tac, FILE *fout)
 {
 	fprintf(fout, "\n#TAC JZ");
+	
+	if(tac->op1->datatype != 0)  // caso tipo  IF (A)   ou   IF (1)    em que nao há uma expressao dentro
+	{
+		if(tac->op1->type == SYMBOL_LIT_INT)
+			fprintf(fout, "\n\tmovq\t$%s, %%rcx\n", tac->op1->text);
+		else if (tac->op1->type == SYMBOL_VAR)
+			fprintf(fout, "\n\tmovq\t%s(%%rip), %%rcx\n", tac->op1->text);
+	}
+	
+	
 	fprintf(fout, 	"\n\tmovq\t$0, %%rdx\n"	
 					"\n\tcmpq\t%%rcx, %%rdx\n"
 					"\tjz\t%s\n", tac->res->text);
 }
 void makeJump(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC JMP");
+	fprintf(fout, "\n\tjmp\t%s\n", tac->res->text);
 }
 void makeLabelASM(TAC *tac, FILE *fout)
 {
@@ -344,11 +506,57 @@ void makeArg(TAC *tac, FILE *fout)
 }
 void makeEQ(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC EQ");
+	
+	char nameBuffer1[256], nameBuffer2[256];
+	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	
+	
+	
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//var + lit
+		fprintf(fout,	"\n\tmovq\t%s(%%rip), %%rdx\n"
+						"\tmovq\t$%s, %%rax\n", tac->op1->text, tac->op2->text);
+	else if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//lit + var
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rdx\n"
+						"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+		
+	else if(tac->op1->type != SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT)//var + var
+		fprintf(fout, "\n\tmovq\t%s(%%rip), %%rdx\n"
+			"\tmovq\t%s(%%rip), %%rax\n", tac->op1->text, tac->op2->text);
+	
+	fprintf(fout, 	"\tcmpq\t%%rax, %%rdx\n"
+					"\tjne\t%s\n"	
+					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tjmp\t%s\n"
+					"%s:\n"
+					"\tmovq\t$0, %%rcx\n"
+					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
 }
 void makeNOT(TAC *tac, FILE *fout)
 {
-	return;
+	fprintf(fout, "\n#TAC NOT");
+	
+	char nameBuffer1[256], nameBuffer2[256];
+	sprintf(nameBuffer1, ".LogicLabel__%d", factorySerialNumber++);
+	sprintf(nameBuffer2, ".LogicLabel__%d", factorySerialNumber++);
+	
+	
+	if(tac->op1->type == SYMBOL_LIT_INT)//lit
+		fprintf(fout, 	"\n\tmovq\t$%s, %%rax\n", tac->op1->text);
+	else //var
+		fprintf(fout,	"\n\tmovq\t%s(%%rip), %%rax\n", tac->op1->text);
+	
+	fprintf(fout, 	"\ttestq\t%%rax, %%rax\n"
+					"\tjne\t%s\n"	
+					"\tmovq\t$1, %%rcx\n"	// coisas mutcho lokas (resumidamente, 0 e 1 servem como booleano)
+					"\tjmp\t%s\n"
+					"%s:\n"
+					"\tmovq\t$0, %%rcx\n"
+					"%s:\n", nameBuffer1, nameBuffer2, nameBuffer1, nameBuffer2);
 }
 void makeAssV(TAC *tac, FILE *fout)
 {

@@ -1,26 +1,33 @@
+### VARIABLES ###
 	.data
 a:
-	.quad	222
+	.quad	0
 	.data
 b:
 	.quad	111
-#STRINGS
+	.data
+c:
+	.quad	333
 
-stringgod:
+### STRINGS ###
+
+stringgod:		#nosso compilador só lida com variaveis do tipo LONG por enquanto
 	.string	"%ld"
+
+string18:
+	.string	"\n"
 
 string30:
 	.string	"oi1\n"
 
-string31:
-	.string	"oi2\n"
-
 string94:
 	.string	"tchau1\n"
 
-string95:
-	.string	"tchau2\n"
-#CÓDIGO
+
+### CÓDIGO ###
+
+
+
 
 	.text
 	.globl	main
@@ -29,14 +36,18 @@ main:
 	movq	%rsp, %rbp
 
 
+#TAC ASS
+	movq	$2, b(%rip)
 
 
 
-#TAC GRE
-	movq	a(%rip), %rdx
-	movq	b(%rip), %rax
-	cmpq	%rax, %rdx
-	jle	.LogicLabel__2
+#TAC AND
+	movq	b(%rip), %rdx
+	movq	$1, %rax
+	testq	%rdx, %rdx
+	je	.LogicLabel__2
+	testq	%rax, %rax
+	je	.LogicLabel__2
 	movq	$1, %rcx
 	jmp	.LogicLabel__3
 .LogicLabel__2:
@@ -60,11 +71,21 @@ ___Label_0___:
 	movl	$string94, %edi
 	call	puts
 
+	popq	%rbp
+	ret
+
+	.text
+	.globl	funcao
+funcao:
+	pushq	%rbp
+	movq	%rsp, %rbp
+
+___Label_1___:
 
 
 #TAC LES
 	movq	a(%rip), %rdx
-	movq	b(%rip), %rax
+	movq	$4, %rax
 	cmpq	%rax, %rdx
 	jge	.LogicLabel__4
 	movq	$1, %rcx
@@ -77,19 +98,35 @@ ___Label_0___:
 	movq	$0, %rdx
 
 	cmpq	%rcx, %rdx
-	jz	___Label_1___
+	jz	___Label_2___
 
 
 #TAC PRINT
-	movl	$string31, %edi
-	call	puts
+	movq	a(%rip), %rax
+	movq	%rax, %rsi
+	movl	$stringgod, %edi
+	call	printf
 
-___Label_1___:
 
 #TAC PRINT
-	movl	$string95, %edi
+	movl	$string18, %edi
 	call	puts
 
+
+
+#TAC ADD
+	movq	a(%rip), %rax
+	addq	$1, %rax
+
+#TAC ASS
+	movq	%rax, a(%rip)
+
+#TAC JMP
+	jmp	___Label_1___
+
+___Label_2___:
 	popq	%rbp
 	ret
+
+
 #FIM DO PROGRAMA
