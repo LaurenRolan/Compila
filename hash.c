@@ -22,7 +22,7 @@ HASH_NODE *makeLabel(void)
 {
 	static int factorySerialNumber = 0;
 	char nameBuffer[256];
-	sprintf(nameBuffer, "___Label-%d___", factorySerialNumber++);
+	sprintf(nameBuffer, "___Label_%d___", factorySerialNumber++);
 	return hashInsert(SYMBOL_LABEL, nameBuffer);
 }
 

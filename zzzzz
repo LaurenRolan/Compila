@@ -1,0 +1,41 @@
+	.data
+a:
+	.quad	111
+	.data
+b:
+	.quad	222
+#STRINGS
+
+stringgod:
+	.string	"%ld"
+
+string32:
+	.string	"oi"
+
+string96:
+	.string	"tchau"
+#CÓDIGO
+
+	.text
+	.globl	main
+main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+
+
+
+
+
+
+#TAC PRINT
+	movl	$string32, %edi
+	call	puts
+
+
+#TAC PRINT
+	movl	$string96, %edi
+	call	puts
+
+	popq	%rbp
+	ret
+#FIM DO PROGRAMA

@@ -5,7 +5,7 @@
 
 void astDeclaration(AST *node, FILE *fout)
 {
-	int j, i = 0;
+	int i = 0;
 	if(node){
 		switch(node->type)
 		{
