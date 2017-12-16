@@ -1,5 +1,10 @@
 #include "semantic.h"
 
+//Internal prototypes
+int insideParentesis(AST *node);
+
+
+//
 
 int semanticCheckInit(AST *node, int type)
 {
@@ -322,7 +327,7 @@ int compareLists(AST* fcall, AST* fdec)
 
 void semanticCheckOperands(AST *node)
 {
-	int i;
+	int i, inPar;
 	if(!node) return;
 
 	//Processa a partir das folhas
@@ -358,6 +363,23 @@ void semanticCheckOperands(AST *node)
 					case AST_NOT:
 						fprintf(stderr, "Semantic ERROR at line %d: left operand cannot be relational/logic.\n", node->lineNumber);
 						semanticError = 1;
+						break;
+					case AST_PAR:
+						inPar = insideParentesis(node->son[0]);
+						switch(inPar)
+						{
+							case AST_LE:
+							case AST_GE:
+							case AST_EQ:
+							case AST_NE:
+							case AST_AND:
+							case AST_OR:
+							case AST_LES:
+							case AST_GRE:
+							case AST_NOT:
+							fprintf(stderr, "Semantic ERROR at line %d: left operand cannot be relational/logic.\n", node->lineNumber);
+							semanticError = 1;
+						}
 					default: break;
 				}
 			if(node->son[1])
@@ -374,6 +396,23 @@ void semanticCheckOperands(AST *node)
 					case AST_NOT:
 						fprintf(stderr, "Semantic ERROR at line %d: right operand cannot be relational/logic.\n", node->lineNumber);
 						semanticError = 1;
+						break;
+					case AST_PAR:
+						inPar = insideParentesis(node->son[1]);
+						switch(inPar)
+						{
+							case AST_LE:
+							case AST_GE:
+							case AST_EQ:
+							case AST_NE:
+							case AST_AND:
+							case AST_OR:
+							case AST_LES:
+							case AST_GRE:
+							case AST_NOT:
+							fprintf(stderr, "Semantic ERROR at line %d: right operand cannot be relational/logic.\n", node->lineNumber);
+							semanticError = 1;
+						}
 					default: break;
 				}
 			break;
@@ -381,17 +420,30 @@ void semanticCheckOperands(AST *node)
 		case AST_AND:
 		case AST_OR:
 		case AST_NOT:
-			switch(node->son[0]->type)
-			{
-				case AST_MUL:
-				case AST_ADD:
-				case AST_SUB:
-				case AST_DIV:
-					fprintf(stderr, "Semantic ERROR at line %d: left operand cannot be arithmetic.\n", node->lineNumber);
-					semanticError = 1;
-				default: break;
-			}
-			if(node->son[1])
+			if(node->son[0]->type != AST_PAR)
+				switch(node->son[0]->type)
+				{
+					case AST_MUL:
+					case AST_ADD:
+					case AST_SUB:
+					case AST_DIV:
+						fprintf(stderr, "Semantic ERROR at line %d: left operand cannot be arithmetic.\n", node->lineNumber);
+						semanticError = 1;
+						break;
+					case AST_PAR:
+						inPar = insideParentesis(node->son[0]);
+						switch(inPar)
+						{
+							case AST_MUL:
+							case AST_ADD:
+							case AST_SUB:
+							case AST_DIV:
+								fprintf(stderr, "Semantic ERROR at line %d: left operand cannot be arithmetic.\n", node->lineNumber);
+								semanticError = 1;
+						}
+					default: break;
+				}
+			if(node->son[1] && node->son[1]->type != AST_PAR)
 				switch(node->son[1]->type)
 				{
 					case AST_MUL:
@@ -400,8 +452,21 @@ void semanticCheckOperands(AST *node)
 					case AST_DIV:
 						fprintf(stderr, "Semantic ERROR at line %d: right operand cannot be arithmetic.\n", node->lineNumber);
 						semanticError = 1;
+						break;
+					case AST_PAR:
+						inPar = insideParentesis(node->son[1]);
+						switch(inPar)
+						{
+							case AST_MUL:
+							case AST_ADD:
+							case AST_SUB:
+							case AST_DIV:
+								fprintf(stderr, "Semantic ERROR at line %d: right operand cannot be arithmetic.\n", node->lineNumber);
+								semanticError = 1;
+						}
 					default: break;
 				}
+			
 			break;
 		default: break;
 	}
@@ -410,35 +475,22 @@ void semanticCheckOperands(AST *node)
 
 void semanticCheckReturns(AST* nodeR, HASH_NODE *fdec)
 {
-	//fprintf(stderr, "print INICIO\n");
 	
 	int i;
 	if(!nodeR) return;
 	
-	//fprintf(stderr, "print 1\n");
-	
 	if(nodeR->type == AST_DECF)
-	{
-		//fprintf(stderr, "print 2\n");
 		fdec = nodeR->symbol;
-		//fprintf(stderr, "print 3\n");
-	}
 	else if(nodeR->type == AST_RETURN)
 		{
-			//fprintf(stderr, "print 4\n");
 			if((dataTypeIsInt(fdec->datatype) == OK && dataTypeIsReal(getDataType(nodeR->son[0])) == OK) || (dataTypeIsReal(fdec->datatype) == OK && dataTypeIsInt(getDataType(nodeR->son[0])) == OK))	
 			{
-				//fprintf(stderr, "print 5\n");
 				fprintf(stderr, "Semantic ERROR at line %d: return from function %s has wrong type.\n", nodeR->lineNumber, fdec->text);
 				semanticError = 1;
-				//fprintf(stderr, "print 6\n");
 			}
 		}
-
-	//fprintf(stderr, "print 7\n");
 	for(i=0; i <MAX_SONS; ++i)
 		semanticCheckReturns(nodeR->son[i],fdec);
-	//fprintf(stderr, "print FIM\n");
 }
 
 
@@ -458,5 +510,11 @@ int dataTypeIsInt(int tipo)
 		return ERROR_TYPES;
 }
 
+int insideParentesis(AST *node)
+{
+	if(node->type == AST_PAR)
+		return insideParentesis(node->son[0]);
+	return node->type;
+}
 
 
