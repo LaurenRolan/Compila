@@ -18,7 +18,7 @@ void astDeclaration(AST *node, FILE *fout)
 		switch(node->type)
 		{
 			case AST_DEC: 
-					fprintf(fout, "\t.data\n"
+					fprintf(fout, "\n\t.data\n"
 						"%s:\n"
 						"\t.quad\t%s\n", node->symbol->text, node->son[1]->symbol->text);
 					break;
