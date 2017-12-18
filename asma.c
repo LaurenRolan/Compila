@@ -524,7 +524,7 @@ void makeArg(TAC *tac, FILE *fout, AST *node)
 				fprintf(fout, "\n\tmovq\t$%s, %s(%%rip)\n", tac->op1->text, nodeAux->symbol->text);
 			else if(tac->op1->type != SYMBOL_LIT_INT) //Se for do tipo var <- var
 			{
-				if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria_", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria_", 22)))
+				//if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria_", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria_", 22)))
 					fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n", tac->op1->text);
 				fprintf(fout, "\n\tmovq\t%%rax, %s(%%rip)\n", nodeAux->symbol->text);
 			}
@@ -595,7 +595,7 @@ void makeAssV(TAC *tac, FILE *fout)
 				"\tmovq\t%%rax, %s+%d(%%rip)", tac->op2->text, tac->res->text, (atoi(tac->op1->text)*8));
 	else if(tac->op2->type != SYMBOL_LIT_INT) //Se for do tipo var <- var
 	{
-		if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria-", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria-", 22)))
+		if((strncmp((tac->op1)?tac->op1->text:"", "___variavelTemporaria_", 22)) && (strncmp((tac->op2)?tac->op2->text:"", "___variavelTemporaria_", 22)))
 			fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n", tac->op2->text);
 		fprintf(fout, "\n\tmovq\t%%rax, %s+%d(%%rip)\n", tac->res->text, (atoi(tac->op1->text)*8));
 	}
