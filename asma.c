@@ -106,11 +106,20 @@ void asmGenerator (FILE *fout, TAC *code, AST *node)
 //Talvez os movq tenham que virar movl pros lit
 void makeAdd(TAC* tac, FILE *fout)
 {
+	long resultado;
 	fprintf(fout, "\n#TAC ADD");
+	//Forma não otimizada: sem propagação de variáveis
+	/*
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit + lit
 		fprintf(fout, "\n\tmovq\t$%s, %%rdx\n"
 			"\tmovq\t$%s, %%rax\n"
 			"\taddq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	*/
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
+	{
+		resultado = atoi(tac->op1->text) + atoi(tac->op2->text);
+		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit + var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
 				"\taddq\t$%s, %%rax\n", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
