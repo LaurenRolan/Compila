@@ -115,6 +115,7 @@ void makeAdd(TAC* tac, FILE *fout)
 			"\tmovq\t$%s, %%rax\n"
 			"\taddq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
 	*/
+	//Forma otimizada: com propagação
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
 	{
 		resultado = atoi(tac->op1->text) + atoi(tac->op2->text);
@@ -131,12 +132,22 @@ void makeAdd(TAC* tac, FILE *fout)
 }	
 void makeSub(TAC *tac, FILE *fout)
 {
+	long resultado;
 	fprintf(fout, "\n#TAC SUB");
+	//Forma não otimizada: sem propagação de variáveis
+	/*
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit - lit
 		fprintf(fout, "\n\tmovq\t$%s, %%rdx\n"
 			"\tmovq\t$%s, %%rax\n"
 			"\tsubq\t%%rax, %%rdx\n"
 			"\tmovq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	*/
+	//Forma otimizada
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
+	{
+		resultado = atoi(tac->op1->text) - atoi(tac->op2->text);
+		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit - var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
 				"\tsubq\t$%s, %%rax\n", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
@@ -150,11 +161,21 @@ void makeSub(TAC *tac, FILE *fout)
 
 void makeMul(TAC *tac, FILE *fout)
 {
+	long resultado;
 	fprintf(fout, "\n#TAC MULT");
+	//Forma não otimizada
+	/*
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit * lit
 		fprintf(fout, "\n\tmovq\t$%s, %%rdx\n"
 			"\tmovq\t$%s, %%rax\n"
 			"\timulq\t%%rdx, %%rax\n", tac->op1->text, tac->op2->text);
+	*/
+	//Forma otimizada
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
+	{
+		resultado = atoi(tac->op1->text) * atoi(tac->op2->text);
+		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit * var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
 				"\timulq\t$%s, %%rax\n", ((tac->op1->type != SYMBOL_LIT_INT)?tac->op1->text:tac->op2->text), ((tac->op2->type == SYMBOL_LIT_INT)?tac->op2->text:tac->op1->text));
@@ -167,12 +188,22 @@ void makeMul(TAC *tac, FILE *fout)
 
 void makeDiv(TAC *tac, FILE *fout)
 {
+	long resultado;
 	fprintf(fout, "\n#TAC DIV");
+	//Forma não otimizada
+	/*
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)//lit / lit
 		fprintf(fout, "\n\tmovq\t$%s, %%rdx\n"
 			"\tmovq\t$%s, %%rax\n"
 			"\tcqto\n"
 			"\tidivq\t%%rdi\n", tac->op1->text, tac->op2->text);
+	*/
+	//Forma otimizada
+	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
+	{
+		resultado = atoi(tac->op1->text) / atoi(tac->op2->text);
+		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit / var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
 				"\tmovl\t$%s, %%eax\n"
