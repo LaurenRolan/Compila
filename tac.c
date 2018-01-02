@@ -30,7 +30,7 @@ TAC *killTheDead(TAC *current, TAC *origin)
 			tacPrintSingle(current->prev->next);
 			tacPrintSingle(current);
 			fprintf(stderr, "----------------------------------------------------\n");
-			killTheDead(current->next, origin); //Continua procurando por reads e stores
+			killTheDead(current->next, current); //Continua procurando por reads e stores
 		}
 		else killTheDead(current->next, current);
 	}
@@ -46,7 +46,7 @@ TAC *killTheDead(TAC *current, TAC *origin)
 		}
 		else killTheDead(current->next, origin); //Continua procurando por read
 	}
-	else killTheDead(current->next, current);
+	killTheDead(current->next, 0);
 	return current;
 }
 
