@@ -64,6 +64,6 @@ TAC *tacInvert (TAC *last);
 void tacPrintInOrder(TAC *last);
 void tacPrintSingle(TAC *tac);
 TAC *tacJoin(TAC *l1, TAC *l2);
-TAC *killTheDead(TAC *root, TAC *origin);
+TAC *killTheDead(TAC *root);
 
 #endif

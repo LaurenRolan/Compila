@@ -13,45 +13,107 @@ TAC *makePrint(AST *node);
 TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash);
 TAC *makeParams(AST *node, int order, HASH_NODE *funcHash);
 int isRight(int type);
+void findWrite(TAC *current);
+void findDoubleStore(TAC *current, TAC *origin);
 //Fim dos protótipos internos
 
-
-TAC *killTheDead(TAC *current, TAC *origin)
+void findWrite(TAC *current)
 {
+	TAC *next, *before;
+	int hasRead = 0;
 	if(!current) return 0;
-	if(current->type == TAC_ASS || current->type == TAC_ASSV)
+	do
 	{
-		if(origin && (current->res == origin->res)) //Store após store
+		if(current->type == TAC_ASS || current->type == TAC_ASSV)
 		{
-			current->prev = origin->prev;
-			origin->prev->next = current;
-			free(origin);
-			fprintf(stderr, "\n---------------------Igual--------------------------\n");
-			tacPrintSingle(current->prev->next);
-			tacPrintSingle(current);
-			fprintf(stderr, "----------------------------------------------------\n");
-			killTheDead(current->next, current); //Continua procurando por reads e stores
+			next = current->next;
+			do //Procura por leituras
+			{
+				if(isRight(next->type)) //Se é leitura
+					if(next->op1 == current->res || next->op2 == current->res) //da variável
+					{
+						hasRead = 1;
+						break;
+					}
+			}while((next = next->next));
+			if(hasRead) current = current->next; //Achou leitura, vai pra próximo assign
+			else //Não tem nenhuma leitura
+			{
+				before = current->prev;
+				current->next->prev = before;
+				before->next = current->next;
+				free(current);
+				current = before;
+				if(!strncmp(before->res->text, "___variavelTemporaria_", 22))
+				{
+					before = current->prev;
+					current->next->prev = before;
+					before->next = current->next;
+					free(current);
+				}
+				current = before->next;
+			}
 		}
-		else killTheDead(current->next, current);
-	}
-	else if(isRight(current->type)) //Read antes de store
+		else current = current->next;
+		hasRead = 0;
+	}while(current);
+}
+void findDoubleStore(TAC *current, TAC *origin)
+{
+	TAC *next, *before, *var;
+	int hasDoubleStore = 0, hasRead = 0;
+	if(!current) return 0;
+	do
 	{
-		if(origin && (current->op1 == origin->res || current->op2 == origin->res)) //É a leitura da variável
+		if(current->type == TAC_ASS || current->type == TAC_ASSV)
 		{
-			fprintf(stderr, "\n-------------------leitura------------------------\n");
-			tacPrintSingle(origin);
-			tacPrintSingle(current);
-			fprintf(stderr, "----------------------------------------------------\n");
-			return 0;	
+			next = current->next;
+			do //Procura por novos ASSIGNS
+			{
+				if(isRight(next->type)) //Se é leitura
+					if(next->op1 == current->res || next->op2 == current->res) //da variável
+					{
+						hasRead = 1;
+						break;
+					}
+				if(next->type == TAC_ASS || next->type == TAC_ASSV) //Se é assign
+					if(next->res == current->res) //da variável
+					{
+						hasDoubleStore = 1;
+						break;
+					}
+			}while((next = next->next));
+			if(hasRead) {
+				fprintf(stderr, "\nTem leitura\n");
+				current = current->next; //Achou leitura, vai pra próximo assign
+			}
+			else if(hasDoubleStore) //Tem um double e nenhuma leitura entre, deleta double
+			{
+				before = current->prev;
+				current->next->prev = before;
+				before->next = current->next;
+				free(current);
+				current = before;
+				if(!strncmp(before->res->text, "___variavelTemporaria_", 22))
+				{
+					before = current->prev;
+					current->next->prev = before;
+					before->next = current->next;
+					free(current);
+				}
+				current = before->next;
+			}
 		}
-		else killTheDead(current->next, origin); //Continua procurando por read
-	}
-	else {
-		fprintf(stderr, "\n\nEntro aqui para:\n");
-		tacPrintSingle(current);
-		killTheDead(current->next, origin);
-	}
-	killTheDead(current->next, 0);
+		else current = current->next;
+		hasRead = 0;
+		hasDoubleStore = 0;
+	}while(current);
+}
+
+TAC *killTheDead(TAC *current)
+{
+	findWrite(current);
+	findDoubleStore(current, 0);
 	return current;
 }
 

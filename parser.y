@@ -85,7 +85,7 @@ program : stmtlist				{
 							fprintf(stderr, "\n\n\n");
 							tac = tacInvert(tac);
 							tacPrintInOrder(tac);
-							tac = killTheDead(tac, 0);
+							tac = killTheDead(tac);
 							tacPrintInOrder(tac);
 							asmGenerator(fileout, tac, $1);
 						}
