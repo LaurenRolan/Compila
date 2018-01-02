@@ -46,6 +46,11 @@ TAC *killTheDead(TAC *current, TAC *origin)
 		}
 		else killTheDead(current->next, origin); //Continua procurando por read
 	}
+	else {
+		fprintf(stderr, "\n\nEntro aqui para:\n");
+		tacPrintSingle(current);
+		killTheDead(current->next, origin);
+	}
 	killTheDead(current->next, 0);
 	return current;
 }
