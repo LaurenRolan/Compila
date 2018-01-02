@@ -119,7 +119,7 @@ void makeAdd(TAC* tac, FILE *fout)
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
 	{
 		resultado = atoi(tac->op1->text) + atoi(tac->op2->text);
-		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+		fprintf(fout, "\n\tmovq\t$%ld, %%rax\n", resultado);
 	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit + var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
@@ -146,7 +146,7 @@ void makeSub(TAC *tac, FILE *fout)
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
 	{
 		resultado = atoi(tac->op1->text) - atoi(tac->op2->text);
-		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+		fprintf(fout, "\n\tmovq\t$%ld, %%rax\n", resultado);
 	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit - var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
@@ -174,7 +174,7 @@ void makeMul(TAC *tac, FILE *fout)
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
 	{
 		resultado = atoi(tac->op1->text) * atoi(tac->op2->text);
-		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+		fprintf(fout, "\n\tmovq\t$%ld, %%rax\n", resultado);
 	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit * var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
@@ -202,7 +202,7 @@ void makeDiv(TAC *tac, FILE *fout)
 	if(tac->op1->type == SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT)
 	{
 		resultado = atoi(tac->op1->text) / atoi(tac->op2->text);
-		fprintf(fout, "\n\tmovq\t$%d, %%rax\n", resultado);
+		fprintf(fout, "\n\tmovq\t$%ld, %%rax\n", resultado);
 	}
 	else if((tac->op1->type != SYMBOL_LIT_INT && tac->op2->type == SYMBOL_LIT_INT) || (tac->op1->type == SYMBOL_LIT_INT && tac->op2->type != SYMBOL_LIT_INT))//lit / var
 				fprintf(fout, "\n\tmovq\t%s(%%rip), %%rax\n"
