@@ -3,7 +3,6 @@ b: long=2;
 c: long=2;
 d: long=3;
 
-//double x, y, z;
 
 (long) main()
 {
@@ -30,18 +29,7 @@ d: long=3;
   b = a / 3;
   b = 6 / d;
   b = 6 / 3; 
-/*
-  x = 1.2 * 3.5;
-  y = x / 3.0;
-*/
-//Muita loucura
-/*
-  if(a >= y) z = y * x;
-  if(a <= y) z = y * x;
-  if(a > y) z = y * x;
-  if(a < y) z = y * x;
-  if(a == y) z = y * x;
-*/
+
   if(a >= b) then
     c = a / b;
   if(a <= b) then
@@ -56,4 +44,6 @@ d: long=3;
     c = a / b;
   if(a || b) then
     c = a / b;
+	
+	return (a + b + c);
 }

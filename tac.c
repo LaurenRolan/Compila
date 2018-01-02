@@ -12,9 +12,43 @@ TAC* makeWhile(TAC *code0, TAC *code1);
 TAC *makePrint(AST *node);
 TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash);
 TAC *makeParams(AST *node, int order, HASH_NODE *funcHash);
-
-
+int isRight(int type);
 //Fim dos protótipos internos
+
+
+TAC *killTheDead(TAC *current, TAC *origin)
+{
+	if(!current) return 0;
+	if(current->type == TAC_ASS || current->type == TAC_ASSV)
+	{
+		if(origin && (current->res == origin->res)) //Store após store
+		{
+			current->prev = origin->prev;
+			origin->prev->next = current;
+			free(origin);
+			fprintf(stderr, "\n---------------------Igual--------------------------\n");
+			tacPrintSingle(current->prev->next);
+			tacPrintSingle(current);
+			fprintf(stderr, "----------------------------------------------------\n");
+			killTheDead(current->next, origin); //Continua procurando por reads e stores
+		}
+		else killTheDead(current->next, current);
+	}
+	else if(isRight(current->type)) //Read antes de store
+	{
+		if(origin && (current->op1 == origin->res || current->op2 == origin->res)) //É a leitura da variável
+		{
+			fprintf(stderr, "\n-------------------leitura------------------------\n");
+			tacPrintSingle(origin);
+			tacPrintSingle(current);
+			fprintf(stderr, "----------------------------------------------------\n");
+			return 0;	
+		}
+		else killTheDead(current->next, origin); //Continua procurando por read
+	}
+	else killTheDead(current->next, current);
+	return current;
+}
 
 TAC *tacCreate(int type, HASH_NODE *res, HASH_NODE *op1, HASH_NODE *op2)
 {
@@ -243,16 +277,33 @@ TAC *makeArgs(AST *node, int order, HASH_NODE *funcHash)
 	return tacJoin(code0, tacJoin(tacCreate(TAC_ARG, funcHash,code0?code0->res:0, makeNumber(order)), codeFinal)); 	
 }
 
-/* nao utilizado
-TAC *makeParams(AST *node, int order, HASH_NODE *funcHash)
-{	
-	TAC *codeFinal = 0;
-	
-	if(!node) return 0;
-	if(node->son[1])
-		codeFinal = makeParams(node->son[1], order+1, funcHash);
-	
-	return tacJoin(tacCreate(TAC_PARAM, funcHash,node->son[0]->symbol, makeNumber(order)), codeFinal); 	
+int isRight(int type)
+{
+	switch(type)
+	{
+		case TAC_SYMBOL:
+		case TAC_ADD: 
+		case TAC_SUB: 
+		case TAC_MUL: 
+		case TAC_DIV: 
+		case TAC_LE: 
+		case TAC_GE: 
+		case TAC_EQ: 
+		case TAC_NE: 
+		case TAC_AND: 
+		case TAC_OR: 
+		case TAC_LES: 
+		case TAC_GRE: 
+		case TAC_NOT: 
+		case TAC_VECT:
+		case TAC_PARAM:
+		case TAC_READ:
+		case TAC_RETURN: 
+		case TAC_PRINT:
+		case TAC_CALL:
+			return 1;
+			break;
+		default: return 0;
+	}
 }
-*/
 
