@@ -1,0 +1,90 @@
+TAC *killTheDeadIterativeEdition(TAC *first)
+{
+	TAC *tacAtual, *tacAux, *tacAux2;
+	
+	for(tacAtual = first; tacAtual; tacAtual = tacAtual->next) //PERCORRE TODA LISTA DE TACS
+	{		
+		if(tacAtual->type == TAC_ASS) //ACHOU UM STORE NORMAL
+		{
+			for(tacAux = tacAtual->next; tacAux; tacAux = tacAux->next) // OLHA OS TACS ADIANTE PRA CHECAR SE O STORE É UTIL
+			{
+				if(tacAux->type == TAC_ASS) // ACHOU OUTRO STORE
+				{
+					if(tacAux->res == tacAtual->res) // STORE AFTER STORE NA MESMA VARIAVEL
+					{
+						for(tacAux2 = first; tacAux2!=tacAtual; tacAux2 = tacAux2->next)
+						{
+							if((tacAux2->res == tacAtual->op1) && strncmp(tacAtual->op1->text, "___variavelTemporaria_", 22) == 0)
+							{
+								tacAux2->prev->next = tacAux2->next;
+								tacAux2->next->prev = tacAux2->prev;
+								free(tacAux2);
+								break;
+							}
+						}
+						
+						tacAtual->prev->next = tacAtual->next;
+						tacAtual->next->prev = tacAtual->prev;
+						free(tacAtual);	// EXCLUI O PRIMEIRO STORE, POIS SÓ O SEGUNDO IMPORTA
+						break;//FORÇA O FIM DO "FOR(tacAux)"
+					}
+					else if(tacAux->op1 == tacAtual->res) // O OUTRO STORE FAZ UM READ
+						break;//FORÇA O FIM DO "FOR(tacAux)"
+					
+				}
+				else if(isRight(tacAux->type)) // ACHOU UM READ	
+				{
+					if(tacAux->type == TAC_ARG)
+					{
+						if(tacAux->op1 == tacAtual->res) // READ AFTER WRITE
+							break;//FORÇA O FIM DO "FOR(tacAux)"
+					}
+					else if(tacAux->type == TAC_PRINT || tacAux->type == TAC_RETURN || tacAux->type == TAC_READ)
+					{
+						if(tacAux->res == tacAtual->res)  // READ AFTER WRITE
+							break;//FORÇA O FIM DO "FOR(tacAux)"
+					}
+					else
+					{
+						if((tacAux->op1 == tacAtual->res) || (tacAux->op2 == tacAtual->res))  // READ AFTER WRITE
+							break;//FORÇA O FIM DO "FOR(tacAux)"	
+					}
+				}
+			}
+		}
+
+		if(tacAtual->type == TAC_ASSV) //ACHOU UM STORE VETOR
+		{
+			for(tacAux = tacAtual->next; tacAux; tacAux = tacAux->next) // OLHA OS TACS ADIANTE PRA CHECAR SE O STORE É UTIL
+			{
+				if(tacAux->type == TAC_ASSV) // ACHOU OUTRO STORE
+				{
+					if((tacAux->res == tacAtual->res) && (tacAux->op1 == tacAtual->op1))// STORE AFTER STORE NA MESMA VARIAVEL
+					{
+						for(tacAux2 = first; tacAux2!=tacAtual; tacAux2 = tacAux2->next)
+						{
+							if((tacAux2->res == tacAtual->op2) && strncmp(tacAtual->op2->text, "___variavelTemporaria_", 22) == 0)
+							{
+								tacAux2->prev->next = tacAux2->next;
+								tacAux2->next->prev = tacAux2->prev;
+								free(tacAux2);
+								break;
+							}
+						}
+						
+						tacAtual->prev->next = tacAtual->next;
+						tacAtual->next->prev = tacAtual->prev;
+						free(tacAtual);	// EXCLUI O PRIMEIRO STORE, POIS SÓ O SEGUNDO IMPORTA
+						break;//FORÇA O FIM DO "FOR(tacAux)"
+					}
+				}
+				else if(tacAux->type == TAC_VECT) // ACHOU UM READ	
+				{
+					if((tacAux->op1 == tacAtual->res) && (tacAux->op2 == tacAtual->op1))
+						break;
+				}
+			}
+		}
+	}
+	return first;
+}
